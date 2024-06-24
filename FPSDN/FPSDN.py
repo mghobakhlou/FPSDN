@@ -35,8 +35,6 @@ def find_partial_topology(log_file_path):
             
             switch = packet.tcp.get_field_value("tcp.srcport")
             
-            # print("host: ", host_MAC_address)
-            # print("switch: ", switch)
             controller = packet.tcp.get_field_value("tcp.dstport")
 
             if not(switch in G):
@@ -74,7 +72,6 @@ def find_topo(partial_topo, packets, save_topo = False, path = None):
             else: 
                 color_map.append('red')
         
-        # print(G.nodes(),len(color_map))
         os.makedirs(os.path.dirname(path), exist_ok=True)
         nx.draw(G, node_color=color_map, with_labels=True)
         plt.savefig(path, format="PNG")
@@ -95,7 +92,6 @@ def number_of_hosts(topo_graph):
 
 def list_of_switches(topo_graph):
     switches = []
-    # print(list(topo_graph.nodes()))
     for node in list(topo_graph.nodes()):
         if topo_graph.nodes[node]["type"] == "switch":
             switches.append(node)
@@ -227,9 +223,7 @@ def write_log(openflow_packets, path):
     all_openflow_messages = open(path, "w")
     for idx, packet in enumerate(openflow_packets, 1):
         all_openflow_messages.write(f"\nPacket {idx}:\n")
-        # print(f"Packet {idx}:")
         for field, value in packet.items():
-            # print(f"{field}: {value}")
             all_openflow_messages.write(f"{field}: {value}\n")
         all_openflow_messages.write("\n----------\n")
 
@@ -260,7 +254,6 @@ def change_controller(C, ch1, ch2, m):
 
 
 def calculate_recursive_variables(initial_policy, topology, flow_tables, C, event_iteration=1):
-    print("HI")
     rec_var_name = "D"
     rec_var_def = '"((@Pol) . ({})) *" ; @IRV o+ @sum'.format(topology)
     
@@ -292,8 +285,6 @@ def calculate_recursive_variables(initial_policy, topology, flow_tables, C, even
                 # TODO New channel for new iteration: some thing like below:
                 # comms[x] = (iteration_counter_for_switch_k_up +"up" + k, flow_tables[k][number-2])
                 id_dict[x] = flow_tables[k][number-2]
-                # print(comms[x])
-            # print(x, id_dict[x])
     
     output = {}
     counter = 1
@@ -302,14 +293,11 @@ def calculate_recursive_variables(initial_policy, topology, flow_tables, C, even
         current_var = rec_var_name + "-" + str(counter)
         counter += 1
 
-        print("x: ", x)
         args = []
         for i in x:
-            print("i= ", i)
             args.append(id_dict[i])
         initial_term = ' + '.join(args)
 
-        print(args)
 
         comm = []
         for i, v in comms.items():
@@ -366,7 +354,6 @@ def path_event(event):
         else:
             path.append(event[i]["to_switch"])
             path.append(event[i]["eth.dst"].split(":")[-1])
-    print("path: ", path)
     return path
 
 def DyNetKAT(topo_graph, packets, expriment_name):
@@ -377,8 +364,8 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     ports = allocate_ports(topo_graph)
     topo_str = string_topo(topo_graph, ports)
     topology = topo_str
-    print("ports: ", ports)
-    print("topology: ", topo_str)
+    # print("ports: ", ports)
+    # print("topology: ", topo_str)
 
 
     events = find_events(packets)
@@ -402,8 +389,8 @@ def DyNetKAT(topo_graph, packets, expriment_name):
         p2 = ports[(sw, path[i+1])]
         flow_tables["S"+sw] = [construct_rule(p1,p2)]
 
-    print("Policy", policy)
-    print("flow_tables", flow_tables)
+    # print("Policy", policy)
+    # print("flow_tables", flow_tables)
 
     C = ""
 
