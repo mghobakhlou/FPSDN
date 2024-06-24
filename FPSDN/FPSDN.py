@@ -460,4 +460,4 @@ if __name__ == "__main__":
     save_DyNetKAT_path = "./benchmarks/" + expriment_name + "_DyNetKAT.json"
     Save_Json(data, save_DyNetKAT_path)
 
-    print("END")
+    print("END - Now we can run DyNetiKAT")
