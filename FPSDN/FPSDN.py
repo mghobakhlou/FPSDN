@@ -51,14 +51,6 @@ def find_partial_topology(log_file_path):
                 G.add_edge(switch, host_MAC_address)
                 G.add_edge(host_MAC_address,switch)
                 edge += 1
-    
-    # print(G['41178'])
-    # print(G.nodes['41178'])
-    # print(G.nodes['00:00:00:00:00:02'])
-
-    # {'00:00:00:00:00:02': {}, '00:00:00:00:00:01': {}, '00:00:00:00:00:03': {}}
-    # {'type': 'switch', 'controller': '6633'}
-    # {'type': 'host', 'port': '2'}
     return G
 
 def find_topo(partial_topo, packets, save_topo = False, path = None):
@@ -115,13 +107,6 @@ def number_of_switches(topo_graph):
 
 def allocate_ports(topo):
     n_hosts = number_of_hosts(topo)
-
-    # print("Total number of edges: ", int(topo.number_of_edges()))
-    # print("List of all edges: ", list(topo.edges()))
-    # print("List of all nodes: ", list(topo.nodes())) 
-    # print("number of nodes: ", len(list(topo.nodes()))) 
-    # print("List of all nodes we can go to in a single step from node 2: ", 
-    #                                              list(topo.neighbors("03")))  
     port_counter_for_switches = n_hosts + 1
     counter = 1
     ports = {}
@@ -144,14 +129,12 @@ def string_topo(topo,ports):
         s1 , s2 = k[0], k[1]
         if (s2,s1) in ports.keys():
             t = "(pt = " + str(ports[(s1,s2)]) + " . pt <- " + str(ports[(s2,s1)]) +")"
-            # print(t)
         elif (topo.nodes[s1]["type"] == "switch" and topo.nodes[s2]["type"] == "host"):
             t = "(pt = " + str(ports[(s1,s2)]) +")"
         elif (topo.nodes[s2]["type"] == "switch" and topo.nodes[s1]["type"] == "host"):
             t = "(pt = " + str(ports[(s2,s1)]) +")"
         l.append(t)
     topo = "(" + " + ".join(l) + ")"
-    # print("topo = ", topo)
     return topo
     
 def sorted_packets(cap):
@@ -166,35 +149,18 @@ def sorted_packets(cap):
     matched_packet_out = []
     
     for i in range(len(packets)):
-        
         if int(packets[i].openflow_v1.openflow_1_0_type) == 10 and packets[i].openflow_v1.get_field_value("eth.dst").split(":")[0] == "00": # PACKET_IN
-            # print(packets[i].openflow_v1.get_field_value("eth_dst")[:2] in ['33','ff'])
-            # if packets[i].openflow_v1.get_field_value("eth_dst")[:2] in ['33','ff']:
-            #     # Ignore multicast and broadcast destinations.
-            #     continue
-            
             packet_in = packets[i]
             for j in range(i+1, len(packets)):
                 response_packet = packets[j]
 
-                # این دو تا شرط زیر باید چک شه که اون ریسپانس دقیقا مطابق با اون پکت این باشه.
-                # TODO
-
                 if (int(response_packet.openflow_v1.openflow_1_0_type) == 14) and (not(j in matched_flow_mod_packet)): # FLOW_MOD
-                    # print(response_packet.openflow_v1.get_field_value("openflow.xid"))
                     matched_flow_mod_packet.append(j)
-                    # print("i = ", i, "j = ", j)
-                    # print("xid = ", packets[j].openflow_v1.openflow_xid)
                     sorted_packets.append(packet_in)
                     sorted_packets.append(response_packet)
                     break
                 elif (int(response_packet.openflow_v1.openflow_1_0_type) == 13) and (not(j in matched_packet_out)): # PACKET_OUT ---> Drop or forward ?
                     matched_packet_out.append(j)
-                    # TODO   # Handle this packets
-                    # break
-                
-    # print("len sorted_packets",len(sorted_packets))
-    # print(sorted_packets[1])
     return sorted_packets
 
 def pre_processing(log_file_path):
@@ -206,11 +172,8 @@ def pre_processing(log_file_path):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
         return None
-    
 
     packets = sorted_packets(cap)
-
-
     
     # important_fields = ["openflow_1_0.type", "openflow.xid", "openflow.in_port", "openflow.eth_src",
     #                 "openflow.eth_dst", "openflow.dl_vlan", "openflow.ofp_match.dl_type", "openflow.ofp_match.nw_proto", 
@@ -242,15 +205,9 @@ def pre_processing(log_file_path):
         for field in packet.openflow_v1._all_fields:
                         if field in important_fields:
                             field_value = packet.openflow_v1.get_field_value(field)
-                            # field = field.split(".", maxsplit=1)[1]  # remove first part of field name before dot(.) char. for example: openflow_1_0.type ---> type
                             packet_info[field] = field_value
-                
 
-
-        # if not packet_info in packets_info:
         packets_info.append(packet_info)
-        
-
 
     result = [] # List of packets
     i = 0
@@ -263,8 +220,6 @@ def pre_processing(log_file_path):
         else:
             i += 2
 
-    # print(len(result))
-    # print(result)
     return result
 
 def write_log(openflow_packets, path):
@@ -277,7 +232,6 @@ def write_log(openflow_packets, path):
             # print(f"{field}: {value}")
             all_openflow_messages.write(f"{field}: {value}\n")
         all_openflow_messages.write("\n----------\n")
-
 
 def find_src_dst(packet):
     try:
@@ -292,83 +246,6 @@ def find_match_rules(packet):
     match_src = packet["openflow.ofp_match.source_addr"]
     match_dst = packet["openflow.ofp_match.dest_addr"]
     return match_src,match_dst
-
-def generate_DyNetKAT(topo, packets, name):
-    data = OrderedDict()
-    data['module_name'] = name
-
-    program = "D-0 || C"
-    recursive_variables = {}
-    recursive_variables["D-0"] = "bot"
-    recursive_variables["C"] = "bot"
-    channels = []
-
-    behavior_index = 0
-    for i in range(0,len(packets),2):
-        behavior_index += 1
-
-        packet_IN, flow_MOD = packets[i],packets[i+1]
-        sw = packet_IN["to_switch"]
-        src,dst = find_src_dst(packet_IN)
-        src = str(src.split(":")[-1][-1])
-        dst = str(dst.split(":")[-1][-1])
-        # print(src, dst)
-        # match_src, match_dst = find_match_rules(flow_MOD)
-        match_src, match_dst = src, dst
-
-        ch_packet_in = "ch" + str(i)
-        ch_flow_mod = "ch" + str(i+1)
-        
-        channels.append(ch_packet_in)
-        channels.append(ch_flow_mod)
-
-        if i == 0:
-            recursive_variables["D-0"] = "(" + ch_packet_in + " ! \"one\") ; " + "D-0"
-            recursive_variables["C"] = "(" + ch_packet_in + " ? \"one\") ; ((" + ch_flow_mod + " ! \"one\") ; " + "C)"
-        else:
-            recursive_variables["D-0"] = recursive_variables["D-0"] + " o+ (" + ch_packet_in + " ! \"one\") ; " + "D-0"
-            recursive_variables["C"] = recursive_variables["C"] + " o+ (" + ch_packet_in + " ? \"one\") ; ((" + ch_flow_mod + " ! \"one\") ; " + "C)"
-
-        new_behavior = "D-" + str(behavior_index)
-        recursive_variables["D-0"] = recursive_variables["D-0"] + " o+ (" + ch_flow_mod + " ? \"one\") ; " + new_behavior
-
-        recursive_variables[new_behavior] = "\"(" + "sw = " + sw + " . " +"src = " + src + " . " + "dst = " + dst + " . " + "matchsrc <- " + match_src + " . " + "matchdst <- " + match_dst + ")\"" + " ; " + new_behavior
-        # recursive_variables[new_behavior] = "\"(" + "src = " + src + " . " + "matchsrc <- " + match_src + ")\"" + " ; " + new_behavior
-
-
-
-
-
-    data['channels'] = channels
-    data['recursive_variables'] = recursive_variables
-    data['program'] = program
-
-    data['in_packets'] = {"test1": "sw = 65402 . src = 1 . dst = 3"}
-    data['out_packets'] = {"test1" : "matchsrc = 1 . matchdst = 3"}
-    data['properties'] = {"test1" : [
-            [
-                "r",
-                "head(@Program)",   
-                "!0",
-                2
-            ],
-            [
-                "r",
-                "(head(tail(@Program, {rcfg(ch2, \"one\")})))", 
-                "!0",
-                2
-            ],
-            [
-                "r",
-                "(head(tail(tail(@Program, {rcfg(ch3, \"one\")}),{rcfg(ch2, \"one\")})))", 
-                "!0",
-                3
-            ]
-        ]}
-
-
-
-    return data
 
 def Save_Json(data, path):
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -395,12 +272,9 @@ def calculate_recursive_variables(initial_policy, topology, flow_tables, C, even
             id_list.append(k + "-" + str(i+2))
         id_list.insert(0, k + "-1")
         merged_dict[k] = id_list
-        # print(merged_dict[k])
 
     combinations = list(it.product(*(merged_dict[x] for x in merged_dict.keys())))
 
-    # for x in combinations:
-    #     print(x)
     channels = []
     id_dict = {}
     comms = {}
@@ -450,7 +324,6 @@ def calculate_recursive_variables(initial_policy, topology, flow_tables, C, even
             comm.append("(" + v[2] + ' ! "' + one + '") ; {}'.format(current_var))
             comm.append("(" + v[0] + ' ? "' + v[1] + '") ; {}-{}'.format(rec_var_name, index + 1))
         output[current_var] = rec_var_def.replace("@Pol", initial_term).replace("@IRV", current_var).replace("@sum", ' o+ '.join(comm))
-        # print(output[current_var])
     return output, C, channels
 
 def merge_two_dicts(x, y):
@@ -471,11 +344,9 @@ def find_events(packets):
                 j+=1
             else:
                 break
-        # print(i,j)
         events["event-"+str(event_counter)] = packets[i:j]
         event_counter += 1
         i = j
-
     return events
 
 
@@ -506,7 +377,6 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     ports = allocate_ports(topo_graph)
     topo_str = string_topo(topo_graph, ports)
     topology = topo_str
-    # topology = ("T")
     print("ports: ", ports)
     print("topology: ", topo_str)
 
