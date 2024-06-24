@@ -1,0 +1,37 @@
+{
+    "module_name": "single3V3",
+    "channels": [
+        "ch2"
+    ],
+    "recursive_variables": {
+        "sw": "\"(pt = 1 . pt <- 2)\" ; sw",
+        "h1": "(ch2 ! \"one\") ; h1"
+    },
+    "program": "h1 || sw",
+    "in_packets": {
+        "first": "(pt = 1)"
+    },
+    "out_packets": {
+        "first": "(pt = 2)"
+    },
+    "properties": {
+        "first": [
+            [
+                "r",
+                "head(@Program)",
+                "!0",
+                2
+            ],
+            [
+                "r",
+                "(head(tail(@Program, {rcfg(ch2, \"one\")})))",
+                "!0",
+                2
+            ]
+        ]
+    },
+    "file_name": "single3V3.maude",
+    "comm": [
+        "(ch2,\"one\")"
+    ]
+}

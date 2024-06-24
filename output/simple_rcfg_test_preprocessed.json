@@ -1,0 +1,38 @@
+{
+    "module_name": "simple_rcfg_test",
+    "channels": [
+        "channel"
+    ],
+    "recursive_variables": {
+        "sw": "\"(pt = 1 . pt <- 2)\" ; sw o+ (channel ? \"one\") ; sw2",
+        "h1": "(channel ! \"one\") ; h1",
+        "sw2": "zero ; sw2"
+    },
+    "program": "h1 || sw",
+    "in_packets": {
+        "first": "(pt = 1)"
+    },
+    "out_packets": {
+        "first": "(pt = 2)"
+    },
+    "properties": {
+        "first": [
+            [
+                "r",
+                "head(@Program)",
+                "!0",
+                2
+            ],
+            [
+                "r",
+                "(head(tail(@Program, {rcfg(channel, \"one\")})))",
+                "!0",
+                2
+            ]
+        ]
+    },
+    "file_name": "simple_rcfg_test.maude",
+    "comm": [
+        "(channel,\"one\")"
+    ]
+}

@@ -1,0 +1,33 @@
+{
+    "module_name": "test",
+    "recursive_variables": {
+        "C": "((ch1 ? \"one\") ; ((ch2 ! \"one\") ; C))",
+        "D-1": "\"((pt = 1 . pt <- 2 + pt = 3 . pt <- 4) . (((pt = 2 . pt <- 3 + pt = 4)))) *\" ; D-1"
+    },
+    "program": "C || D-1",
+    "channels": [
+        "ch1",
+        "ch2"
+    ],
+    "in_packets": {
+        "test": "pt = 1"
+    },
+    "out_packets": {
+        "test": "pt = 4"
+    },
+    "properties": {
+        "test": [
+            [
+                "r",
+                "(head(@Program))",
+                "!0",
+                2
+            ]
+        ]
+    },
+    "file_name": "test.maude",
+    "comm": [
+        "(ch2,\"one\")",
+        "(ch1,\"one\")"
+    ]
+}

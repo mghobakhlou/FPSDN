@@ -1,0 +1,18 @@
+(library
+  (name tables)
+  (public_name netkat.tables)
+  (wrapped true)
+  (libraries
+    base
+    idds
+    netkat.kat
+    printbox
+    printbox-html
+    printbox-text
+    open
+    tyxml
+  )
+  (preprocess (pps
+    ppx_jane
+  ))
+)

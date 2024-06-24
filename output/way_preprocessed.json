@@ -1,0 +1,32 @@
+{
+    "module_name": "way",
+    "channels": [
+        "blockpt1"
+    ],
+    "recursive_variables": {
+        "sw": "\"(pt = 1 . pt <- 2)\" ; sw o+ (blockpt1 ? \"one\") ; sw1",
+        "C": "(blockpt1 ! \"one\") ; C",
+        "sw1": "\"(pt = 1 . pt <- 3)\" ; sw1"
+    },
+    "program": "C || sw",
+    "in_packets": {
+        "first": "(pt = 1)"
+    },
+    "out_packets": {
+        "first": "(pt = 3)"
+    },
+    "properties": {
+        "first": [
+            [
+                "r",
+                "(head(tail(@Program, {rcfg(blockpt1, \"one\")})))",
+                "=0",
+                1
+            ]
+        ]
+    },
+    "file_name": "way.maude",
+    "comm": [
+        "(blockpt1,\"one\")"
+    ]
+}

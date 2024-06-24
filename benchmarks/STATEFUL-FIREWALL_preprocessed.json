@@ -1,0 +1,56 @@
+{
+    "in_packets": {
+        "int_to_ext": "(pt = 1)",
+        "ext_to_int": "(pt = 2)"
+    },
+    "out_packets": {
+        "int_to_ext": "(pt = 2)",
+        "ext_to_int": "(pt = 1)"
+    },
+    "module_name": "STATEFUL-FIREWALL",
+    "recursive_variables": {
+        "Switch": "\"(pt = 1 . pt <- 2)\" ; Switch o+ zero ; Switch o+ (secConReq ? \"one\") ; SwitchPrime",
+        "SwitchPrime": "\"(pt = 1 . pt <- 2)\" ; SwitchPrime o+ \"(pt = 2 . pt <- 1)\" ; SwitchPrime o+ (secConEnd ? \"one\") ; Switch",
+        "Host": "(secConReq ! \"one\") ; Host o+ (secConEnd ! \"one\") ; Host"
+    },
+    "channels": [
+        "secConReq",
+        "secConEnd"
+    ],
+    "program": "Host || Switch",
+    "properties": {
+        "int_to_ext": [
+            [
+                "r",
+                "head(@Program)",
+                "!0",
+                2
+            ],
+            [
+                "r",
+                "(head(tail(@Program, {rcfg(secConReq, \"one\")})))",
+                "!0",
+                2
+            ]
+        ],
+        "ext_to_int": [
+            [
+                "r",
+                "head(@Program)",
+                "=0",
+                2
+            ],
+            [
+                "r",
+                "(head(tail(@Program, {rcfg(secConReq, \"one\")})))",
+                "!0",
+                2
+            ]
+        ]
+    },
+    "file_name": "STATEFUL-FIREWALL.maude",
+    "comm": [
+        "(secConReq,\"one\")",
+        "(secConEnd,\"one\")"
+    ]
+}
