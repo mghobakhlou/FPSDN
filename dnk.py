@@ -53,7 +53,7 @@ if __name__ == "__main__":
         data = json.load(f)
     data["file_name"] = data['module_name'] + ".maude"
 
-    print("PREPROCESSING.........................")
+    # print("PREPROCESSING.........................")
     # preprocessing step!!!
     preprocessing_start = perf_counter()
     preprocessor = Preprocessing(direct, maude_path, netkat_path, options.netkat_version, maude_preprocess_file,
@@ -67,7 +67,7 @@ if __name__ == "__main__":
             json.dump(data, f, ensure_ascii=False, indent=4)
     preprocessing_stop = perf_counter() 
 
-    print("ANALYSIS.........................")
+    # print("ANALYSIS.........................")
     # analysis step
     decision_procedure = DyNetKAT(direct, maude_path, netkat_path, options.netkat_version, 
                                   maude_preprocess_file, maude_dnk_file, options.num_threads)

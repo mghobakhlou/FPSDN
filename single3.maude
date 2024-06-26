@@ -1,0 +1,6 @@
+load /home/mohammadreza/test/FPSDN/src/maude/preprocess.maude
+
+fmod single3 is 
+	protecting DNA .
+	ops C D-1 : -> Recursive .
+endfm

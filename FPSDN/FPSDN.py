@@ -6,10 +6,46 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from collections import OrderedDict
 import itertools as it
+import subprocess
+from time import perf_counter
+
 
 def find_partial_topology(log_file_path):
     try:
-        cap = pyshark.FileCapture(log_file_path, display_filter='openflow_v1')
+        with pyshark.FileCapture(log_file_path, display_filter='openflow_v1') as cap:
+            packets_cap = [packet for packet in cap]
+            G = nx.DiGraph()
+
+            # print(cap[1].openflow_v1._all_fields)
+            device = 0
+            edge = 0
+
+            for packet in cap:        
+                if int(packet.openflow_v1.openflow_1_0_type) == 10 and packet.openflow_v1.get_field_value("eth.dst").split(":")[0] == "00":
+                # if int(packet.openflow_v1.openflow_1_0_type) == 10:
+
+                    flag_add_edge = False
+                    
+                    host_MAC_address = packet.openflow_v1.get_field_value("eth.src")
+                    host_MAC_address = host_MAC_address.split(":")[-1]
+                    host_port = packet.openflow_v1.get_field_value("openflow.in_port")
+                    
+                    switch = packet.tcp.get_field_value("tcp.srcport")
+                    
+                    controller = packet.tcp.get_field_value("tcp.dstport")
+
+                    if not(switch in G):
+                        G.add_node(switch, type='switch', controller = controller)
+                        device+=1
+                    if not(host_MAC_address in G):
+                        G.add_node(host_MAC_address, type='host', port = host_port)
+                        device+=1
+                        flag_add_edge = True
+
+                    if flag_add_edge: 
+                        G.add_edge(switch, host_MAC_address)
+                        G.add_edge(host_MAC_address,switch)
+                        edge += 1
     except FileNotFoundError:
         print(f"Couldn't find the file: {log_file_path}")
         return None
@@ -17,41 +53,10 @@ def find_partial_topology(log_file_path):
         print(f"An unexpected error occurred: {e}")
         return None
     
-    G = nx.DiGraph()
+    
+    return packets_cap, G
 
-    # print(cap[1].openflow_v1._all_fields)
-    device = 0
-    edge = 0
-
-    for packet in cap:        
-        if int(packet.openflow_v1.openflow_1_0_type) == 10 and packet.openflow_v1.get_field_value("eth.dst").split(":")[0] == "00":
-        # if int(packet.openflow_v1.openflow_1_0_type) == 10:
-
-            flag_add_edge = False
-            
-            host_MAC_address = packet.openflow_v1.get_field_value("eth.src")
-            host_MAC_address = host_MAC_address.split(":")[-1]
-            host_port = packet.openflow_v1.get_field_value("openflow.in_port")
-            
-            switch = packet.tcp.get_field_value("tcp.srcport")
-            
-            controller = packet.tcp.get_field_value("tcp.dstport")
-
-            if not(switch in G):
-                G.add_node(switch, type='switch', controller = controller)
-                device+=1
-            if not(host_MAC_address in G):
-                G.add_node(host_MAC_address, type='host', port = host_port)
-                device+=1
-                flag_add_edge = True
-
-            if flag_add_edge: 
-                G.add_edge(switch, host_MAC_address)
-                G.add_edge(host_MAC_address,switch)
-                edge += 1
-    return G
-
-def find_topo(partial_topo, packets, save_topo = False, path = None):
+def find_topo(partial_topo, packets):
     G = partial_topo
     switches_links = []
     for i in range(1,len(packets)-2,2):
@@ -63,20 +68,21 @@ def find_topo(partial_topo, packets, save_topo = False, path = None):
             switches_links.append(link)
 
     G.add_edges_from(switches_links)
-        
-    if save_topo:
-        color_map = []
-        for node in list(G.nodes()):
-            if G.nodes[node]["type"] == "host":
-                color_map.append('blue')
-            else: 
-                color_map.append('red')
-        
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        nx.draw(G, node_color=color_map, with_labels=True)
-        plt.savefig(path, format="PNG")
     
     return G
+
+def save_topo_graph(topo, path):
+    G = topo
+    color_map = []
+    for node in list(G.nodes()):
+        if G.nodes[node]["type"] == "host":
+            color_map.append('blue')
+        else: 
+            color_map.append('red')
+    
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    nx.draw(G, node_color=color_map, with_labels=True)
+    plt.savefig(path, format="PNG")
 
 def list_of_hosts(topo_graph):
     hosts = []
@@ -133,12 +139,12 @@ def string_topo(topo,ports):
     topo = "(" + " + ".join(l) + ")"
     return topo
     
-def sorted_packets(cap):
+def sorted_packets(packets_cap):
     # Sort packets based on packet_in and corresponding response after that
 
 
     # Convert capture to a list to allow indexing
-    packets = [packet for packet in cap]
+    packets = packets_cap
     
     sorted_packets = []
     matched_flow_mod_packet = []
@@ -159,17 +165,10 @@ def sorted_packets(cap):
                     matched_packet_out.append(j)
     return sorted_packets
 
-def pre_processing(log_file_path):
-    try:
-        cap = pyshark.FileCapture(log_file_path, display_filter='openflow_v1')
-    except FileNotFoundError:
-        print(f"Couldn't find the file: {log_file_path}")
-        return None
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-        return None
+def pre_processing(packets_cap):
+    packets = sorted_packets(packets_cap) 
 
-    packets = sorted_packets(cap)
+    # packets = sorted_packets(cap)
     
     # important_fields = ["openflow_1_0.type", "openflow.xid", "openflow.in_port", "openflow.eth_src",
     #                 "openflow.eth_dst", "openflow.dl_vlan", "openflow.ofp_match.dl_type", "openflow.ofp_match.nw_proto", 
@@ -446,18 +445,36 @@ if __name__ == "__main__":
     log_file_path = "./FPSDN/data/" + expriment_name + ".pcapng"
     save_topo_path = "./FPSDN/output/"+ expriment_name +"/" + expriment_name + ".png"
     after_preprocessing_log_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_After_Preprocessing.txt"
-    
-    partial_topo = find_partial_topology(log_file_path)
-    packets = pre_processing(log_file_path)
-    write_log(packets, after_preprocessing_log_path)
-    topo_graph = find_topo(partial_topo, packets, save_topo=False, path=save_topo_path)
+    ports_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_ports.txt"
+    save_DyNetKAT_path = "./FPSDN/output/"+ expriment_name +"/" + "DyNetKAT_" + expriment_name + ".json"
 
+    FPSDN_start = perf_counter()
+    packets_cap, partial_topo = find_partial_topology(log_file_path)
+    packets = pre_processing(packets_cap)
+    topo_graph = find_topo(partial_topo, packets)
     data = DyNetKAT(topo_graph, packets, expriment_name)
-    with open("./FPSDN/output/test.json", 'w') as f:
-        json.dump(data, f, ensure_ascii=False, indent=4)
+    FPSDN_end = perf_counter()
 
-    # data = generate_DyNetKAT(topo_graph,packets,expriment_name)
-    save_DyNetKAT_path = "./benchmarks/" + expriment_name + "_DyNetKAT.json"
+    print("Extraction Rueles time: {:.2f} seconds".format(FPSDN_end-FPSDN_start))
+
+    save_topo_graph(topo_graph, path=save_topo_path)
+    write_log(packets, after_preprocessing_log_path)
+
+    ports = allocate_ports(topo_graph)
+    os.makedirs(os.path.dirname(ports_path), exist_ok=True)
+    ports_file = open(ports_path, "w")
+    ports_file.write(str(ports))
+
     Save_Json(data, save_DyNetKAT_path)
 
-    print("END - Now we can run DyNetiKAT")
+    print("END FPSDN - Now we can run DyNetiKAT")
+
+
+    maude_path = "./maude-3.1/maude.linux64"
+    netkat_katbv_path = "./netkat/_build/install/default/bin/katbv"
+    example_path = save_DyNetKAT_path
+
+    DyNetiKAT_results = subprocess.run(["python3", "dnk.py", "--time-stats" , maude_path, netkat_katbv_path, example_path])
+    
+
+

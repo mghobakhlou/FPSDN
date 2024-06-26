@@ -28,7 +28,7 @@
     },
     "file_name": "STATEFUL-FIREWALL.maude",
     "comm": [
-        "(secConEnd,\"one\")",
-        "(secConReq,\"one\")"
+        "(secConReq,\"one\")",
+        "(secConEnd,\"one\")"
     ]
 }

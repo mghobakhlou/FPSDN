@@ -1,0 +1,71 @@
+{
+    "module_name": "linear_4_1",
+    "recursive_variables": {
+        "C": "((event1sendS40998 ? \"one\") ; ((event1upS40998 ! \"pt = 1 . pt <- 2\") ; C)) o+ ((event1sendS41012 ? \"one\") ; ((event1upS41012 ! \"pt = 4 . pt <- 3\") ; C)) o+ ((event1sendS41028 ? \"one\") ; ((event1upS41028 ! \"pt = 6 . pt <- 5\") ; C)) o+ ((event1sendS40986 ? \"one\") ; ((event1upS40986 ! \"pt = 8 . pt <- 7\") ; C))",
+        "D-1": "\"((pt = 0 . pt <- 0 + pt = 0 . pt <- 0 + pt = 0 . pt <- 0 + pt = 0 . pt <- 0) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 6) + (pt = 4 . pt <- 2) + (pt = 5 . pt <- 8) + (pt = 6 . pt <- 3) + (pt = 7) + (pt = 8 . pt <- 5)))) *\" ; D-1 o+ (event1sendS40998 ! \"one\") ; D-1 o+ (event1upS40998 ? \"pt = 1 . pt <- 2\") ; D-9 o+ (event1sendS41012 ! \"one\") ; D-1 o+ (event1upS41012 ? \"pt = 4 . pt <- 3\") ; D-5 o+ (event1sendS41028 ! \"one\") ; D-1 o+ (event1upS41028 ? \"pt = 6 . pt <- 5\") ; D-3 o+ (event1sendS40986 ! \"one\") ; D-1 o+ (event1upS40986 ? \"pt = 8 . pt <- 7\") ; D-2",
+        "D-2": "\"((pt = 0 . pt <- 0 + pt = 0 . pt <- 0 + pt = 0 . pt <- 0 + pt = 8 . pt <- 7) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 6) + (pt = 4 . pt <- 2) + (pt = 5 . pt <- 8) + (pt = 6 . pt <- 3) + (pt = 7) + (pt = 8 . pt <- 5)))) *\" ; D-2 o+ (event1sendS40998 ! \"one\") ; D-2 o+ (event1upS40998 ? \"pt = 1 . pt <- 2\") ; D-10 o+ (event1sendS41012 ! \"one\") ; D-2 o+ (event1upS41012 ? \"pt = 4 . pt <- 3\") ; D-6 o+ (event1sendS41028 ! \"one\") ; D-2 o+ (event1upS41028 ? \"pt = 6 . pt <- 5\") ; D-4 o+ (event1sendS40986 ! \"one\") ; D-2 o+ (event1upS40986 ? \"pt = 8 . pt <- 7\") ; D-2",
+        "D-3": "\"((pt = 0 . pt <- 0 + pt = 0 . pt <- 0 + pt = 6 . pt <- 5 + pt = 0 . pt <- 0) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 6) + (pt = 4 . pt <- 2) + (pt = 5 . pt <- 8) + (pt = 6 . pt <- 3) + (pt = 7) + (pt = 8 . pt <- 5)))) *\" ; D-3 o+ (event1sendS40998 ! \"one\") ; D-3 o+ (event1upS40998 ? \"pt = 1 . pt <- 2\") ; D-11 o+ (event1sendS41012 ! \"one\") ; D-3 o+ (event1upS41012 ? \"pt = 4 . pt <- 3\") ; D-7 o+ (event1sendS41028 ! \"one\") ; D-3 o+ (event1upS41028 ? \"pt = 6 . pt <- 5\") ; D-3 o+ (event1sendS40986 ! \"one\") ; D-3 o+ (event1upS40986 ? \"pt = 8 . pt <- 7\") ; D-4",
+        "D-4": "\"((pt = 0 . pt <- 0 + pt = 0 . pt <- 0 + pt = 6 . pt <- 5 + pt = 8 . pt <- 7) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 6) + (pt = 4 . pt <- 2) + (pt = 5 . pt <- 8) + (pt = 6 . pt <- 3) + (pt = 7) + (pt = 8 . pt <- 5)))) *\" ; D-4 o+ (event1sendS40998 ! \"one\") ; D-4 o+ (event1upS40998 ? \"pt = 1 . pt <- 2\") ; D-12 o+ (event1sendS41012 ! \"one\") ; D-4 o+ (event1upS41012 ? \"pt = 4 . pt <- 3\") ; D-8 o+ (event1sendS41028 ! \"one\") ; D-4 o+ (event1upS41028 ? \"pt = 6 . pt <- 5\") ; D-4 o+ (event1sendS40986 ! \"one\") ; D-4 o+ (event1upS40986 ? \"pt = 8 . pt <- 7\") ; D-4",
+        "D-5": "\"((pt = 0 . pt <- 0 + pt = 4 . pt <- 3 + pt = 0 . pt <- 0 + pt = 0 . pt <- 0) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 6) + (pt = 4 . pt <- 2) + (pt = 5 . pt <- 8) + (pt = 6 . pt <- 3) + (pt = 7) + (pt = 8 . pt <- 5)))) *\" ; D-5 o+ (event1sendS40998 ! \"one\") ; D-5 o+ (event1upS40998 ? \"pt = 1 . pt <- 2\") ; D-13 o+ (event1sendS41012 ! \"one\") ; D-5 o+ (event1upS41012 ? \"pt = 4 . pt <- 3\") ; D-5 o+ (event1sendS41028 ! \"one\") ; D-5 o+ (event1upS41028 ? \"pt = 6 . pt <- 5\") ; D-7 o+ (event1sendS40986 ! \"one\") ; D-5 o+ (event1upS40986 ? \"pt = 8 . pt <- 7\") ; D-6",
+        "D-6": "\"((pt = 0 . pt <- 0 + pt = 4 . pt <- 3 + pt = 0 . pt <- 0 + pt = 8 . pt <- 7) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 6) + (pt = 4 . pt <- 2) + (pt = 5 . pt <- 8) + (pt = 6 . pt <- 3) + (pt = 7) + (pt = 8 . pt <- 5)))) *\" ; D-6 o+ (event1sendS40998 ! \"one\") ; D-6 o+ (event1upS40998 ? \"pt = 1 . pt <- 2\") ; D-14 o+ (event1sendS41012 ! \"one\") ; D-6 o+ (event1upS41012 ? \"pt = 4 . pt <- 3\") ; D-6 o+ (event1sendS41028 ! \"one\") ; D-6 o+ (event1upS41028 ? \"pt = 6 . pt <- 5\") ; D-8 o+ (event1sendS40986 ! \"one\") ; D-6 o+ (event1upS40986 ? \"pt = 8 . pt <- 7\") ; D-6",
+        "D-7": "\"((pt = 0 . pt <- 0 + pt = 4 . pt <- 3 + pt = 6 . pt <- 5 + pt = 0 . pt <- 0) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 6) + (pt = 4 . pt <- 2) + (pt = 5 . pt <- 8) + (pt = 6 . pt <- 3) + (pt = 7) + (pt = 8 . pt <- 5)))) *\" ; D-7 o+ (event1sendS40998 ! \"one\") ; D-7 o+ (event1upS40998 ? \"pt = 1 . pt <- 2\") ; D-15 o+ (event1sendS41012 ! \"one\") ; D-7 o+ (event1upS41012 ? \"pt = 4 . pt <- 3\") ; D-7 o+ (event1sendS41028 ! \"one\") ; D-7 o+ (event1upS41028 ? \"pt = 6 . pt <- 5\") ; D-7 o+ (event1sendS40986 ! \"one\") ; D-7 o+ (event1upS40986 ? \"pt = 8 . pt <- 7\") ; D-8",
+        "D-8": "\"((pt = 0 . pt <- 0 + pt = 4 . pt <- 3 + pt = 6 . pt <- 5 + pt = 8 . pt <- 7) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 6) + (pt = 4 . pt <- 2) + (pt = 5 . pt <- 8) + (pt = 6 . pt <- 3) + (pt = 7) + (pt = 8 . pt <- 5)))) *\" ; D-8 o+ (event1sendS40998 ! \"one\") ; D-8 o+ (event1upS40998 ? \"pt = 1 . pt <- 2\") ; D-16 o+ (event1sendS41012 ! \"one\") ; D-8 o+ (event1upS41012 ? \"pt = 4 . pt <- 3\") ; D-8 o+ (event1sendS41028 ! \"one\") ; D-8 o+ (event1upS41028 ? \"pt = 6 . pt <- 5\") ; D-8 o+ (event1sendS40986 ! \"one\") ; D-8 o+ (event1upS40986 ? \"pt = 8 . pt <- 7\") ; D-8",
+        "D-9": "\"((pt = 1 . pt <- 2 + pt = 0 . pt <- 0 + pt = 0 . pt <- 0 + pt = 0 . pt <- 0) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 6) + (pt = 4 . pt <- 2) + (pt = 5 . pt <- 8) + (pt = 6 . pt <- 3) + (pt = 7) + (pt = 8 . pt <- 5)))) *\" ; D-9 o+ (event1sendS40998 ! \"one\") ; D-9 o+ (event1upS40998 ? \"pt = 1 . pt <- 2\") ; D-9 o+ (event1sendS41012 ! \"one\") ; D-9 o+ (event1upS41012 ? \"pt = 4 . pt <- 3\") ; D-13 o+ (event1sendS41028 ! \"one\") ; D-9 o+ (event1upS41028 ? \"pt = 6 . pt <- 5\") ; D-11 o+ (event1sendS40986 ! \"one\") ; D-9 o+ (event1upS40986 ? \"pt = 8 . pt <- 7\") ; D-10",
+        "D-10": "\"((pt = 1 . pt <- 2 + pt = 0 . pt <- 0 + pt = 0 . pt <- 0 + pt = 8 . pt <- 7) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 6) + (pt = 4 . pt <- 2) + (pt = 5 . pt <- 8) + (pt = 6 . pt <- 3) + (pt = 7) + (pt = 8 . pt <- 5)))) *\" ; D-10 o+ (event1sendS40998 ! \"one\") ; D-10 o+ (event1upS40998 ? \"pt = 1 . pt <- 2\") ; D-10 o+ (event1sendS41012 ! \"one\") ; D-10 o+ (event1upS41012 ? \"pt = 4 . pt <- 3\") ; D-14 o+ (event1sendS41028 ! \"one\") ; D-10 o+ (event1upS41028 ? \"pt = 6 . pt <- 5\") ; D-12 o+ (event1sendS40986 ! \"one\") ; D-10 o+ (event1upS40986 ? \"pt = 8 . pt <- 7\") ; D-10",
+        "D-11": "\"((pt = 1 . pt <- 2 + pt = 0 . pt <- 0 + pt = 6 . pt <- 5 + pt = 0 . pt <- 0) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 6) + (pt = 4 . pt <- 2) + (pt = 5 . pt <- 8) + (pt = 6 . pt <- 3) + (pt = 7) + (pt = 8 . pt <- 5)))) *\" ; D-11 o+ (event1sendS40998 ! \"one\") ; D-11 o+ (event1upS40998 ? \"pt = 1 . pt <- 2\") ; D-11 o+ (event1sendS41012 ! \"one\") ; D-11 o+ (event1upS41012 ? \"pt = 4 . pt <- 3\") ; D-15 o+ (event1sendS41028 ! \"one\") ; D-11 o+ (event1upS41028 ? \"pt = 6 . pt <- 5\") ; D-11 o+ (event1sendS40986 ! \"one\") ; D-11 o+ (event1upS40986 ? \"pt = 8 . pt <- 7\") ; D-12",
+        "D-12": "\"((pt = 1 . pt <- 2 + pt = 0 . pt <- 0 + pt = 6 . pt <- 5 + pt = 8 . pt <- 7) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 6) + (pt = 4 . pt <- 2) + (pt = 5 . pt <- 8) + (pt = 6 . pt <- 3) + (pt = 7) + (pt = 8 . pt <- 5)))) *\" ; D-12 o+ (event1sendS40998 ! \"one\") ; D-12 o+ (event1upS40998 ? \"pt = 1 . pt <- 2\") ; D-12 o+ (event1sendS41012 ! \"one\") ; D-12 o+ (event1upS41012 ? \"pt = 4 . pt <- 3\") ; D-16 o+ (event1sendS41028 ! \"one\") ; D-12 o+ (event1upS41028 ? \"pt = 6 . pt <- 5\") ; D-12 o+ (event1sendS40986 ! \"one\") ; D-12 o+ (event1upS40986 ? \"pt = 8 . pt <- 7\") ; D-12",
+        "D-13": "\"((pt = 1 . pt <- 2 + pt = 4 . pt <- 3 + pt = 0 . pt <- 0 + pt = 0 . pt <- 0) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 6) + (pt = 4 . pt <- 2) + (pt = 5 . pt <- 8) + (pt = 6 . pt <- 3) + (pt = 7) + (pt = 8 . pt <- 5)))) *\" ; D-13 o+ (event1sendS40998 ! \"one\") ; D-13 o+ (event1upS40998 ? \"pt = 1 . pt <- 2\") ; D-13 o+ (event1sendS41012 ! \"one\") ; D-13 o+ (event1upS41012 ? \"pt = 4 . pt <- 3\") ; D-13 o+ (event1sendS41028 ! \"one\") ; D-13 o+ (event1upS41028 ? \"pt = 6 . pt <- 5\") ; D-15 o+ (event1sendS40986 ! \"one\") ; D-13 o+ (event1upS40986 ? \"pt = 8 . pt <- 7\") ; D-14",
+        "D-14": "\"((pt = 1 . pt <- 2 + pt = 4 . pt <- 3 + pt = 0 . pt <- 0 + pt = 8 . pt <- 7) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 6) + (pt = 4 . pt <- 2) + (pt = 5 . pt <- 8) + (pt = 6 . pt <- 3) + (pt = 7) + (pt = 8 . pt <- 5)))) *\" ; D-14 o+ (event1sendS40998 ! \"one\") ; D-14 o+ (event1upS40998 ? \"pt = 1 . pt <- 2\") ; D-14 o+ (event1sendS41012 ! \"one\") ; D-14 o+ (event1upS41012 ? \"pt = 4 . pt <- 3\") ; D-14 o+ (event1sendS41028 ! \"one\") ; D-14 o+ (event1upS41028 ? \"pt = 6 . pt <- 5\") ; D-16 o+ (event1sendS40986 ! \"one\") ; D-14 o+ (event1upS40986 ? \"pt = 8 . pt <- 7\") ; D-14",
+        "D-15": "\"((pt = 1 . pt <- 2 + pt = 4 . pt <- 3 + pt = 6 . pt <- 5 + pt = 0 . pt <- 0) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 6) + (pt = 4 . pt <- 2) + (pt = 5 . pt <- 8) + (pt = 6 . pt <- 3) + (pt = 7) + (pt = 8 . pt <- 5)))) *\" ; D-15 o+ (event1sendS40998 ! \"one\") ; D-15 o+ (event1upS40998 ? \"pt = 1 . pt <- 2\") ; D-15 o+ (event1sendS41012 ! \"one\") ; D-15 o+ (event1upS41012 ? \"pt = 4 . pt <- 3\") ; D-15 o+ (event1sendS41028 ! \"one\") ; D-15 o+ (event1upS41028 ? \"pt = 6 . pt <- 5\") ; D-15 o+ (event1sendS40986 ! \"one\") ; D-15 o+ (event1upS40986 ? \"pt = 8 . pt <- 7\") ; D-16",
+        "D-16": "\"((pt = 1 . pt <- 2 + pt = 4 . pt <- 3 + pt = 6 . pt <- 5 + pt = 8 . pt <- 7) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 6) + (pt = 4 . pt <- 2) + (pt = 5 . pt <- 8) + (pt = 6 . pt <- 3) + (pt = 7) + (pt = 8 . pt <- 5)))) *\" ; D-16 o+ (event1sendS40998 ! \"one\") ; D-16 o+ (event1upS40998 ? \"pt = 1 . pt <- 2\") ; D-16 o+ (event1sendS41012 ! \"one\") ; D-16 o+ (event1upS41012 ? \"pt = 4 . pt <- 3\") ; D-16 o+ (event1sendS41028 ! \"one\") ; D-16 o+ (event1upS41028 ? \"pt = 6 . pt <- 5\") ; D-16 o+ (event1sendS40986 ! \"one\") ; D-16 o+ (event1upS40986 ? \"pt = 8 . pt <- 7\") ; D-16"
+    },
+    "program": "D-1 || C",
+    "channels": [
+        "event1sendS40998",
+        "event1upS40998",
+        "event1sendS41012",
+        "event1upS41012",
+        "event1sendS41028",
+        "event1upS41028",
+        "event1sendS40986",
+        "event1upS40986"
+    ],
+    "in_packets": {
+        "H2_to_H1": "(pt = 1)"
+    },
+    "out_packets": {
+        "H2_to_H1": "(pt = 4)"
+    },
+    "properties": {
+        "H2_to_H1": [
+            [
+                "r",
+                "(head(@Program))",
+                "=0",
+                2
+            ],
+            [
+                "r",
+                "(head(tail(tail(@Program, { rcfg(event1sendS37596, \"one\") , rcfg(event1upS37596, \"pt = 1 . pt <- 2\") }), { rcfg(event1sendS37582, \"one\") , rcfg(event1upS37582, \"pt = 5 . pt <- 4\") })))",
+                "!0",
+                5
+            ]
+        ]
+    },
+    "file_name": "linear_4_1.maude",
+    "comm": [
+        "(event1upS40998, \"pt = 1 . pt <- 2\")",
+        "(event1sendS40986, \"one\")",
+        "(event1sendS40998,\"one\")",
+        "(event1sendS41028,\"one\")",
+        "(event1upS40986,\"pt = 8 . pt <- 7\")",
+        "(event1sendS41012,\"one\")",
+        "(event1upS41028,\"pt = 6 . pt <- 5\")",
+        "(event1upS41012,\"pt = 4 . pt <- 3\")",
+        "( event1sendS41028,\"one\")",
+        "(event1upS40986, \"pt = 8 . pt <- 7\")",
+        "( event1upS40998,\"pt = 1 . pt <- 2\")",
+        "(event1sendS40986,\"one\")",
+        "( event1upS41012,\"pt = 4 . pt <- 3\")"
+    ]
+}

@@ -1,0 +1,31 @@
+{
+    "module_name": "single3",
+    "recursive_variables": {
+        "C": "",
+        "D-1": "\"((pt = 0 . pt <- 0) . (((pt = 1) + (pt = 2) + (pt = 3)))) *\" ; D-1 o+ "
+    },
+    "program": "D-1 || C",
+    "channels": [],
+    "in_packets": {
+        "H2_to_H1": "(pt = 1)"
+    },
+    "out_packets": {
+        "H2_to_H1": "(pt = 4)"
+    },
+    "properties": {
+        "H2_to_H1": [
+            [
+                "r",
+                "(head(@Program))",
+                "=0",
+                2
+            ],
+            [
+                "r",
+                "(head(tail(tail(@Program, { rcfg(event1sendS37596, \"one\") , rcfg(event1upS37596, \"pt = 1 . pt <- 2\") }), { rcfg(event1sendS37582, \"one\") , rcfg(event1upS37582, \"pt = 5 . pt <- 4\") })))",
+                "!0",
+                5
+            ]
+        ]
+    }
+}
