@@ -18,3 +18,7 @@ NetKAT tool ([netkat-idd](https://github.com/netkat-lang/netkat))
 ## Usage
 
     python ./FPSDN/FPSDN.py <path_to_logfile> <path_to_maude> <path_to_netkat_tool>
+
+## output
+
+This tool extracts network topology and DyNetKAT specifications from log files located in the [/FPSDN/output](/FPSDN/output).
