@@ -17,4 +17,4 @@ NetKAT tool ([netkat-idd](https://github.com/netkat-lang/netkat))
 
 ## Usage
 
-    python ./FPSDN/FPSDN.py <logfile_path> <path_to_maude> <path_to_netkat_tool>
+    python ./FPSDN/FPSDN.py <path_to_logfile> <path_to_maude> <path_to_netkat_tool>
