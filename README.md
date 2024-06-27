@@ -13,4 +13,8 @@ behaviors within these networks. Our goal is to enhance the reliability and effi
 
 [Maude (>= 3.0)](http://maude.cs.illinois.edu/w/index.php/All_Maude_3_versions)
 
-NetKAT tool ([netkat-idd](https://github.com/netkat-lang/netkat)
+NetKAT tool ([netkat-idd](https://github.com/netkat-lang/netkat))
+
+## Usage
+
+    python ./FPSDN/FPSDN.py <logfile_path> <path_to_maude> <path_to_netkat_tool>
