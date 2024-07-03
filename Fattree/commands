@@ -1,0 +1,6 @@
+./pox.py log.level --DEBUG samples.pretty_log openflow.of_01 --port=6653 forwarding.l2_learning
+
+
+
+sudo python custom_topology.py
+

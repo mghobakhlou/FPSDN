@@ -38,13 +38,13 @@
     },
     "file_name": "linear_3_1.maude",
     "comm": [
-        "(event1upS37596,\"pt = 1 . pt <- 2\")",
         "(event1sendS37596,\"one\")",
-        "(event1upS37582,\"pt = 5 . pt <- 4\")",
-        "(event1sendS37596, \"one\")",
-        "( event1upS37582,\"pt = 5 . pt <- 4\")",
         "(event1upS37596, \"pt = 1 . pt <- 2\")",
+        "( event1upS37582,\"pt = 5 . pt <- 4\")",
+        "(event1sendS37596, \"one\")",
         "(event1sendS37582,\"one\")",
-        "( event1sendS37582,\"one\")"
+        "( event1sendS37582,\"one\")",
+        "(event1upS37582,\"pt = 5 . pt <- 4\")",
+        "(event1upS37596,\"pt = 1 . pt <- 2\")"
     ]
 }

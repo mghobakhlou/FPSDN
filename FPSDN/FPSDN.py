@@ -388,8 +388,6 @@ def DyNetKAT(topo_graph, packets, expriment_name):
         p2 = ports[(sw, path[i+1])]
         flow_tables["S"+sw] = [construct_rule(p1,p2)]
 
-    # print("Policy", policy)
-    # print("flow_tables", flow_tables)
 
     C = ""
 
