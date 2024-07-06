@@ -5,14 +5,14 @@ from mininet.cli import CLI
 from mininet.log import setLogLevel, info
 from mininet.node import OVSSwitch
 
-class OVSBridgeSTP( OVSSwitch ):
+class OVSBridgeSTP(OVSSwitch):
     prio = 1000
-    def start( self, *args, **kwargs ):
-        OVSSwitch.start( self, *args, **kwargs )
+    def start(self, *args, **kwargs):
+        OVSSwitch.start(self, *args, **kwargs)
         OVSBridgeSTP.prio += 1
-        self.cmd( 'ovs-vsctl set Bridge', self,
-                  'stp_enable=true',
-                  'other_config:stp-priority=%d' % OVSBridgeSTP.prio )
+        self.cmd('ovs-vsctl set Bridge', self,
+                 'stp_enable=true',
+                 'other_config:stp-priority=%d' % OVSBridgeSTP.prio)
 
 class CustomTopo(Topo):
     def build(self):
@@ -42,8 +42,6 @@ class CustomTopo(Topo):
         tor7 = self.addSwitch('tor7')
         tor8 = self.addSwitch('tor8')
 
-
-        
         # Add terminal hosts
         h1 = self.addHost('h1')
         h2 = self.addHost('h2')
@@ -61,7 +59,6 @@ class CustomTopo(Topo):
         h14 = self.addHost('h14')
         h15 = self.addHost('h15')
         h16 = self.addHost('h16')
-
 
         # Add links between controllers and aggregation switches
         self.addLink(a1, c1)
@@ -102,42 +99,35 @@ class CustomTopo(Topo):
         self.addLink(tor8, a7)
         self.addLink(tor8, a8)
 
-        # Add links between aggregation switches and Top-of-Rack switches.
+        # Add links between aggregation switches and Top-of-Rack switches
         self.addLink(h1, tor1)
         self.addLink(h2, tor1)
-
         self.addLink(h3, tor2)
         self.addLink(h4, tor2)
-
         self.addLink(h5, tor3)
         self.addLink(h6, tor3)
-
         self.addLink(h7, tor4)
         self.addLink(h8, tor4)
-
         self.addLink(h9, tor5)
         self.addLink(h10, tor5)
-
         self.addLink(h11, tor6)
         self.addLink(h12, tor6)
-
         self.addLink(h13, tor7)
         self.addLink(h14, tor7)
-
         self.addLink(h15, tor8)
         self.addLink(h16, tor8)
 
-
 def run():
-    c0 = RemoteController('c0', ip='127.0.0.1', port=6653)
     topo = CustomTopo()
-
-    net = Mininet(topo=topo, switch=OVSBridgeSTP)
-    # net.build()
+    net = Mininet(topo=topo, switch=OVSBridgeSTP, controller=None)
+    
+    # Add a remote controller
+    controller_ip = '127.0.0.1'  # Adjust the IP to the address of your remote controller
+    net.addController('c0', controller=RemoteController, ip=controller_ip, port=6653)
+    
     net.start()
     CLI(net)
     net.stop()
-
 
 if __name__ == '__main__':
     setLogLevel('info')
