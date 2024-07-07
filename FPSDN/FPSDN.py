@@ -432,8 +432,9 @@ def DyNetKAT(topo_graph, packets, expriment_name):
 
 if __name__ == "__main__":
     
-    
-    expriment_name = "linear_3_1"
+    expriment_name = "pingall"
+    # expriment_name = "h1pingh2"
+    # expriment_name = "linear_3_1"
     # expriment_name = "linear_10_1_h1h5_h6h10"
     # expriment_name = "linear_3_1_new"
     # expriment_name = "linear_4_1"
@@ -450,7 +451,7 @@ if __name__ == "__main__":
     packets_cap, partial_topo = find_partial_topology(log_file_path)
     packets = pre_processing(packets_cap)
     topo_graph = find_topo(partial_topo, packets)
-    data = DyNetKAT(topo_graph, packets, expriment_name)
+    # data = DyNetKAT(topo_graph, packets, expriment_name)
     FPSDN_end = perf_counter()
 
     print("Extraction Rueles time: {:.2f} seconds".format(FPSDN_end-FPSDN_start))
@@ -463,16 +464,16 @@ if __name__ == "__main__":
     ports_file = open(ports_path, "w")
     ports_file.write(str(ports))
 
-    Save_Json(data, save_DyNetKAT_path)
+    # Save_Json(data, save_DyNetKAT_path)
 
     print("END FPSDN - Now we can run DyNetiKAT")
 
 
-    maude_path = "./maude-3.1/maude.linux64"
-    netkat_katbv_path = "./netkat/_build/install/default/bin/katbv"
-    example_path = save_DyNetKAT_path
+    # maude_path = "./maude-3.1/maude.linux64"
+    # netkat_katbv_path = "./netkat/_build/install/default/bin/katbv"
+    # example_path = save_DyNetKAT_path
 
-    DyNetiKAT_results = subprocess.run(["python3", "dnk.py", "--time-stats" , maude_path, netkat_katbv_path, example_path])
+    # DyNetiKAT_results = subprocess.run(["python3", "dnk.py", "--time-stats" , maude_path, netkat_katbv_path, example_path])
     
 
 

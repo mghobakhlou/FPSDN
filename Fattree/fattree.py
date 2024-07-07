@@ -1,123 +1,136 @@
-from mininet.topo import Topo
+#!/usr/bin/env python
+
 from mininet.net import Mininet
-from mininet.node import RemoteController
+from mininet.node import Controller, RemoteController, OVSController
+from mininet.node import CPULimitedHost, Host, Node
+from mininet.node import OVSKernelSwitch, UserSwitch
+from mininet.node import IVSSwitch
 from mininet.cli import CLI
 from mininet.log import setLogLevel, info
-from mininet.node import OVSSwitch
+from mininet.link import TCLink, Intf
+from subprocess import call
 
-class CustomTopo(Topo):
-    def build(self):
-        # Add controllers
-        c1 = self.addSwitch('c1')
-        c2 = self.addSwitch('c2')
-        c3 = self.addSwitch('c3')
-        c4 = self.addSwitch('c4')
+def myNetwork():
 
-        # Add aggregation switches
-        a1 = self.addSwitch('a1')
-        a2 = self.addSwitch('a2')
-        a3 = self.addSwitch('a3')
-        a4 = self.addSwitch('a4')
-        a5 = self.addSwitch('a5')
-        a6 = self.addSwitch('a6')
-        a7 = self.addSwitch('a7')
-        a8 = self.addSwitch('a8')
+    net = Mininet( topo=None,
+                   build=False,
+                   ipBase='10.0.0.0/8')
 
-        # Add Top-of-Rack switches
-        tor1 = self.addSwitch('tor1')
-        tor2 = self.addSwitch('tor2')
-        tor3 = self.addSwitch('tor3')
-        tor4 = self.addSwitch('tor4')
-        tor5 = self.addSwitch('tor5')
-        tor6 = self.addSwitch('tor6')
-        tor7 = self.addSwitch('tor7')
-        tor8 = self.addSwitch('tor8')
+    info( '*** Adding controller\n' )
+    c0=net.addController(name='c0',
+                      controller=RemoteController,
+                      ip='127.0.0.1',
+                      protocol='tcp',
+                      port=6633)
 
-        # Add terminal hosts
-        h1 = self.addHost('h1')
-        h2 = self.addHost('h2')
-        h3 = self.addHost('h3')
-        h4 = self.addHost('h4')
-        h5 = self.addHost('h5')
-        h6 = self.addHost('h6')
-        h7 = self.addHost('h7')
-        h8 = self.addHost('h8')
-        h9 = self.addHost('h9')
-        h10 = self.addHost('h10')
-        h11 = self.addHost('h11')
-        h12 = self.addHost('h12')
-        h13 = self.addHost('h13')
-        h14 = self.addHost('h14')
-        h15 = self.addHost('h15')
-        h16 = self.addHost('h16')
+    info( '*** Add switches\n')
+    s1 = net.addSwitch('s1', cls=OVSKernelSwitch)
+    s2 = net.addSwitch('s2', cls=OVSKernelSwitch)
+    s3 = net.addSwitch('s3', cls=OVSKernelSwitch)
+    s4 = net.addSwitch('s4', cls=OVSKernelSwitch)
+    s5 = net.addSwitch('s5', cls=OVSKernelSwitch)
+    s6 = net.addSwitch('s6', cls=OVSKernelSwitch)
+    s7 = net.addSwitch('s7', cls=OVSKernelSwitch)
+    s8 = net.addSwitch('s8', cls=OVSKernelSwitch)
+    s9 = net.addSwitch('s9', cls=OVSKernelSwitch)
+    s10 = net.addSwitch('s10', cls=OVSKernelSwitch)
+    s11 = net.addSwitch('s11', cls=OVSKernelSwitch)
+    s12 = net.addSwitch('s12', cls=OVSKernelSwitch)
+    s13 = net.addSwitch('s13', cls=OVSKernelSwitch)
+    s14 = net.addSwitch('s14', cls=OVSKernelSwitch)
+    s15 = net.addSwitch('s15', cls=OVSKernelSwitch)
+    s16 = net.addSwitch('s16', cls=OVSKernelSwitch)
+    s17 = net.addSwitch('s17', cls=OVSKernelSwitch)
+    s18 = net.addSwitch('s18', cls=OVSKernelSwitch)
+    s19 = net.addSwitch('s19', cls=OVSKernelSwitch)
+    s20 = net.addSwitch('s20', cls=OVSKernelSwitch)
 
-        # Add links between controllers and aggregation switches
-        self.addLink(a1, c1)
-        self.addLink(a1, c2)
-        self.addLink(a2, c3)
-        self.addLink(a2, c4)
-        self.addLink(a3, c1)
-        self.addLink(a3, c2)
-        self.addLink(a4, c3)
-        self.addLink(a4, c4)
-        self.addLink(a5, c1)
-        self.addLink(a5, c2)
-        self.addLink(a6, c3)
-        self.addLink(a6, c4)
-        self.addLink(a7, c1)
-        self.addLink(a7, c2)
-        self.addLink(a8, c3)
-        self.addLink(a8, c4)
+    info( '*** Add hosts\n')
+    h1 = net.addHost('h1', cls=Host, ip='10.0.0.1', defaultRoute=None)
+    h2 = net.addHost('h2', cls=Host, ip='10.0.0.2', defaultRoute=None)
+    h3 = net.addHost('h3', cls=Host, ip='10.0.0.3', defaultRoute=None)
+    h4 = net.addHost('h4', cls=Host, ip='10.0.0.4', defaultRoute=None)
+    h5 = net.addHost('h5', cls=Host, ip='10.0.0.5', defaultRoute=None)
+    h6 = net.addHost('h6', cls=Host, ip='10.0.0.6', defaultRoute=None)
+    h7 = net.addHost('h7', cls=Host, ip='10.0.0.7', defaultRoute=None)
+    h8 = net.addHost('h8', cls=Host, ip='10.0.0.8', defaultRoute=None)
 
-        # Add links between aggregation switches and Top-of-Rack switches
-        self.addLink(tor1, a1)
-        self.addLink(tor1, a2)
-        self.addLink(tor2, a1)
-        self.addLink(tor2, a2)
+    info( '*** Add links\n')
+    net.addLink(s13, h1)
+    net.addLink(s14, h2)
+    net.addLink(s15, h3)
+    net.addLink(s16, h4)
+    net.addLink(s17, h5)
+    net.addLink(s18, h6)
+    net.addLink(s19, h7)
+    net.addLink(s20, h8)
+    net.addLink(s20, s12)
+    net.addLink(s19, s11)
+    net.addLink(s20, s11)
+    net.addLink(s19, s12)
+    net.addLink(s18, s10)
+    net.addLink(s18, s9)
+    net.addLink(s9, s17)
+    net.addLink(s17, s10)
+    net.addLink(s16, s8)
+    net.addLink(s16, s7)
+    net.addLink(s7, s15)
+    net.addLink(s15, s8)
+    net.addLink(s6, s14)
+    net.addLink(s14, s5)
+    net.addLink(s5, s13)
+    net.addLink(s13, s6)
+    net.addLink(s5, s1)
+    net.addLink(s5, s2)
+    net.addLink(s6, s3)
+    net.addLink(s6, s4)
+    net.addLink(s7, s1)
+    net.addLink(s7, s2)
+    net.addLink(s8, s3)
+    net.addLink(s8, s4)
+    net.addLink(s9, s1)
+    net.addLink(s9, s2)
+    net.addLink(s10, s3)
+    net.addLink(s10, s4)
+    net.addLink(s11, s1)
+    net.addLink(s11, s2)
+    net.addLink(s12, s3)
+    net.addLink(s12, s4)
 
-        self.addLink(tor3, a3)
-        self.addLink(tor3, a4)
-        self.addLink(tor4, a3)
-        self.addLink(tor4, a4)
+    info( '*** Starting network\n')
+    net.build()
+    info( '*** Starting controllers\n')
+    for controller in net.controllers:
+        controller.start()
 
-        self.addLink(tor5, a5)
-        self.addLink(tor5, a6)
-        self.addLink(tor6, a5)
-        self.addLink(tor6, a6)
+    info( '*** Starting switches\n')
+    net.get('s1').start([c0])
+    net.get('s2').start([c0])
+    net.get('s3').start([c0])
+    net.get('s4').start([c0])
+    net.get('s5').start([c0])
+    net.get('s6').start([c0])
+    net.get('s7').start([c0])
+    net.get('s8').start([c0])
+    net.get('s9').start([c0])
+    net.get('s10').start([c0])
+    net.get('s11').start([c0])
+    net.get('s12').start([c0])
+    net.get('s13').start([c0])
+    net.get('s14').start([c0])
+    net.get('s15').start([c0])
+    net.get('s16').start([c0])
+    net.get('s17').start([c0])
+    net.get('s18').start([c0])
+    net.get('s19').start([c0])
+    net.get('s20').start([c0])
 
-        self.addLink(tor7, a7)
-        self.addLink(tor7, a8)
-        self.addLink(tor8, a7)
-        self.addLink(tor8, a8)
+    info( '*** Post configure switches and hosts\n')
 
-        # Add links between aggregation switches and Top-of-Rack switches
-        self.addLink(h1, tor1)
-        self.addLink(h2, tor1)
-        self.addLink(h3, tor2)
-        self.addLink(h4, tor2)
-        self.addLink(h5, tor3)
-        self.addLink(h6, tor3)
-        self.addLink(h7, tor4)
-        self.addLink(h8, tor4)
-        self.addLink(h9, tor5)
-        self.addLink(h10, tor5)
-        self.addLink(h11, tor6)
-        self.addLink(h12, tor6)
-        self.addLink(h13, tor7)
-        self.addLink(h14, tor7)
-        self.addLink(h15, tor8)
-        self.addLink(h16, tor8)
-
-def run():
-    c0 = RemoteController('c0', ip='127.0.0.1', port=6653)
-    topo = CustomTopo()
-
-    net = Mininet(topo=topo, controller=c0)
-    # net.build()
-    net.start()
     CLI(net)
     net.stop()
 
 if __name__ == '__main__':
-    setLogLevel('info')
-    run()
+    setLogLevel( 'info' )
+    myNetwork()
+
