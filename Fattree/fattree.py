@@ -5,15 +5,6 @@ from mininet.cli import CLI
 from mininet.log import setLogLevel, info
 from mininet.node import OVSSwitch
 
-class OVSBridgeSTP(OVSSwitch):
-    prio = 1000
-    def start(self, *args, **kwargs):
-        OVSSwitch.start(self, *args, **kwargs)
-        OVSBridgeSTP.prio += 1
-        self.cmd('ovs-vsctl set Bridge', self,
-                 'stp_enable=true',
-                 'other_config:stp-priority=%d' % OVSBridgeSTP.prio)
-
 class CustomTopo(Topo):
     def build(self):
         # Add controllers
@@ -118,13 +109,11 @@ class CustomTopo(Topo):
         self.addLink(h16, tor8)
 
 def run():
+    c0 = RemoteController('c0', ip='127.0.0.1', port=6653)
     topo = CustomTopo()
-    net = Mininet(topo=topo, switch=OVSBridgeSTP, controller=None)
-    
-    # Add a remote controller
-    controller_ip = '127.0.0.1'  # Adjust the IP to the address of your remote controller
-    net.addController('c0', controller=RemoteController, ip=controller_ip, port=6653)
-    
+
+    net = Mininet(topo=topo, controller=c0)
+    # net.build()
     net.start()
     CLI(net)
     net.stop()
