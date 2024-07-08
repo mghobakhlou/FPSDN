@@ -181,7 +181,11 @@ def sorted_packets(packets_cap):
     return sorted_packets
 
 def pre_processing(packets_cap):
-    packets = sorted_packets(packets_cap) 
+    # packets = sorted_packets(packets_cap) 
+    # print(len(packets))  #BUG
+    packets = packets_cap
+    print(len(packets))  #BUG
+
 
     # packets = sorted_packets(cap)
     
