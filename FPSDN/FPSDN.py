@@ -15,27 +15,34 @@ def find_partial_topology(log_file_path):
         with pyshark.FileCapture(log_file_path, display_filter='openflow_v1') as cap:
             packets_cap = []
             ipsrc_ipdst_sw_type_packet_checker = []
-            
-            # for packet in cap:
-            #     if int(packet.openflow_v1.openflow_1_0_type) == 14:
-            #         print(packet)
-                    
-            #         print(str(packet.openflow_v1.openflow_1_0_type))
-            #         print(packet.openflow_v1.get_field_value("openflow.ofp_match.source_addr"))
-            #         break
+        
+            numberofins = 0
+            numberofflowmods = 0
 
             for packet in cap:
                 if int(packet.openflow_v1.openflow_1_0_type) == 10 and packet.openflow_v1.get_field_value("ip.src") != None:
                     src_dst_sw_type = packet.openflow_v1.get_field_value("ip.src") + "_" + packet.openflow_v1.get_field_value("ip.dst") + "_" + packet.tcp.get_field_value("tcp.srcport") + "_" + str(packet.openflow_v1.openflow_1_0_type)
+                    print(src_dst_sw_type)
                     if src_dst_sw_type not in ipsrc_ipdst_sw_type_packet_checker:
                         ipsrc_ipdst_sw_type_packet_checker.append(src_dst_sw_type)
                         packets_cap.append(packet)
+                        numberofins += 1
+                elif int(packet.openflow_v1.openflow_1_0_type) == 14 and packet.openflow_v1.get_field_value("openflow.ofp_match.source_addr").split(".")[0] == "10" and int(packet.openflow_v1.get_field_value("openflow.ofp_match.dl_type")) != 2054:
+                    src_dst_sw_type = packet.openflow_v1.get_field_value("openflow.ofp_match.source_addr") + "_" + packet.openflow_v1.get_field_value("openflow.ofp_match.dest_addr") + "_" + packet.tcp.get_field_value("tcp.dstport") + "_" + str(packet.openflow_v1.openflow_1_0_type)
+                    print(src_dst_sw_type)
+                    if src_dst_sw_type not in ipsrc_ipdst_sw_type_packet_checker:
+                        ipsrc_ipdst_sw_type_packet_checker.append(src_dst_sw_type)
+                        packets_cap.append(packet)
+                        numberofflowmods += 1
             print(len(packets_cap))
+            print("ins: ", numberofins)
+            print("flow mods: ", numberofflowmods)
             G = nx.DiGraph()
 
             number_devices = 0
 
             for packet in packets_cap:
+                if int(packet.openflow_v1.openflow_1_0_type) == 10:
                     flag_add_edge = False
         
                     host_ip = packet.openflow_v1.get_field_value("ip.src")
@@ -55,13 +62,15 @@ def find_partial_topology(log_file_path):
                         G.add_edge(switch, host_ip)
                         G.add_edge(host_ip,switch)
             print(number_devices)
+            print(packets_cap[-2])
+            print("...............................................")
+            print(packets_cap[-1])
     except FileNotFoundError:
         print(f"Couldn't find the file: {log_file_path}")
         return None
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
         return None
-    
     
     return packets_cap, G
 
