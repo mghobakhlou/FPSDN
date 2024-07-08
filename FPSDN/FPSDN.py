@@ -13,39 +13,48 @@ from time import perf_counter
 def find_partial_topology(log_file_path):
     try:
         with pyshark.FileCapture(log_file_path, display_filter='openflow_v1') as cap:
-            packets_cap = [packet for packet in cap]
+            packets_cap = []
+            ipsrc_ipdst_sw_type_packet_checker = []
+            
+            # for packet in cap:
+            #     if int(packet.openflow_v1.openflow_1_0_type) == 14:
+            #         print(packet)
+                    
+            #         print(str(packet.openflow_v1.openflow_1_0_type))
+            #         print(packet.openflow_v1.get_field_value("openflow.ofp_match.source_addr"))
+            #         break
+
+            for packet in cap:
+                if int(packet.openflow_v1.openflow_1_0_type) == 10 and packet.openflow_v1.get_field_value("ip.src") != None:
+                    src_dst_sw_type = packet.openflow_v1.get_field_value("ip.src") + "_" + packet.openflow_v1.get_field_value("ip.dst") + "_" + packet.tcp.get_field_value("tcp.srcport") + "_" + str(packet.openflow_v1.openflow_1_0_type)
+                    if src_dst_sw_type not in ipsrc_ipdst_sw_type_packet_checker:
+                        ipsrc_ipdst_sw_type_packet_checker.append(src_dst_sw_type)
+                        packets_cap.append(packet)
+            print(len(packets_cap))
             G = nx.DiGraph()
 
-            # print(cap[1].openflow_v1._all_fields)
-            device = 0
-            edge = 0
+            number_devices = 0
 
-            for packet in cap:        
-                if int(packet.openflow_v1.openflow_1_0_type) == 10 and packet.openflow_v1.get_field_value("eth.dst").split(":")[0] == "00":
-                # if int(packet.openflow_v1.openflow_1_0_type) == 10:
-
+            for packet in packets_cap:
                     flag_add_edge = False
-                    
-                    host_MAC_address = packet.openflow_v1.get_field_value("eth.src")
-                    host_MAC_address = host_MAC_address.split(":")[-1]
-                    host_port = packet.openflow_v1.get_field_value("openflow.in_port")
-                    
+        
+                    host_ip = packet.openflow_v1.get_field_value("ip.src")
+                    host_ip = host_ip.split(".")[-1]
                     switch = packet.tcp.get_field_value("tcp.srcport")
-                    
                     controller = packet.tcp.get_field_value("tcp.dstport")
 
                     if not(switch in G):
                         G.add_node(switch, type='switch', controller = controller)
-                        device+=1
-                    if not(host_MAC_address in G):
-                        G.add_node(host_MAC_address, type='host', port = host_port)
-                        device+=1
+                        number_devices+=1
+                    if not(host_ip in G):
+                        G.add_node(host_ip, type='host')
+                        number_devices+=1
                         flag_add_edge = True
 
                     if flag_add_edge: 
-                        G.add_edge(switch, host_MAC_address)
-                        G.add_edge(host_MAC_address,switch)
-                        edge += 1
+                        G.add_edge(switch, host_ip)
+                        G.add_edge(host_ip,switch)
+            print(number_devices)
     except FileNotFoundError:
         print(f"Couldn't find the file: {log_file_path}")
         return None
