@@ -34,9 +34,6 @@ def find_partial_topology(log_file_path):
                         ipsrc_ipdst_sw_type_packet_checker.append(src_dst_sw_type)
                         packets_cap.append(packet)
                         numberofflowmods += 1
-            print(len(packets_cap))
-            print("ins: ", numberofins)
-            print("flow mods: ", numberofflowmods)
             G = nx.DiGraph()
 
             number_devices = 0
@@ -61,10 +58,6 @@ def find_partial_topology(log_file_path):
                     if flag_add_edge: 
                         G.add_edge(switch, host_ip)
                         G.add_edge(host_ip,switch)
-            print(number_devices)
-            print(packets_cap[-2])
-            print("...............................................")
-            print(packets_cap[-1])
     except FileNotFoundError:
         print(f"Couldn't find the file: {log_file_path}")
         return None
