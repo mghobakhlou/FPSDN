@@ -269,7 +269,7 @@ def change_controller(C, ch1, ch2, m):
         return C + " o+ ((" + ch1 + " ? \"one\") ; ((" + ch2 + ' ! "' + m + '") ; ' + "C))"
 
 
-def calculate_recursive_variables(initial_policy, topology, flow_tables, C, event_iteration=1):
+def calculate_recursive_variables(initial_policy, topology, flow_tables, C):
     rec_var_name = "D"
     rec_var_def = '"((@Pol) . ({})) *" ; @IRV o+ @sum'.format(topology)
     
@@ -284,22 +284,23 @@ def calculate_recursive_variables(initial_policy, topology, flow_tables, C, even
 
     combinations = list(it.product(*(merged_dict[x] for x in merged_dict.keys())))
 
+    # print(merged_dict)
     channels = []
     id_dict = {}
     comms = {}
     for k, v in merged_dict.items():
+        flow_iteration = 1
         for x in v:
             number = int(x.rsplit("-")[1])
             if number == 1:
                 id_dict[x] = initial_policy[k]
                 
             else:
-                comms[x] = ("event" + str(event_iteration) +"up" + k, flow_tables[k][number-2], "event" + str(event_iteration) +"send" + k)
+                comms[x] = (k + "Up" + "flow" + str(flow_iteration), flow_tables[k][number-2], k + "Req" + "flow" + str(flow_iteration))
+                flow_iteration += 1
                 C = change_controller(C, comms[x][2], comms[x][0], comms[x][1])
                 channels.append(comms[x][2])
                 channels.append(comms[x][0])
-                # TODO New channel for new iteration: some thing like below:
-                # comms[x] = (iteration_counter_for_switch_k_up +"up" + k, flow_tables[k][number-2])
                 id_dict[x] = flow_tables[k][number-2]
     
     output = {}
@@ -380,14 +381,14 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     ports = allocate_ports(topo_graph)
     topo_str = string_topo(topo_graph, ports)
     topology = topo_str
-    # topology = "TOPO"
+    topology = "TOPO"
     # print("ports: ", ports)
     # print("topology: ", topo_str)
 
 
     events = find_events(packets)
 
-    event = events["event-1"]
+    # event = events["event-1"]
 
     policy = {}
     for i in range(n_switch):
@@ -398,20 +399,49 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     for i in range(n_switch):
         flow_tables["S"+str(switches[i])] = []
 
-    path = path_event(event)
-    print("path: ", path)
-    path_l = len(path)
-    for i in range(1, path_l-1):
-        sw = path[i]
-        p1 = ports[(sw, path[i-1])]
-        p2 = ports[(sw, path[i+1])]
-        flow_tables["S"+sw] = [construct_rule(p1,p2)]
+    # print(events)
+    event_iteration = 1
+
+    for k, v in events.items():
+        print("event_iteration: ", event_iteration)
+        event_iteration += 1
+        path = path_event(v)
+        print("path: ", path)
+        path_l = len(path)
+        for i in range(1, path_l-1):
+            sw = path[i]
+            p1 = ports[(sw, path[i-1])]
+            p2 = ports[(sw, path[i+1])]
+            rule = construct_rule(p1,p2)
+            if rule not in flow_tables["S"+sw]:
+                flow_tables["S"+sw].append(construct_rule(p1,p2))
+
+
+    print("flow tables: ", flow_tables)
+
+
+    # policy = {}
+    # policy["S1"] = "pt=0"
+    # policy["S2"] = "pt=0"
+    # policy["S3"] = "pt=0"
+    # policy["S4"] = "pt=0"
+    # policy["S5"] = "pt=0"
+    # policy["S6"] = "pt=0"
+
+    # flow_tables = {}
+    # flow_tables["S1"] = ["S1_1", "S1_2"]
+    # flow_tables["S2"] = ["S2_1", "S2_2"]
+    # flow_tables["S3"] = ["S3_1", "S3_2"]
+    # flow_tables["S4"] = ["S4_1", "S4_2"]
+    # flow_tables["S5"] = ["S5_1", "S5_2"]
+    # flow_tables["S6"] = ["S6_1", "S6_2"]
 
 
     C = ""
 
-    switch_rec_vars, new_C, channels = calculate_recursive_variables(policy, topology, flow_tables, C, event_iteration=1)
-
+    switch_rec_vars, new_C, channels = calculate_recursive_variables(policy, topology, flow_tables, C)
+    print("HI there")
+    
     controllers = {}
     controllers["C"] = new_C    # controllers["C2"] = '((upS2 ! "zero") ; ((syn ? "one") ; ((upS4 ! "{}") ; ((upS6 ! "{}") ; bot))))'.format(flow_tables["S4"][0], flow_tables["S6"][0])
     
@@ -471,17 +501,18 @@ if __name__ == "__main__":
     packets = pre_processing(packets_cap)
     topo_graph = find_topo(partial_topo, packets)
     data = DyNetKAT(topo_graph, packets, expriment_name)
+
     FPSDN_end = perf_counter()
 
     print("Extraction Rueles time: {:.2f} seconds".format(FPSDN_end-FPSDN_start))
 
-    save_topo_graph(topo_graph, path=save_topo_path)
-    write_log(packets, after_preprocessing_log_path)
+    # save_topo_graph(topo_graph, path=save_topo_path)
+    # write_log(packets, after_preprocessing_log_path)
 
-    ports = allocate_ports(topo_graph)
-    os.makedirs(os.path.dirname(ports_path), exist_ok=True)
-    ports_file = open(ports_path, "w")
-    ports_file.write(str(ports))
+    # ports = allocate_ports(topo_graph)
+    # os.makedirs(os.path.dirname(ports_path), exist_ok=True)
+    # ports_file = open(ports_path, "w")
+    # ports_file.write(str(ports))
 
     Save_Json(data, save_DyNetKAT_path)
 
