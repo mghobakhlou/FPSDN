@@ -47,5 +47,26 @@
                 6
             ]
         ]
-    }
+    },
+    "file_name": "pingall.maude",
+    "comm": [
+        "(S47246Upflow1,\"pt = 1 . pt <- 2\")",
+        "( S47246Upflow2,\"pt = 1 . pt <- 3\")",
+        "(S47182Reqflow1,\"one\")",
+        "(S47246Reqflow1,\"one\")",
+        "(S47246Reqflow2,\"one\")",
+        "(S47248Upflow1,\"pt = 7 . pt <- 6\")",
+        "(S47248Upflow1, \"pt = 7 . pt <- 6\")",
+        "(S47246Upflow1, \"pt = 1 . pt <- 2\")",
+        "(S47246Reqflow2, \"one\")",
+        "(S47246Reqflow1, \"one\")",
+        "( S47246Reqflow2,\"one\")",
+        "( S47248Upflow1,\"pt = 7 . pt <- 6\")",
+        "( S47182Reqflow1,\"one\")",
+        "(S47182Upflow1, \"pt = 5 . pt <- 4\")",
+        "(S47246Upflow2,\"pt = 1 . pt <- 3\")",
+        "( S47246Upflow1,\"pt = 1 . pt <- 2\")",
+        "(S47248Reqflow1,\"one\")",
+        "(S47182Upflow1,\"pt = 5 . pt <- 4\")"
+    ]
 }
