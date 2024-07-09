@@ -182,12 +182,10 @@ def sorted_packets(packets_cap):
 
 def pre_processing(packets_cap):
     # packets = sorted_packets(packets_cap) 
-    # print(len(packets))  #BUG
+ 
     packets = packets_cap
-    print(len(packets))  #BUG
+    # print(len(packets))  
 
-
-    # packets = sorted_packets(cap)
     
     # important_fields = ["openflow_1_0.type", "openflow.xid", "openflow.in_port", "openflow.eth_src",
     #                 "openflow.eth_dst", "openflow.dl_vlan", "openflow.ofp_match.dl_type", "openflow.ofp_match.nw_proto", 
@@ -197,7 +195,7 @@ def pre_processing(packets_cap):
 
     important_fields = ["openflow_1_0.type", "openflow.xid", "openflow.eth_src",
                     "openflow.eth_dst", "openflow.ofp_match.source_addr", 
-                    "openflow.ofp_match.dest_addr", "eth.src", "eth.dst"]
+                    "openflow.ofp_match.dest_addr", "eth.src", "eth.dst", "ip.src", "ip.dst"]
 
 
     packets_info = []
@@ -247,11 +245,11 @@ def write_log(openflow_packets, path):
 
 def find_src_dst(packet):
     try:
-        src = packet["eth.src"]
-        dst = packet["eth.dst"]
+        src = packet["ip.src"]
+        dst = packet["ip.dst"]
     except:
-        src = packet["openflow.eth_src"]
-        dst = packet["openflow.eth_dst"]
+        src = packet["openflow.ofp_match.source_addr"]
+        dst = packet["openflow.ofp_match.dest_addr"]
     return src,dst
 
 def find_match_rules(packet):
@@ -365,13 +363,13 @@ def path_event(event):
     l = len(event)
     for i in range(0, l, 2):
         if i == 0:
-            path.append(event[i]["eth.src"].split(":")[-1])
+            path.append(event[i]["ip.src"].split(".")[-1])
             path.append(event[i]["to_switch"])
         elif i != 0 and i != l-2:
             path.append(event[i]["to_switch"])
         else:
             path.append(event[i]["to_switch"])
-            path.append(event[i]["eth.dst"].split(":")[-1])
+            path.append(event[i]["ip.dst"].split(".")[-1])
     return path
 
 def DyNetKAT(topo_graph, packets, expriment_name):
@@ -382,17 +380,18 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     ports = allocate_ports(topo_graph)
     topo_str = string_topo(topo_graph, ports)
     topology = topo_str
+    # topology = "TOPO"
     # print("ports: ", ports)
     # print("topology: ", topo_str)
 
 
     events = find_events(packets)
-    
+
     event = events["event-1"]
-    
+
     policy = {}
     for i in range(n_switch):
-        policy["S"+str(switches[i])] = "pt = 0 . pt <- 0"
+        policy["S"+str(switches[i])] = "pt = 0"
     
 
     flow_tables = {}
@@ -400,6 +399,7 @@ def DyNetKAT(topo_graph, packets, expriment_name):
         flow_tables["S"+str(switches[i])] = []
 
     path = path_event(event)
+    print("path: ", path)
     path_l = len(path)
     for i in range(1, path_l-1):
         sw = path[i]
@@ -424,7 +424,7 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     data['channels'] = channels
     
     in_packets = {"H2_to_H1": "(pt = 1)"}
-    out_packets = {"H2_to_H1": "(pt = 4)"}
+    out_packets = {"H2_to_H1": "(pt = 6)"}
     
     all_rcfgs = []
     all_rcfgs.append('rcfg(event1sendS37596, "one")')
@@ -470,7 +470,7 @@ if __name__ == "__main__":
     packets_cap, partial_topo = find_partial_topology(log_file_path)
     packets = pre_processing(packets_cap)
     topo_graph = find_topo(partial_topo, packets)
-    # data = DyNetKAT(topo_graph, packets, expriment_name)
+    data = DyNetKAT(topo_graph, packets, expriment_name)
     FPSDN_end = perf_counter()
 
     print("Extraction Rueles time: {:.2f} seconds".format(FPSDN_end-FPSDN_start))
@@ -483,7 +483,7 @@ if __name__ == "__main__":
     ports_file = open(ports_path, "w")
     ports_file.write(str(ports))
 
-    # Save_Json(data, save_DyNetKAT_path)
+    Save_Json(data, save_DyNetKAT_path)
 
     print("END FPSDN - Now we can run DyNetiKAT")
 
