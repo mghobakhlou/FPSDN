@@ -8,6 +8,7 @@ from collections import OrderedDict
 import itertools as it
 import subprocess
 from time import perf_counter
+import gc
 
 
 def find_partial_topology(log_file_path):
@@ -383,12 +384,12 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     topology = topo_str
     # topology = "TOPO"
     # print("ports: ", ports)
-    # print("topology: ", topo_str)
+    # topology = "((pt = 1) + (pt = 2 . pt <- 5) + (pt = 4 . pt <- 7) + (pt = 6))"
+    print("topology: ", topology)
 
 
     events = find_events(packets)
 
-    # event = events["event-1"]
 
     policy = {}
     for i in range(n_switch):
@@ -414,16 +415,21 @@ def DyNetKAT(topo_graph, packets, expriment_name):
             p2 = ports[(sw, path[i+1])]
             rule = construct_rule(p1,p2)
             reverse_rule = construct_rule(p2,p1)
-            if rule not in flow_tables["S"+sw] and reverse_rule not in flow_tables["S"+sw]:
+            if rule not in flow_tables["S"+sw]:
                 flow_tables["S"+sw].append(construct_rule(p1,p2))
 
+    n_combinations = 1
+    print("flow tables:")
+    for k, v in flow_tables.items():
+        n_combinations = n_combinations * len(v)
+        print(k, " --> number of rules: ", len(v), " rules: ",v)
+    
+    print("n_combinations: ", n_combinations)
 
-    print("flow tables: ", flow_tables)
-
-    flow_tables = {}
-    flow_tables["S47246"] = ['pt = 1 . pt <- 2', 'pt = 1 . pt <- 3']
-    flow_tables['S47182']= ['pt = 5 . pt <- 4']
-    flow_tables['S47248']= ['pt = 7 . pt <- 6']
+    # flow_tables = {}
+    # flow_tables["S47246"] = ['pt = 1 . pt <- 2']
+    # flow_tables['S47182']= ['pt = 5 . pt <- 4']
+    # flow_tables['S47248']= ['pt = 7 . pt <- 6']
 
     # policy = {}
     # policy["S1"] = "pt=0"
@@ -458,20 +464,20 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     data['program'] = "D-1 || C"
     data['channels'] = channels
     
-    in_packets = {"H2_to_H1": "(pt = 1)"}
-    out_packets = {"H2_to_H1": "(pt = 6)"}
+    in_packets = {"P1toP6": "(pt = 1)"}
+    out_packets = {"P1toP6": "(pt = 6)"}
     
-    all_rcfgs = []
-    all_rcfgs.append('rcfg(event1sendS37596, "one")')
-    all_rcfgs.append('rcfg(event1upS37596, "pt = 1 . pt <- 2")')
-    all_rcfgs.append('rcfg(event1sendS37582, "one")')
-    all_rcfgs.append('rcfg(event1upS37582, "pt = 5 . pt <- 4")')
+    # all_rcfgs = []
+    # all_rcfgs.append('rcfg(event1sendS37596, "one")')
+    # all_rcfgs.append('rcfg(event1upS37596, "pt = 1 . pt <- 2")')
+    # all_rcfgs.append('rcfg(event1sendS37582, "one")')
+    # all_rcfgs.append('rcfg(event1upS37582, "pt = 5 . pt <- 4")')
 
 
     
 
     properties = {
-                  "H2_to_H1": [
+                  "P1toP6": [
                                ("r", "(head(@Program))", "=0", 2),
                                ("r", "(head(tail(tail(tail(@Program, { rcfg(S47246Reqflow1, \"one\") , rcfg(S47246Upflow1, \"pt = 1 . pt <- 2\") }), { rcfg(S47182Reqflow1, \"one\") , rcfg(S47182Upflow1, \"pt = 5 . pt <- 4\") }), { rcfg(S47248Reqflow1, \"one\") , rcfg(S47248Upflow1, \"pt = 7 . pt <- 6\") })))", "!0", 5)
                               ]
@@ -495,39 +501,39 @@ if __name__ == "__main__":
     # expriment_name = "linear_3_2_ping_h1s1_h1s3" 
     # expriment_name = "single3"
 
-    # log_file_path = "./FPSDN/data/" + expriment_name + ".pcapng"
-    # save_topo_path = "./FPSDN/output/"+ expriment_name +"/" + expriment_name + ".png"
-    # after_preprocessing_log_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_After_Preprocessing.txt"
-    # ports_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_ports.txt"
-    # save_DyNetKAT_path = "./FPSDN/output/"+ expriment_name +"/" + "DyNetKAT_" + expriment_name + ".json"
+    log_file_path = "./FPSDN/data/" + expriment_name + ".pcapng"
+    save_topo_path = "./FPSDN/output/"+ expriment_name +"/" + expriment_name + ".png"
+    after_preprocessing_log_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_After_Preprocessing.txt"
+    ports_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_ports.txt"
+    save_DyNetKAT_path = "./FPSDN/output/"+ expriment_name +"/" + "DyNetKAT_" + expriment_name + ".json"
 
-    # FPSDN_start = perf_counter()
-    # packets_cap, partial_topo = find_partial_topology(log_file_path)
-    # packets = pre_processing(packets_cap)
-    # topo_graph = find_topo(partial_topo, packets)
-    # data = DyNetKAT(topo_graph, packets, expriment_name)
+    FPSDN_start = perf_counter()
+    packets_cap, partial_topo = find_partial_topology(log_file_path)
+    packets = pre_processing(packets_cap)
+    topo_graph = find_topo(partial_topo, packets)
+    data = DyNetKAT(topo_graph, packets, expriment_name)
 
-    # FPSDN_end = perf_counter()
+    FPSDN_end = perf_counter()
 
-    # print("Extraction Rueles time: {:.2f} seconds".format(FPSDN_end-FPSDN_start))
+    print("Extraction Rueles time: {:.2f} seconds".format(FPSDN_end-FPSDN_start))
 
-    # # save_topo_graph(topo_graph, path=save_topo_path)
-    # # write_log(packets, after_preprocessing_log_path)
+    # save_topo_graph(topo_graph, path=save_topo_path)
+    # write_log(packets, after_preprocessing_log_path)
 
-    # # ports = allocate_ports(topo_graph)
-    # # os.makedirs(os.path.dirname(ports_path), exist_ok=True)
-    # # ports_file = open(ports_path, "w")
-    # # ports_file.write(str(ports))
+    # ports = allocate_ports(topo_graph)
+    # os.makedirs(os.path.dirname(ports_path), exist_ok=True)
+    # ports_file = open(ports_path, "w")
+    # ports_file.write(str(ports))
 
-    # Save_Json(data, save_DyNetKAT_path)
+    Save_Json(data, save_DyNetKAT_path)
 
     print("END FPSDN - Now we can run DyNetiKAT")
 
 
     maude_path = "./maude-3.1/maude.linux64"
     netkat_katbv_path = "./netkat/_build/install/default/bin/katbv"
-    # example_path = save_DyNetKAT_path
-    example_path = "./FPSDN/output/"+ expriment_name +"/" + "DyNetKAT_" + expriment_name + ".json"
+    example_path = save_DyNetKAT_path
+    # example_path = "./FPSDN/output/"+ expriment_name +"/" + "test_DyNetKAT_" + expriment_name + ".json"
 
 
     DyNetiKAT_results = subprocess.run(["python3", "dnk.py", "--time-stats" , maude_path, netkat_katbv_path, example_path])

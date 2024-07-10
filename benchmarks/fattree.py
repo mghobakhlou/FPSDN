@@ -302,7 +302,7 @@ def generate_fat_tree(pods):
 
 
 if __name__ == "__main__":
-    for num_pods in [6]:
+    for num_pods in [6, 8, 10, 12, 14, 16]:
         print("number of pods: {}".format(num_pods))
         recursive_variables = generate_fat_tree(num_pods)
 
