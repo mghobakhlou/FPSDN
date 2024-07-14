@@ -87,7 +87,20 @@ def find_topo(partial_topo, packets):
     
     return G
 
-def save_topo_graph(topo, path):
+def save_topo_graph(topo, ports,path):
+    # G = topo
+    # color_map = []
+    # for node in list(G.nodes()):
+    #     if G.nodes[node]["type"] == "host":
+    #         color_map.append('blue')
+    #     else: 
+    #         color_map.append('red')
+    
+    # os.makedirs(os.path.dirname(path), exist_ok=True)
+    # pos = nx.spring_layout(G)
+    # nx.draw(G, node_color=color_map, with_labels=True)
+    # nx.draw_networkx_edge_labels(G, pos, edge_labels=ports, font_color='red')
+    # plt.savefig(path, format="PNG")
     G = topo
     color_map = []
     for node in list(G.nodes()):
@@ -97,8 +110,31 @@ def save_topo_graph(topo, path):
             color_map.append('red')
     
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    nx.draw(G, node_color=color_map, with_labels=True)
+    
+    pos = nx.spring_layout(G)  # Define the layout for better visualization
+
+    plt.figure(figsize=(12, 8))
+    # Draw the nodes and edges
+    nx.draw(G, pos, node_color=color_map, with_labels=True, node_size=500, font_size=10)
+    
+    # Prepare edge labels with port information
+    edge_labels = {}
+    for edge in G.edges():
+        # Ports are typically given for both directions
+        src, dst = edge
+        if (src, dst) in ports and (dst, src) in ports:
+            edge_labels[edge] = f"{ports[(src, dst)]}---------{ports[(dst, src)]}"
+        elif (src, dst) in ports:
+            edge_labels[edge] = f"{ports[(src, dst)]}"
+        elif (dst, src) in ports:
+            edge_labels[edge] = f"{ports[(dst, src)]}"
+    
+    # Draw edge labels
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=10, label_pos=0.5)
+    
     plt.savefig(path, format="PNG")
+    plt.close()  # Close the figure to free up resources
+
 
 def list_of_hosts(topo_graph):
     hosts = []
@@ -548,13 +584,16 @@ if __name__ == "__main__":
 
     print("\nPreprocessing + Extraction Rueles time: {:.2f} seconds\n".format(FPSDN_end-FPSDN_start))
 
-    save_topo_graph(topo_graph, path=save_topo_path)
-    write_log(packets, after_preprocessing_log_path)
 
     ports = allocate_ports(topo_graph)
     os.makedirs(os.path.dirname(ports_path), exist_ok=True)
     ports_file = open(ports_path, "w")
     ports_file.write(str(ports))
+
+    save_topo_graph(topo_graph, ports,path=save_topo_path)
+    write_log(packets, after_preprocessing_log_path)
+
+    
 
     Save_Json(data, save_DyNetKAT_path)
 
