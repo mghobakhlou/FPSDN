@@ -90,7 +90,7 @@ class NetKATComm:
             output, error = self.comm_automata(outfile)
             output = self.process_output(output)
 
-            if os.path.exists(outfile):
-                os.remove(outfile)
+            # if os.path.exists(outfile):
+            #     os.remove(outfile)
         # print("Netkat_parser execute output: \t", output)
         return output, error

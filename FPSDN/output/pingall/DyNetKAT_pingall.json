@@ -31,12 +31,5 @@
                 3
             ]
         ]
-    },
-    "file_name": "pingall.maude",
-    "comm": [
-        "(S47168Reqflow1,\"one\")",
-        "(S47168Upflow1, \"pt = 11 . pt <- 12\")",
-        "( S47168Reqflow1,\"one\")",
-        "(S47168Upflow1,\"pt = 11 . pt <- 12\")"
-    ]
+    }
 }

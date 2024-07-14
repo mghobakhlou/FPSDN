@@ -41,24 +41,12 @@
         "H1_to_H4": [
             [
                 "r",
-                "(head(@Program))",
-                "=0",
-                2
-            ],
-            [
-                "r",
                 "(head(tail(@Program, { rcfg(upS1, \"zero\") , rcfg(upS2, \"zero\") , rcfg(upS3, \"pt = 1 . pt <- 3\") , rcfg(upS4, \"pt = 11 . pt <- 13\") , rcfg(upS5, \"pt = 5 . pt <- 7\") , rcfg(upS6, \"pt = 8 . pt <- 9\") })))",
                 "=0",
                 3
             ]
         ],
         "H3_to_H2": [
-            [
-                "r",
-                "(head(@Program))",
-                "=0",
-                2
-            ],
             [
                 "r",
                 "(head(tail(@Program, { rcfg(upS1, \"zero\") , rcfg(upS2, \"zero\") , rcfg(upS3, \"pt = 1 . pt <- 3\") , rcfg(upS4, \"pt = 11 . pt <- 13\") , rcfg(upS5, \"pt = 5 . pt <- 7\") , rcfg(upS6, \"pt = 8 . pt <- 9\") })))",

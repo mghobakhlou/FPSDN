@@ -38,7 +38,7 @@
                 "r",
                 "(head(tail(tail(tail(@Program, { rcfg(S47246Reqflow1, \"one\") , rcfg(S47246Upflow1, \"pt = 1 . pt <- 2\") }), { rcfg(S47182Reqflow1, \"one\") , rcfg(S47182Upflow1, \"pt = 5 . pt <- 4\") }), { rcfg(S47248Reqflow1, \"one\") , rcfg(S47248Upflow1, \"pt = 7 . pt <- 6\") })))",
                 "!0",
-                5
+                7
             ]
         ]
     }

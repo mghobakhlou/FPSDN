@@ -394,7 +394,7 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     policy = {}
     for i in range(n_switch):
         policy["S"+str(switches[i])] = "pt = 0"
-    
+    print(policy)
 
     flow_tables = {}
     for i in range(n_switch):
@@ -403,49 +403,58 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     # print(events)
     event_iteration = 1
 
-    for k, v in events.items():
-        # print("event_iteration: ", event_iteration)
-        event_iteration += 1
-        path = path_event(v)
-        # print("path: ", path)
-        path_l = len(path)
-        for i in range(1, path_l-1):
-            sw = path[i]
-            p1 = ports[(sw, path[i-1])]
-            p2 = ports[(sw, path[i+1])]
-            rule = construct_rule(p1,p2)
-            reverse_rule = construct_rule(p2,p1)
-            if rule not in flow_tables["S"+sw]:
-                flow_tables["S"+sw].append(construct_rule(p1,p2))
+    # for k, v in events.items():
+    #     # print("event_iteration: ", event_iteration)
+    #     event_iteration += 1
+    #     path = path_event(v)
+    #     # print("path: ", path)
+    #     path_l = len(path)
+    #     for i in range(1, path_l-1):
+    #         sw = path[i]
+    #         p1 = ports[(sw, path[i-1])]
+    #         p2 = ports[(sw, path[i+1])]
+    #         rule = construct_rule(p1,p2)
+    #         reverse_rule = construct_rule(p2,p1)
+    #         if rule not in flow_tables["S"+sw] and reverse_rule not in flow_tables["S"+sw]:
+    #             flow_tables["S"+sw].append(construct_rule(p1,p2))
 
-    n_combinations = 1
-    print("flow tables:")
-    for k, v in flow_tables.items():
-        n_combinations = n_combinations * len(v)
-        print(k, " --> number of rules: ", len(v), " rules: ",v)
+    # n_combinations = 1
+    # print("flow tables:")
+    # for k, v in flow_tables.items():
+    #     n_combinations = n_combinations * (len(v)+1)
+    #     print(k, " --> number of rules: ", len(v), " rules: ",v)
     
-    print("n_combinations: ", n_combinations)
+    # print("n_combinations: ", n_combinations)
+    # return None
 
-    # flow_tables = {}
-    # flow_tables["S47246"] = ['pt = 1 . pt <- 2']
+    policy["S47246"] = "pt = 1 . pt <- 3"
+    policy["S47184"] = "pt = 9 . pt <- 8"
+    policy["S47168"] = "pt = 11 . pt <- 13"
+
+    policy["S47232"] = "pt = 29 . pt <- 28"
+    policy["S47298"] = "pt = 32 . pt <- 31"
+    
+    policy["S47218"] = "pt = 22 . pt <- 21"
+    policy["S47276"] = "pt = 25 . pt <- 24"
+    
+    print(policy)
+
+
+    flow_tables = {}
+    
     # flow_tables['S47182']= ['pt = 5 . pt <- 4']
     # flow_tables['S47248']= ['pt = 7 . pt <- 6']
+    flow_tables["S47246"] = []
+    flow_tables["S47184"] = []
+    flow_tables["S47168"] = ['pt = 11 . pt <- 12']
+    # flow_tables["S47168"] = []
 
-    # policy = {}
-    # policy["S1"] = "pt=0"
-    # policy["S2"] = "pt=0"
-    # policy["S3"] = "pt=0"
-    # policy["S4"] = "pt=0"
-    # policy["S5"] = "pt=0"
-    # policy["S6"] = "pt=0"
 
-    # flow_tables = {}
-    # flow_tables["S1"] = ["S1_1", "S1_2"]
-    # flow_tables["S2"] = ["S2_1", "S2_2"]
-    # flow_tables["S3"] = ["S3_1", "S3_2"]
-    # flow_tables["S4"] = ["S4_1", "S4_2"]
-    # flow_tables["S5"] = ["S5_1", "S5_2"]
-    # flow_tables["S6"] = ["S6_1", "S6_2"]
+    flow_tables["S47232"] = []
+    flow_tables["S47298"] = []
+    
+    flow_tables["S47218"] = []
+    flow_tables["S47276"] = []
 
 
     C = ""
@@ -465,7 +474,7 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     data['channels'] = channels
     
     in_packets = {"P1toP6": "(pt = 1)"}
-    out_packets = {"P1toP6": "(pt = 6)"}
+    out_packets = {"P1toP6": "(pt = 24)"}
     
     # all_rcfgs = []
     # all_rcfgs.append('rcfg(event1sendS37596, "one")')
@@ -478,8 +487,8 @@ def DyNetKAT(topo_graph, packets, expriment_name):
 
     properties = {
                   "P1toP6": [
-                               ("r", "(head(@Program))", "=0", 2),
-                               ("r", "(head(tail(tail(tail(@Program, { rcfg(S47246Reqflow1, \"one\") , rcfg(S47246Upflow1, \"pt = 1 . pt <- 2\") }), { rcfg(S47182Reqflow1, \"one\") , rcfg(S47182Upflow1, \"pt = 5 . pt <- 4\") }), { rcfg(S47248Reqflow1, \"one\") , rcfg(S47248Upflow1, \"pt = 7 . pt <- 6\") })))", "!0", 5)
+                               ("r", "(head(@Program))", "!0", 2),
+                               ("r", "(head(tail(@Program, { rcfg(S47168Reqflow1, \"one\") , rcfg(S47168Upflow1, \"pt = 11 . pt <- 12\") })))", "!0", 3)
                               ]
                  }
 
@@ -533,7 +542,7 @@ if __name__ == "__main__":
     maude_path = "./maude-3.1/maude.linux64"
     netkat_katbv_path = "./netkat/_build/install/default/bin/katbv"
     example_path = save_DyNetKAT_path
-    # example_path = "./FPSDN/output/"+ expriment_name +"/" + "test_DyNetKAT_" + expriment_name + ".json"
+    # example_path = "./FPSDN/output/"+ expriment_name +"/" + "DyNetKAT_" + expriment_name + ".json"
 
 
     DyNetiKAT_results = subprocess.run(["python3", "dnk.py", "--time-stats" , maude_path, netkat_katbv_path, example_path])

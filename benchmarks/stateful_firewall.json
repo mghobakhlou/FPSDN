@@ -1,9 +1,11 @@
 {
     "in_packets": {
-        "int_to_ext": "(pt = 1)"
+        "int_to_ext": "(pt = 1)", 
+        "ext_to_int": "(pt = 2)"
     }, 
     "out_packets": {
-        "int_to_ext": "(pt = 2)"
+        "int_to_ext": "(pt = 2)", 
+        "ext_to_int": "(pt = 1)"
     },
     "module_name": "STATEFUL-FIREWALL", 
     "recursive_variables": {
@@ -17,7 +19,27 @@
         "int_to_ext": [
             [
                 "r",
-                "head(@Program)",   
+                "head(@Program)", 
+                "!0",
+                2
+            ],
+            [
+                "r",
+                "(head(tail(@Program, {rcfg(secConReq, \"one\")})))", 
+                "!0",
+                2
+            ]
+        ],
+        "ext_to_int": [
+            [
+                "r",
+                "head(@Program)", 
+                "=0",
+                2
+            ],
+            [
+                "r",
+                "(head(tail(@Program, {rcfg(secConReq, \"one\")})))", 
                 "!0",
                 2
             ]

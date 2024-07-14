@@ -70,16 +70,16 @@
     },
     "file_name": "DISTRIBUTED-CONTROLLER-SYNCHRONIZED.maude",
     "comm": [
-        "(upS3,\"pt = 1 . pt <- 3\")",
-        "(upS5, \"pt = 5 . pt <- 7\")",
-        "(upS2,\"zero\")",
         "(upS6, \"pt = 8 . pt <- 9\")",
-        "(upS4, \"pt = 11 . pt <- 13\")",
-        "(upS1,\"zero\")",
-        "(upS3, \"pt = 1 . pt <- 3\")",
         "(upS6,\"pt = 8 . pt <- 9\")",
+        "(upS5, \"pt = 5 . pt <- 7\")",
+        "(upS4, \"pt = 11 . pt <- 13\")",
         "(upS4,\"pt = 11 . pt <- 13\")",
+        "(upS2,\"zero\")",
+        "(upS3, \"pt = 1 . pt <- 3\")",
         "(upS5,\"pt = 5 . pt <- 7\")",
+        "(upS1,\"zero\")",
+        "(upS3,\"pt = 1 . pt <- 3\")",
         "(syn,\"one\")"
     ]
 }
