@@ -393,68 +393,89 @@ def DyNetKAT(topo_graph, packets, expriment_name):
 
     policy = {}
     for i in range(n_switch):
-        policy["S"+str(switches[i])] = "pt = 0"
-    print(policy)
+        policy["S"+str(switches[i])] = ""
 
     flow_tables = {}
     for i in range(n_switch):
         flow_tables["S"+str(switches[i])] = []
 
-    # print(events)
-    event_iteration = 1
-
-    # for k, v in events.items():
-    #     # print("event_iteration: ", event_iteration)
-    #     event_iteration += 1
-    #     path = path_event(v)
-    #     # print("path: ", path)
-    #     path_l = len(path)
-    #     for i in range(1, path_l-1):
-    #         sw = path[i]
-    #         p1 = ports[(sw, path[i-1])]
-    #         p2 = ports[(sw, path[i+1])]
-    #         rule = construct_rule(p1,p2)
-    #         reverse_rule = construct_rule(p2,p1)
-    #         if rule not in flow_tables["S"+sw] and reverse_rule not in flow_tables["S"+sw]:
-    #             flow_tables["S"+sw].append(construct_rule(p1,p2))
-
-    # n_combinations = 1
-    # print("flow tables:")
-    # for k, v in flow_tables.items():
-    #     n_combinations = n_combinations * (len(v)+1)
-    #     print(k, " --> number of rules: ", len(v), " rules: ",v)
+    # print("len events: ", len(events))
     
-    # print("n_combinations: ", n_combinations)
+    forward_flag = True
+    forward_events = {}
+    response_events = {}
+    for k, v in events.items():
+        if forward_flag:
+            forward_events[k] = v
+            forward_flag = False
+        else:
+            response_events[k] = v
+            forward_flag = True
+    
+    # print("len(forward)", len(forward_events))
+    # print("len(response)", len(response_events))
+
+    events = forward_events
+
+    event_iteration = 1
+    for k, v in events.items():
+        print("event_iteration: ", event_iteration)
+        event_iteration += 1
+        path = path_event(v)
+        print("path: ", path)
+        path_l = len(path)
+        for i in range(1, path_l-1):
+            sw = path[i]
+            p1 = ports[(sw, path[i-1])]
+            p2 = ports[(sw, path[i+1])]
+            rule = construct_rule(p1,p2)
+            reverse_rule = construct_rule(p2,p1)
+            if rule not in flow_tables["S"+sw] and reverse_rule not in flow_tables["S"+sw]:
+                if policy["S"+sw] == "":
+                    policy["S"+sw] = rule
+                elif policy["S"+sw] != rule:
+                    flow_tables["S"+sw].append(rule)
+
+
+    # return None
+    n_combinations = 1
+    print("flow tables:")
+    for k, v in flow_tables.items():
+        n_combinations = n_combinations * (len(v)+1)
+        print(k, " --> policy: ", policy[k])
+        print(k, " --> number of rules: ", len(v), " rules: ",v)
+    
+    print("n_combinations: ", n_combinations)
     # return None
 
-    policy["S47246"] = "pt = 1 . pt <- 3"
-    policy["S47184"] = "pt = 9 . pt <- 8"
-    policy["S47168"] = "pt = 11 . pt <- 13"
+    # policy["S47246"] = "pt = 1 . pt <- 3"
+    # policy["S47184"] = "pt = 9 . pt <- 8"
+    # policy["S47168"] = "pt = 11 . pt <- 13"
 
-    policy["S47232"] = "pt = 29 . pt <- 28"
-    policy["S47298"] = "pt = 32 . pt <- 31"
+    # policy["S47232"] = "pt = 29 . pt <- 28"
+    # policy["S47298"] = "pt = 32 . pt <- 31"
     
-    policy["S47218"] = "pt = 22 . pt <- 21"
-    policy["S47276"] = "pt = 25 . pt <- 24"
+    # policy["S47218"] = "pt = 22 . pt <- 21"
+    # policy["S47276"] = "pt = 25 . pt <- 24"
     
-    print(policy)
+    # print(policy)
 
 
-    flow_tables = {}
+    # flow_tables = {}
     
-    # flow_tables['S47182']= ['pt = 5 . pt <- 4']
-    # flow_tables['S47248']= ['pt = 7 . pt <- 6']
-    flow_tables["S47246"] = []
-    flow_tables["S47184"] = []
-    flow_tables["S47168"] = ['pt = 11 . pt <- 12']
-    # flow_tables["S47168"] = []
+    # # flow_tables['S47182']= ['pt = 5 . pt <- 4']
+    # # flow_tables['S47248']= ['pt = 7 . pt <- 6']
+    # flow_tables["S47246"] = []
+    # flow_tables["S47184"] = []
+    # flow_tables["S47168"] = ['pt = 11 . pt <- 12']
+    # # flow_tables["S47168"] = []
 
 
-    flow_tables["S47232"] = []
-    flow_tables["S47298"] = []
+    # flow_tables["S47232"] = []
+    # flow_tables["S47298"] = []
     
-    flow_tables["S47218"] = []
-    flow_tables["S47276"] = []
+    # flow_tables["S47218"] = []
+    # flow_tables["S47276"] = []
 
 
     C = ""
@@ -474,7 +495,7 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     data['channels'] = channels
     
     in_packets = {"P1toP6": "(pt = 1)"}
-    out_packets = {"P1toP6": "(pt = 24)"}
+    out_packets = {"P1toP6": "(pt = 14)"}
     
     # all_rcfgs = []
     # all_rcfgs.append('rcfg(event1sendS37596, "one")')
@@ -487,8 +508,8 @@ def DyNetKAT(topo_graph, packets, expriment_name):
 
     properties = {
                   "P1toP6": [
-                               ("r", "(head(@Program))", "!0", 2),
-                               ("r", "(head(tail(@Program, { rcfg(S47168Reqflow1, \"one\") , rcfg(S47168Upflow1, \"pt = 11 . pt <- 12\") })))", "!0", 3)
+                               ("r", "(head(@Program))", "=0", 2),
+                               ("r", "(head(tail(@Program, { rcfg(S48230Reqflow1, \"one\") , rcfg(S48230Upflow1, \"pt = 6 . pt <- 7\") })))", "=0", 3)
                               ]
                  }
 
@@ -500,8 +521,10 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     return data
 
 if __name__ == "__main__":
-    
-    expriment_name = "pingall"
+
+    expriment_name = "h1pingh5h7"
+    # expriment_name = "h1pingall"
+    # expriment_name = "pingall"
     # expriment_name = "h1pingh2"
     # expriment_name = "linear_3_1"
     # expriment_name = "linear_10_1_h1h5_h6h10"
@@ -526,13 +549,13 @@ if __name__ == "__main__":
 
     print("Extraction Rueles time: {:.2f} seconds".format(FPSDN_end-FPSDN_start))
 
-    # save_topo_graph(topo_graph, path=save_topo_path)
-    # write_log(packets, after_preprocessing_log_path)
+    save_topo_graph(topo_graph, path=save_topo_path)
+    write_log(packets, after_preprocessing_log_path)
 
-    # ports = allocate_ports(topo_graph)
-    # os.makedirs(os.path.dirname(ports_path), exist_ok=True)
-    # ports_file = open(ports_path, "w")
-    # ports_file.write(str(ports))
+    ports = allocate_ports(topo_graph)
+    os.makedirs(os.path.dirname(ports_path), exist_ok=True)
+    ports_file = open(ports_path, "w")
+    ports_file.write(str(ports))
 
     Save_Json(data, save_DyNetKAT_path)
 

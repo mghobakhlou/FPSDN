@@ -41,10 +41,10 @@ class MaudeComm:
         # print("maude_parser execute terms \t", terms)
         export_file(self.out_file, terms)
         output, error = self.comm(file_name, self.out_file)
-        print("maude output: \t", output)
+        # print("maude output: \t", output)
         output = self.process_output(output)
         # print("maude_parser execute output \t", output)
-        # if os.path.exists(self.out_file):
-        #     os.remove(self.out_file)
+        if os.path.exists(self.out_file):
+            os.remove(self.out_file)
 
         return output, error

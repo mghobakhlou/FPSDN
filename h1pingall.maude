@@ -1,0 +1,13 @@
+load /home/mohammadreza/test/FPSDN/src/maude/dnk.maude
+
+fmod h1pingall is 
+	protecting DNA .
+	protecting PROPERTY-CHECKING .
+
+	ops C D-1 D-2 : -> Recursive .
+	ops S47168Reqflow1 S47168Upflow1 : -> Channel .
+
+	eq getRecPol(C) = ((S47168Reqflow1 ? "one") ; ((S47168Upflow1 ! "pt = 11 . pt <- 12") ; C)) .
+	eq getRecPol(D-1) = "((pt = 1 . pt <- 3 + pt = 9 . pt <- 8 + pt = 11 . pt <- 13 + pt = 29 . pt <- 28 + pt = 32 . pt <- 31 + pt = 22 . pt <- 21 + pt = 25 . pt <- 24) . (((pt = 1) + (pt = 2 . pt <- 5) + (pt = 3 . pt <- 9) + (pt = 4 . pt <- 7) + (pt = 5 . pt <- 2) + (pt = 6) + (pt = 7 . pt <- 4) + (pt = 8 . pt <- 11) + (pt = 9 . pt <- 3) + (pt = 10 . pt <- 15) + (pt = 11 . pt <- 8) + (pt = 12 . pt <- 22) + (pt = 13 . pt <- 28) + (pt = 14 . pt <- 18) + (pt = 15 . pt <- 10) + (pt = 16 . pt <- 20) + (pt = 17) + (pt = 18 . pt <- 14) + (pt = 19) + (pt = 20 . pt <- 16) + (pt = 21 . pt <- 25) + (pt = 22 . pt <- 12) + (pt = 23 . pt <- 27) + (pt = 24) + (pt = 25 . pt <- 21) + (pt = 26) + (pt = 27 . pt <- 23) + (pt = 28 . pt <- 13) + (pt = 29 . pt <- 33) + (pt = 30) + (pt = 30) + (pt = 32) + (pt = 33 . pt <- 29)))) *" ; D-1 o+ (S47168Reqflow1 ! "one") ; D-1 o+ (S47168Upflow1 ? "pt = 11 . pt <- 12") ; D-2 .
+	eq getRecPol(D-2) = "((pt = 1 . pt <- 3 + pt = 9 . pt <- 8 + pt = 11 . pt <- 12 + pt = 29 . pt <- 28 + pt = 32 . pt <- 31 + pt = 22 . pt <- 21 + pt = 25 . pt <- 24) . (((pt = 1) + (pt = 2 . pt <- 5) + (pt = 3 . pt <- 9) + (pt = 4 . pt <- 7) + (pt = 5 . pt <- 2) + (pt = 6) + (pt = 7 . pt <- 4) + (pt = 8 . pt <- 11) + (pt = 9 . pt <- 3) + (pt = 10 . pt <- 15) + (pt = 11 . pt <- 8) + (pt = 12 . pt <- 22) + (pt = 13 . pt <- 28) + (pt = 14 . pt <- 18) + (pt = 15 . pt <- 10) + (pt = 16 . pt <- 20) + (pt = 17) + (pt = 18 . pt <- 14) + (pt = 19) + (pt = 20 . pt <- 16) + (pt = 21 . pt <- 25) + (pt = 22 . pt <- 12) + (pt = 23 . pt <- 27) + (pt = 24) + (pt = 25 . pt <- 21) + (pt = 26) + (pt = 27 . pt <- 23) + (pt = 28 . pt <- 13) + (pt = 29 . pt <- 33) + (pt = 30) + (pt = 30) + (pt = 32) + (pt = 33 . pt <- 29)))) *" ; D-2 o+ (S47168Reqflow1 ! "one") ; D-2 o+ (S47168Upflow1 ? "pt = 11 . pt <- 12") ; D-2 .
+endfm

@@ -67,7 +67,7 @@ if __name__ == "__main__":
             json.dump(data, f, ensure_ascii=False, indent=4)
     preprocessing_stop = perf_counter() 
 
-    print("ANALYSIS.........................")
+    # print("ANALYSIS.........................")
     # analysis step
     decision_procedure = DyNetKAT(direct, maude_path, netkat_path, options.netkat_version, 
                                   maude_preprocess_file, maude_dnk_file, options.num_threads)
@@ -75,8 +75,8 @@ if __name__ == "__main__":
 
 
     # clean up
-    # if os.path.exists(os.path.join(direct, data['file_name'])):
-    #     os.remove(os.path.join(direct, data['file_name']))
+    if os.path.exists(os.path.join(direct, data['file_name'])):
+        os.remove(os.path.join(direct, data['file_name']))
 
 
     # report the results
@@ -96,6 +96,6 @@ if __name__ == "__main__":
     # report timing
     if options.time_stats:
         program_stop = perf_counter()
-        print("Total time: {:.2f} seconds".format(program_stop-program_start))
-        print("Preprocessing time: {:.2f} seconds".format(preprocessing_stop-preprocessing_start))
+        print("DyNetKAT Total time: {:.2f} seconds".format(program_stop-program_start))
+        print("DyNetKAT Preprocessing time: {:.2f} seconds".format(preprocessing_stop-preprocessing_start))
         print("NetKAT time: {:.2f} seconds".format(max_netkat_time))
