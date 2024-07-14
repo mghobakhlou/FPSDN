@@ -11,13 +11,13 @@
         "S48230Upflow1"
     ],
     "in_packets": {
-        "P1toP6": "(pt = 1)"
+        "P1toP14": "(pt = 1)"
     },
     "out_packets": {
-        "P1toP6": "(pt = 14)"
+        "P1toP14": "(pt = 14)"
     },
     "properties": {
-        "P1toP6": [
+        "P1toP14": [
             [
                 "r",
                 "(head(@Program))",

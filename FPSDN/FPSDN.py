@@ -481,7 +481,6 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     C = ""
 
     switch_rec_vars, new_C, channels = calculate_recursive_variables(policy, topology, flow_tables, C)
-    print("HI there")
 
     controllers = {}
     controllers["C"] = new_C    # controllers["C2"] = '((upS2 ! "zero") ; ((syn ? "one") ; ((upS4 ! "{}") ; ((upS6 ! "{}") ; bot))))'.format(flow_tables["S4"][0], flow_tables["S6"][0])
@@ -494,8 +493,8 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     data['program'] = "D-1 || C"
     data['channels'] = channels
     
-    in_packets = {"P1toP6": "(pt = 1)"}
-    out_packets = {"P1toP6": "(pt = 14)"}
+    in_packets = {"P1toP14": "(pt = 1)"}
+    out_packets = {"P1toP14": "(pt = 14)"}
     
     # all_rcfgs = []
     # all_rcfgs.append('rcfg(event1sendS37596, "one")')
@@ -507,7 +506,7 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     
 
     properties = {
-                  "P1toP6": [
+                  "P1toP14": [
                                ("r", "(head(@Program))", "=0", 2),
                                ("r", "(head(tail(@Program, { rcfg(S48230Reqflow1, \"one\") , rcfg(S48230Upflow1, \"pt = 6 . pt <- 7\") })))", "=0", 3)
                               ]
@@ -547,7 +546,7 @@ if __name__ == "__main__":
 
     FPSDN_end = perf_counter()
 
-    print("Extraction Rueles time: {:.2f} seconds".format(FPSDN_end-FPSDN_start))
+    print("\nPreprocessing + Extraction Rueles time: {:.2f} seconds\n".format(FPSDN_end-FPSDN_start))
 
     save_topo_graph(topo_graph, path=save_topo_path)
     write_log(packets, after_preprocessing_log_path)
@@ -559,7 +558,7 @@ if __name__ == "__main__":
 
     Save_Json(data, save_DyNetKAT_path)
 
-    print("END FPSDN - Now we can run DyNetiKAT")
+    print("END Preprocessing and Extraction Rueles - Now we can run DyNetiKAT\n")
 
 
     maude_path = "./maude-3.1/maude.linux64"
