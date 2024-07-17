@@ -119,11 +119,16 @@ def save_topo_graph(topo, ports,path):
     
     # Prepare edge labels with port information
     edge_labels = {}
+    checker = []
     for edge in G.edges():
+        # TODO BUG
+        # print(edge)
         # Ports are typically given for both directions
         src, dst = edge
         if (src, dst) in ports and (dst, src) in ports:
-            edge_labels[edge] = f"{ports[(dst, src)]}-------{ports[(src, dst)]}"
+            if f"{ports[(dst, src)]}-------{ports[(src, dst)]}" not in checker:
+                edge_labels[edge] = f"{ports[(dst, src)]}-------{ports[(src, dst)]}"
+                checker.append(f"{ports[(src, dst)]}-------{ports[(dst, src)]}")
         elif (src, dst) in ports:
             edge_labels[edge] = f"{ports[(src, dst)]}"
         elif (dst, src) in ports:
