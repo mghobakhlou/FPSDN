@@ -11,13 +11,29 @@
         "S48230Upflow1"
     ],
     "in_packets": {
-        "P1toP14": "(pt = 1)"
+        "H1toH5": "(pt = 1)",
+        "H1toH7": "(pt = 1)"
     },
     "out_packets": {
-        "P1toP14": "(pt = 14)"
+        "H1toH5": "(pt = 10)",
+        "H1toH7": "(pt = 14)"
     },
     "properties": {
-        "P1toP14": [
+        "H1toH5": [
+            [
+                "r",
+                "(head(@Program))",
+                "!0",
+                2
+            ],
+            [
+                "r",
+                "(head(tail(@Program, { rcfg(S48230Reqflow1, \"one\") , rcfg(S48230Upflow1, \"pt = 6 . pt <- 7\") })))",
+                "!0",
+                3
+            ]
+        ],
+        "H1toH7": [
             [
                 "r",
                 "(head(@Program))",
@@ -34,7 +50,7 @@
     },
     "file_name": "h1pingh5h7.maude",
     "comm": [
-        "(S48230Upflow1, \"pt = 6 . pt <- 7\")",
-        "(S48230Reqflow1,\"one\")"
+        "(S48230Reqflow1,\"one\")",
+        "(S48230Upflow1, \"pt = 6 . pt <- 7\")"
     ]
 }
