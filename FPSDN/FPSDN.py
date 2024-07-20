@@ -534,8 +534,8 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     data['program'] = "D-1 || C"
     data['channels'] = channels
     
-    in_packets = {"H1toH5": "(pt = 1)", "H1toH7": "(pt = 1)"}
-    out_packets = {"H1toH5": "(pt = 10)", "H1toH7": "(pt = 14)"}
+    in_packets = {"h1toh7": "(pt = 5)"}
+    out_packets = {"h1toh7": "(pt = 15)"}
     
     # all_rcfgs = []
     # all_rcfgs.append('rcfg(event1sendS37596, "one")')
@@ -547,14 +547,11 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     
 
     properties = {
-                  "H1toH5": [
-                               ("r", "(head(@Program))", "!0", 2),
-                               ("r", "(head(tail(@Program, { rcfg(S48230Reqflow1, \"one\") , rcfg(S48230Upflow1, \"pt = 6 . pt <- 7\") })))", "!0", 3)
-                              ],
-                  "H1toH7": [
+                  "h1toh7": [
                                ("r", "(head(@Program))", "=0", 2),
-                               ("r", "(head(tail(@Program, { rcfg(S48230Reqflow1, \"one\") , rcfg(S48230Upflow1, \"pt = 6 . pt <- 7\") })))", "=0", 3)
-                              ]
+                               ("r", "(head(tail(@Program, { rcfg(S51504Reqflow1, \"one\") , rcfg(S51504Upflow1, \"pt = 5 . pt <- 6\") })))", "=0", 3),
+                               ("r", "(head(tail(tail(@Program, { rcfg(S51504Reqflow1, \"one\") , rcfg(S51504Upflow1, \"pt = 5 . pt <- 6\") }), { rcfg(S51416Reqflow1, \"one\") , rcfg(S51416Upflow1, \"pt = 11 . pt <- 12\") })))", "=0", 5)
+                            ]
                  }
 
 
@@ -566,7 +563,8 @@ def DyNetKAT(topo_graph, packets, expriment_name):
 
 if __name__ == "__main__":
 
-    expriment_name = "h1pingh5h7"
+    expriment_name = "fattree_h2h7_h1h5"
+    # expriment_name = "h1pingh5h7"
     # expriment_name = "h1pingall"
     # expriment_name = "pingall"
     # expriment_name = "h1pingh2"
