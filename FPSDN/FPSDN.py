@@ -9,6 +9,7 @@ import itertools as it
 import subprocess
 from time import perf_counter
 import gc
+import random
 
 
 def find_partial_topology(log_file_path):
@@ -88,55 +89,50 @@ def find_topo(partial_topo, packets):
     return G
 
 def save_topo_graph(topo, ports,path):
-    # G = topo
-    # color_map = []
-    # for node in list(G.nodes()):
-    #     if G.nodes[node]["type"] == "host":
-    #         color_map.append('blue')
-    #     else: 
-    #         color_map.append('red')
-    
-    # os.makedirs(os.path.dirname(path), exist_ok=True)
-    # pos = nx.spring_layout(G)
-    # nx.draw(G, node_color=color_map, with_labels=True)
-    # nx.draw_networkx_edge_labels(G, pos, edge_labels=ports, font_color='red')
-    # plt.savefig(path, format="PNG")
+
     G = topo
     color_map = []
     for node in list(G.nodes()):
         if G.nodes[node]["type"] == "host":
-            color_map.append('blue')
+            color_map.append('pink')
         else: 
-            color_map.append('red')
+            color_map.append('lightblue')
     
     os.makedirs(os.path.dirname(path), exist_ok=True)
     
-    pos = nx.spring_layout(G)  # Define the layout for better visualization
-
-    plt.figure(figsize=(12, 8))
-    # Draw the nodes and edges
-    nx.draw(G, pos, node_color=color_map, with_labels=True, node_size=500, font_size=10)
+   
     
     # Prepare edge labels with port information
     edge_labels = {}
     checker = []
+    edge_checker = []
     for edge in G.edges():
-        # TODO BUG
-        # print(edge)
-        # Ports are typically given for both directions
         src, dst = edge
-        if (src, dst) in ports and (dst, src) in ports:
-            if f"{ports[(dst, src)]}-------{ports[(src, dst)]}" not in checker:
-                edge_labels[edge] = f"{ports[(dst, src)]}-------{ports[(src, dst)]}"
-                checker.append(f"{ports[(src, dst)]}-------{ports[(dst, src)]}")
-        elif (src, dst) in ports:
+        reverse_edge = (dst, src)
+        if edge not in edge_checker and reverse_edge not in edge_checker and (src, dst) in ports and (dst, src) in ports:
+            print(edge)
+            print(f"{ports[(src, dst)]}--{ports[(dst, src)]}")
+            edge_labels[edge] = f"{ports[(src, dst)]}--{ports[(dst, src)]}"
+            edge_checker.append(edge)
+            edge_checker.append(reverse_edge)
+        elif edge not in edge_checker and reverse_edge not in edge_checker and (src, dst) in ports:
             edge_labels[edge] = f"{ports[(src, dst)]}"
-        elif (dst, src) in ports:
-            edge_labels[edge] = f"{ports[(dst, src)]}"
+            edge_checker.append(edge)
+            edge_checker.append(reverse_edge)
+    
+    seed = 50
+    random.seed(seed)
+    pos = nx.spring_layout(G, seed=seed) 
+    # pos = nx.spring_layout(G)  # Define the layout for better visualization
+
+    plt.figure(figsize=(12, 8))
+    # Draw the nodes and edges
+    nx.draw(G, pos, node_color=color_map, with_labels=True, node_size=700, font_size=8)
+
     
     # Draw edge labels
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=10, label_pos=0.5)
-    
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=8, label_pos=0.5)
+    plt.axis('off')
     plt.savefig(path, format="PNG")
     plt.close()  # Close the figure to free up resources
 
@@ -479,44 +475,15 @@ def DyNetKAT(topo_graph, packets, expriment_name):
 
 
     # return None
-    n_combinations = 1
-    print("flow tables:")
-    for k, v in flow_tables.items():
-        n_combinations = n_combinations * (len(v)+1)
-        print(k, " --> policy: ", policy[k])
-        print(k, " --> number of rules: ", len(v), " rules: ",v)
+    # n_combinations = 1
+    # print("flow tables:")
+    # for k, v in flow_tables.items():
+    #     n_combinations = n_combinations * (len(v)+1)
+    #     print(k, " --> policy: ", policy[k])
+    #     print(k, " --> number of rules: ", len(v), " rules: ",v)
     
-    print("n_combinations: ", n_combinations)
-    # return None
+    # print("n_combinations: ", n_combinations)
 
-    # policy["S47246"] = "pt = 1 . pt <- 3"
-    # policy["S47184"] = "pt = 9 . pt <- 8"
-    # policy["S47168"] = "pt = 11 . pt <- 13"
-
-    # policy["S47232"] = "pt = 29 . pt <- 28"
-    # policy["S47298"] = "pt = 32 . pt <- 31"
-    
-    # policy["S47218"] = "pt = 22 . pt <- 21"
-    # policy["S47276"] = "pt = 25 . pt <- 24"
-    
-    # print(policy)
-
-
-    # flow_tables = {}
-    
-    # # flow_tables['S47182']= ['pt = 5 . pt <- 4']
-    # # flow_tables['S47248']= ['pt = 7 . pt <- 6']
-    # flow_tables["S47246"] = []
-    # flow_tables["S47184"] = []
-    # flow_tables["S47168"] = ['pt = 11 . pt <- 12']
-    # # flow_tables["S47168"] = []
-
-
-    # flow_tables["S47232"] = []
-    # flow_tables["S47298"] = []
-    
-    # flow_tables["S47218"] = []
-    # flow_tables["S47276"] = []
 
 
     C = ""
@@ -537,15 +504,6 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     in_packets = {"h1toh7": "(pt = 5)"}
     out_packets = {"h1toh7": "(pt = 15)"}
     
-    # all_rcfgs = []
-    # all_rcfgs.append('rcfg(event1sendS37596, "one")')
-    # all_rcfgs.append('rcfg(event1upS37596, "pt = 1 . pt <- 2")')
-    # all_rcfgs.append('rcfg(event1sendS37582, "one")')
-    # all_rcfgs.append('rcfg(event1upS37582, "pt = 5 . pt <- 4")')
-
-
-    
-
     properties = {
                   "h1toh7": [
                                ("r", "(head(@Program))", "=0", 2),

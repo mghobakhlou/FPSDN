@@ -44,12 +44,12 @@
     },
     "file_name": "fattree_h2h7_h1h5.maude",
     "comm": [
-        "( S51416Upflow1,\"pt = 11 . pt <- 12\")",
         "( S51504Reqflow1,\"one\")",
         "(S51416Reqflow1,\"one\")",
-        "(S51416Upflow1, \"pt = 11 . pt <- 12\")",
+        "(S51504Upflow1,\"pt = 5 . pt <- 6\")",
         "(S51504Upflow1, \"pt = 5 . pt <- 6\")",
+        "(S51416Upflow1, \"pt = 11 . pt <- 12\")",
         "(S51504Reqflow1,\"one\")",
-        "(S51504Upflow1,\"pt = 5 . pt <- 6\")"
+        "( S51416Upflow1,\"pt = 11 . pt <- 12\")"
     ]
 }
