@@ -119,11 +119,16 @@ def save_topo_graph(topo, ports,path):
     
     # Prepare edge labels with port information
     edge_labels = {}
+    checker = []
     for edge in G.edges():
+        # TODO BUG
+        # print(edge)
         # Ports are typically given for both directions
         src, dst = edge
         if (src, dst) in ports and (dst, src) in ports:
-            edge_labels[edge] = f"{ports[(src, dst)]}---------{ports[(dst, src)]}"
+            if f"{ports[(dst, src)]}-------{ports[(src, dst)]}" not in checker:
+                edge_labels[edge] = f"{ports[(dst, src)]}-------{ports[(src, dst)]}"
+                checker.append(f"{ports[(src, dst)]}-------{ports[(dst, src)]}")
         elif (src, dst) in ports:
             edge_labels[edge] = f"{ports[(src, dst)]}"
         elif (dst, src) in ports:
@@ -529,8 +534,8 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     data['program'] = "D-1 || C"
     data['channels'] = channels
     
-    in_packets = {"P1toP14": "(pt = 1)"}
-    out_packets = {"P1toP14": "(pt = 14)"}
+    in_packets = {"H1toH5": "(pt = 1)", "H1toH7": "(pt = 1)"}
+    out_packets = {"H1toH5": "(pt = 10)", "H1toH7": "(pt = 14)"}
     
     # all_rcfgs = []
     # all_rcfgs.append('rcfg(event1sendS37596, "one")')
@@ -542,7 +547,11 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     
 
     properties = {
-                  "P1toP14": [
+                  "H1toH5": [
+                               ("r", "(head(@Program))", "!0", 2),
+                               ("r", "(head(tail(@Program, { rcfg(S48230Reqflow1, \"one\") , rcfg(S48230Upflow1, \"pt = 6 . pt <- 7\") })))", "!0", 3)
+                              ],
+                  "H1toH7": [
                                ("r", "(head(@Program))", "=0", 2),
                                ("r", "(head(tail(@Program, { rcfg(S48230Reqflow1, \"one\") , rcfg(S48230Upflow1, \"pt = 6 . pt <- 7\") })))", "=0", 3)
                               ]
