@@ -2,13 +2,14 @@
 
 
 
+--------------------------------------------------
 sudo python fattree.py
 
-
 sudo ./pox/pox.py forwarding.l2_learning openflow.spanning_tree --no-flood --hold-down log.level --DEBUG samples.pretty_log openflow.discovery host_tracker info.packet_dump
+--------------------------------------------------
 
+show flow tables:	dpctl dump-flows     =====> ICMP and arp protocols
 
-show flow tables:	dpctl dump-flows
 
 
 send UDP packets from one host to another:
