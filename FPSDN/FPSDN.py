@@ -521,7 +521,11 @@ def DyNetKAT(topo_graph, packets, expriment_name):
 
 if __name__ == "__main__":
 
-    expriment_name = "fattree_h2h7_h1h5"
+
+    # expriment_name = "h2h8_h5h7_h1h8_h1h7fault"
+    expriment_name = "h2h7_h1h8_h2h8fault"
+
+    # expriment_name = "fattree_h2h7_h1h5"
     # expriment_name = "h1pingh5h7"
     # expriment_name = "h1pingall"
     # expriment_name = "pingall"

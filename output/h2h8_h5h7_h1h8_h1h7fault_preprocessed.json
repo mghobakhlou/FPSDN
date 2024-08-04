@@ -1,0 +1,64 @@
+{
+    "module_name": "h2h8_h5h7_h1h8_h1h7fault",
+    "recursive_variables": {
+        "C": "((S53252Reqflow1 ? \"one\") ; ((S53252Upflow1 ! \"pt = 5 . pt <- 6\") ; C)) o+ ((S53222Reqflow1 ? \"one\") ; ((S53222Upflow1 ! \"pt = 10 . pt <- 8\") ; C)) o+ ((S53322Reqflow1 ? \"one\") ; ((S53322Upflow1 ! \"pt = 12 . pt <- 13\") ; C))",
+        "D-1": "\"((pt = 1 . pt <- 2 + pt = 4 . pt <- 3 + pt = 7 . pt <- 6 + pt = 9 . pt <- 8 + pt = 12 . pt <- 11 + pt = 15 . pt <- 14 + pt = 16 . pt <- 17 + pt = 19 . pt <- 18 + pt = 21 . pt <- 20) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 7) + (pt = 4 . pt <- 2) + (pt = 5) + (pt = 6 . pt <- 9) + (pt = 7 . pt <- 3) + (pt = 8 . pt <- 12) + (pt = 9 . pt <- 6) + (pt = 10 . pt <- 18) + (pt = 11 . pt <- 15) + (pt = 12 . pt <- 8) + (pt = 13 . pt <- 21) + (pt = 14) + (pt = 15 . pt <- 11) + (pt = 16) + (pt = 17 . pt <- 19) + (pt = 18 . pt <- 10) + (pt = 19 . pt <- 17) + (pt = 20) + (pt = 21 . pt <- 13)))) *\" ; D-1 o+ (S53252Reqflow1 ! \"one\") ; D-1 o+ (S53252Upflow1 ? \"pt = 5 . pt <- 6\") ; D-5 o+ (S53222Reqflow1 ! \"one\") ; D-1 o+ (S53222Upflow1 ? \"pt = 10 . pt <- 8\") ; D-3 o+ (S53322Reqflow1 ! \"one\") ; D-1 o+ (S53322Upflow1 ? \"pt = 12 . pt <- 13\") ; D-2",
+        "D-2": "\"((pt = 1 . pt <- 2 + pt = 4 . pt <- 3 + pt = 7 . pt <- 6 + pt = 9 . pt <- 8 + pt = 12 . pt <- 13 + pt = 15 . pt <- 14 + pt = 16 . pt <- 17 + pt = 19 . pt <- 18 + pt = 21 . pt <- 20) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 7) + (pt = 4 . pt <- 2) + (pt = 5) + (pt = 6 . pt <- 9) + (pt = 7 . pt <- 3) + (pt = 8 . pt <- 12) + (pt = 9 . pt <- 6) + (pt = 10 . pt <- 18) + (pt = 11 . pt <- 15) + (pt = 12 . pt <- 8) + (pt = 13 . pt <- 21) + (pt = 14) + (pt = 15 . pt <- 11) + (pt = 16) + (pt = 17 . pt <- 19) + (pt = 18 . pt <- 10) + (pt = 19 . pt <- 17) + (pt = 20) + (pt = 21 . pt <- 13)))) *\" ; D-2 o+ (S53252Reqflow1 ! \"one\") ; D-2 o+ (S53252Upflow1 ? \"pt = 5 . pt <- 6\") ; D-6 o+ (S53222Reqflow1 ! \"one\") ; D-2 o+ (S53222Upflow1 ? \"pt = 10 . pt <- 8\") ; D-4 o+ (S53322Reqflow1 ! \"one\") ; D-2 o+ (S53322Upflow1 ? \"pt = 12 . pt <- 13\") ; D-2",
+        "D-3": "\"((pt = 1 . pt <- 2 + pt = 4 . pt <- 3 + pt = 7 . pt <- 6 + pt = 10 . pt <- 8 + pt = 12 . pt <- 11 + pt = 15 . pt <- 14 + pt = 16 . pt <- 17 + pt = 19 . pt <- 18 + pt = 21 . pt <- 20) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 7) + (pt = 4 . pt <- 2) + (pt = 5) + (pt = 6 . pt <- 9) + (pt = 7 . pt <- 3) + (pt = 8 . pt <- 12) + (pt = 9 . pt <- 6) + (pt = 10 . pt <- 18) + (pt = 11 . pt <- 15) + (pt = 12 . pt <- 8) + (pt = 13 . pt <- 21) + (pt = 14) + (pt = 15 . pt <- 11) + (pt = 16) + (pt = 17 . pt <- 19) + (pt = 18 . pt <- 10) + (pt = 19 . pt <- 17) + (pt = 20) + (pt = 21 . pt <- 13)))) *\" ; D-3 o+ (S53252Reqflow1 ! \"one\") ; D-3 o+ (S53252Upflow1 ? \"pt = 5 . pt <- 6\") ; D-7 o+ (S53222Reqflow1 ! \"one\") ; D-3 o+ (S53222Upflow1 ? \"pt = 10 . pt <- 8\") ; D-3 o+ (S53322Reqflow1 ! \"one\") ; D-3 o+ (S53322Upflow1 ? \"pt = 12 . pt <- 13\") ; D-4",
+        "D-4": "\"((pt = 1 . pt <- 2 + pt = 4 . pt <- 3 + pt = 7 . pt <- 6 + pt = 10 . pt <- 8 + pt = 12 . pt <- 13 + pt = 15 . pt <- 14 + pt = 16 . pt <- 17 + pt = 19 . pt <- 18 + pt = 21 . pt <- 20) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 7) + (pt = 4 . pt <- 2) + (pt = 5) + (pt = 6 . pt <- 9) + (pt = 7 . pt <- 3) + (pt = 8 . pt <- 12) + (pt = 9 . pt <- 6) + (pt = 10 . pt <- 18) + (pt = 11 . pt <- 15) + (pt = 12 . pt <- 8) + (pt = 13 . pt <- 21) + (pt = 14) + (pt = 15 . pt <- 11) + (pt = 16) + (pt = 17 . pt <- 19) + (pt = 18 . pt <- 10) + (pt = 19 . pt <- 17) + (pt = 20) + (pt = 21 . pt <- 13)))) *\" ; D-4 o+ (S53252Reqflow1 ! \"one\") ; D-4 o+ (S53252Upflow1 ? \"pt = 5 . pt <- 6\") ; D-8 o+ (S53222Reqflow1 ! \"one\") ; D-4 o+ (S53222Upflow1 ? \"pt = 10 . pt <- 8\") ; D-4 o+ (S53322Reqflow1 ! \"one\") ; D-4 o+ (S53322Upflow1 ? \"pt = 12 . pt <- 13\") ; D-4",
+        "D-5": "\"((pt = 1 . pt <- 2 + pt = 4 . pt <- 3 + pt = 5 . pt <- 6 + pt = 9 . pt <- 8 + pt = 12 . pt <- 11 + pt = 15 . pt <- 14 + pt = 16 . pt <- 17 + pt = 19 . pt <- 18 + pt = 21 . pt <- 20) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 7) + (pt = 4 . pt <- 2) + (pt = 5) + (pt = 6 . pt <- 9) + (pt = 7 . pt <- 3) + (pt = 8 . pt <- 12) + (pt = 9 . pt <- 6) + (pt = 10 . pt <- 18) + (pt = 11 . pt <- 15) + (pt = 12 . pt <- 8) + (pt = 13 . pt <- 21) + (pt = 14) + (pt = 15 . pt <- 11) + (pt = 16) + (pt = 17 . pt <- 19) + (pt = 18 . pt <- 10) + (pt = 19 . pt <- 17) + (pt = 20) + (pt = 21 . pt <- 13)))) *\" ; D-5 o+ (S53252Reqflow1 ! \"one\") ; D-5 o+ (S53252Upflow1 ? \"pt = 5 . pt <- 6\") ; D-5 o+ (S53222Reqflow1 ! \"one\") ; D-5 o+ (S53222Upflow1 ? \"pt = 10 . pt <- 8\") ; D-7 o+ (S53322Reqflow1 ! \"one\") ; D-5 o+ (S53322Upflow1 ? \"pt = 12 . pt <- 13\") ; D-6",
+        "D-6": "\"((pt = 1 . pt <- 2 + pt = 4 . pt <- 3 + pt = 5 . pt <- 6 + pt = 9 . pt <- 8 + pt = 12 . pt <- 13 + pt = 15 . pt <- 14 + pt = 16 . pt <- 17 + pt = 19 . pt <- 18 + pt = 21 . pt <- 20) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 7) + (pt = 4 . pt <- 2) + (pt = 5) + (pt = 6 . pt <- 9) + (pt = 7 . pt <- 3) + (pt = 8 . pt <- 12) + (pt = 9 . pt <- 6) + (pt = 10 . pt <- 18) + (pt = 11 . pt <- 15) + (pt = 12 . pt <- 8) + (pt = 13 . pt <- 21) + (pt = 14) + (pt = 15 . pt <- 11) + (pt = 16) + (pt = 17 . pt <- 19) + (pt = 18 . pt <- 10) + (pt = 19 . pt <- 17) + (pt = 20) + (pt = 21 . pt <- 13)))) *\" ; D-6 o+ (S53252Reqflow1 ! \"one\") ; D-6 o+ (S53252Upflow1 ? \"pt = 5 . pt <- 6\") ; D-6 o+ (S53222Reqflow1 ! \"one\") ; D-6 o+ (S53222Upflow1 ? \"pt = 10 . pt <- 8\") ; D-8 o+ (S53322Reqflow1 ! \"one\") ; D-6 o+ (S53322Upflow1 ? \"pt = 12 . pt <- 13\") ; D-6",
+        "D-7": "\"((pt = 1 . pt <- 2 + pt = 4 . pt <- 3 + pt = 5 . pt <- 6 + pt = 10 . pt <- 8 + pt = 12 . pt <- 11 + pt = 15 . pt <- 14 + pt = 16 . pt <- 17 + pt = 19 . pt <- 18 + pt = 21 . pt <- 20) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 7) + (pt = 4 . pt <- 2) + (pt = 5) + (pt = 6 . pt <- 9) + (pt = 7 . pt <- 3) + (pt = 8 . pt <- 12) + (pt = 9 . pt <- 6) + (pt = 10 . pt <- 18) + (pt = 11 . pt <- 15) + (pt = 12 . pt <- 8) + (pt = 13 . pt <- 21) + (pt = 14) + (pt = 15 . pt <- 11) + (pt = 16) + (pt = 17 . pt <- 19) + (pt = 18 . pt <- 10) + (pt = 19 . pt <- 17) + (pt = 20) + (pt = 21 . pt <- 13)))) *\" ; D-7 o+ (S53252Reqflow1 ! \"one\") ; D-7 o+ (S53252Upflow1 ? \"pt = 5 . pt <- 6\") ; D-7 o+ (S53222Reqflow1 ! \"one\") ; D-7 o+ (S53222Upflow1 ? \"pt = 10 . pt <- 8\") ; D-7 o+ (S53322Reqflow1 ! \"one\") ; D-7 o+ (S53322Upflow1 ? \"pt = 12 . pt <- 13\") ; D-8",
+        "D-8": "\"((pt = 1 . pt <- 2 + pt = 4 . pt <- 3 + pt = 5 . pt <- 6 + pt = 10 . pt <- 8 + pt = 12 . pt <- 13 + pt = 15 . pt <- 14 + pt = 16 . pt <- 17 + pt = 19 . pt <- 18 + pt = 21 . pt <- 20) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 7) + (pt = 4 . pt <- 2) + (pt = 5) + (pt = 6 . pt <- 9) + (pt = 7 . pt <- 3) + (pt = 8 . pt <- 12) + (pt = 9 . pt <- 6) + (pt = 10 . pt <- 18) + (pt = 11 . pt <- 15) + (pt = 12 . pt <- 8) + (pt = 13 . pt <- 21) + (pt = 14) + (pt = 15 . pt <- 11) + (pt = 16) + (pt = 17 . pt <- 19) + (pt = 18 . pt <- 10) + (pt = 19 . pt <- 17) + (pt = 20) + (pt = 21 . pt <- 13)))) *\" ; D-8 o+ (S53252Reqflow1 ! \"one\") ; D-8 o+ (S53252Upflow1 ? \"pt = 5 . pt <- 6\") ; D-8 o+ (S53222Reqflow1 ! \"one\") ; D-8 o+ (S53222Upflow1 ? \"pt = 10 . pt <- 8\") ; D-8 o+ (S53322Reqflow1 ! \"one\") ; D-8 o+ (S53322Upflow1 ? \"pt = 12 . pt <- 13\") ; D-8"
+    },
+    "program": "D-1 || C",
+    "channels": [
+        "S53252Reqflow1",
+        "S53252Upflow1",
+        "S53222Reqflow1",
+        "S53222Upflow1",
+        "S53322Reqflow1",
+        "S53322Upflow1"
+    ],
+    "in_packets": {
+        "h1toh7": "(pt = 5)"
+    },
+    "out_packets": {
+        "h1toh7": "(pt = 15)"
+    },
+    "properties": {
+        "h1toh7": [
+            [
+                "r",
+                "(head(@Program))",
+                "=0",
+                2
+            ],
+            [
+                "r",
+                "(head(tail(@Program, { rcfg(S51504Reqflow1, \"one\") , rcfg(S51504Upflow1, \"pt = 5 . pt <- 6\") })))",
+                "=0",
+                3
+            ],
+            [
+                "r",
+                "(head(tail(tail(@Program, { rcfg(S51504Reqflow1, \"one\") , rcfg(S51504Upflow1, \"pt = 5 . pt <- 6\") }), { rcfg(S51416Reqflow1, \"one\") , rcfg(S51416Upflow1, \"pt = 11 . pt <- 12\") })))",
+                "=0",
+                5
+            ]
+        ]
+    },
+    "file_name": "h2h8_h5h7_h1h8_h1h7fault.maude",
+    "comm": [
+        "( S53252Reqflow1,\"one\")",
+        "(S53322Reqflow1,\"one\")",
+        "(S53222Reqflow1,\"one\")",
+        "( S53222Upflow1,\"pt = 10 . pt <- 8\")",
+        "( S53322Upflow1,\"pt = 12 . pt <- 13\")",
+        "(S53252Upflow1,\"pt = 5 . pt <- 6\")",
+        "(S53252Reqflow1,\"one\")",
+        "(S53322Upflow1,\"pt = 12 . pt <- 13\")",
+        "(S53222Upflow1, \"pt = 10 . pt <- 8\")",
+        "(S53252Upflow1, \"pt = 5 . pt <- 6\")"
+    ]
+}
