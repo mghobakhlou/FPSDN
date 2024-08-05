@@ -525,7 +525,7 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     #              }
     
 
-    # h2h8_h5h7_h1h8_h1h7fault
+    # h5h7_h1h8_h2h5_h1h8fault --> 3 rcfg
     in_packets = {"h1toh7": "(pt = 5)"}
     out_packets = {"h1toh7": "(pt = 20)"}
     
