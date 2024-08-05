@@ -110,8 +110,8 @@ def save_topo_graph(topo, ports,path):
         src, dst = edge
         reverse_edge = (dst, src)
         if edge not in edge_checker and reverse_edge not in edge_checker and (src, dst) in ports and (dst, src) in ports:
-            print(edge)
-            print(f"{ports[(src, dst)]}--{ports[(dst, src)]}")
+            # print(edge)
+            # print(f"{ports[(src, dst)]}--{ports[(dst, src)]}")
             edge_labels[edge] = f"{ports[(src, dst)]}--{ports[(dst, src)]}"
             edge_checker.append(edge)
             edge_checker.append(reverse_edge)
@@ -456,10 +456,10 @@ def DyNetKAT(topo_graph, packets, expriment_name):
 
     event_iteration = 1
     for k, v in events.items():
-        print("event_iteration: ", event_iteration)
+        # print("event_iteration: ", event_iteration)
         event_iteration += 1
         path = path_event(v)
-        print("path: ", path)
+        # print("path: ", path)
         path_l = len(path)
         for i in range(1, path_l-1):
             sw = path[i]
@@ -501,16 +501,43 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     data['program'] = "D-1 || C"
     data['channels'] = channels
     
+    # # h2h7_h1h8_h2h8fault
+    # in_packets = {"h2toh8": "(pt = 1)"}
+    # out_packets = {"h2toh8": "(pt = 17)"}
+    
+    # properties = {
+    #               "h2toh8": [
+    #                            ("r", "(head(@Program))", "=0", 2),
+    #                            ("r", "(head(tail(@Program, { rcfg(S37208Reqflow1, \"one\") , rcfg(S37208Upflow1, \"pt = 13 . pt <- 14\") })))", "=0", 3)
+    #                         ]
+    #              }
+
+    # # h2h8_h5h7_h1h8_h1h7fault
+    # in_packets = {"h1toh7": "(pt = 5)"}
+    # out_packets = {"h1toh7": "(pt = 20)"}
+    
+    # properties = {
+    #               "h1toh7": [
+    #                            ("r", "(head(@Program))", "=0", 2),
+    #                            ("r", "(head(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") })))", "=0", 3),
+    #                            ("r", "(head(tail(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") }), { rcfg(S53322Reqflow1, \"one\") , rcfg(S53322Upflow1, \"pt = 12 . pt <- 13\") })))", "=0", 5)
+    #                         ]
+    #              }
+    
+
+    # h2h8_h5h7_h1h8_h1h7fault
     in_packets = {"h1toh7": "(pt = 5)"}
-    out_packets = {"h1toh7": "(pt = 15)"}
+    out_packets = {"h1toh7": "(pt = 20)"}
     
     properties = {
                   "h1toh7": [
                                ("r", "(head(@Program))", "=0", 2),
-                               ("r", "(head(tail(@Program, { rcfg(S51504Reqflow1, \"one\") , rcfg(S51504Upflow1, \"pt = 5 . pt <- 6\") })))", "=0", 3),
-                               ("r", "(head(tail(tail(@Program, { rcfg(S51504Reqflow1, \"one\") , rcfg(S51504Upflow1, \"pt = 5 . pt <- 6\") }), { rcfg(S51416Reqflow1, \"one\") , rcfg(S51416Upflow1, \"pt = 11 . pt <- 12\") })))", "=0", 5)
+                               ("r", "(head(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") })))", "=0", 3),
+                               ("r", "(head(tail(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") }), { rcfg(S53322Reqflow1, \"one\") , rcfg(S53322Upflow1, \"pt = 12 . pt <- 13\") })))", "=0", 5)
                             ]
                  }
+    
+
 
 
     data['in_packets'] = in_packets
@@ -522,8 +549,8 @@ def DyNetKAT(topo_graph, packets, expriment_name):
 if __name__ == "__main__":
 
 
-    # expriment_name = "h2h8_h5h7_h1h8_h1h7fault"
-    expriment_name = "h2h7_h1h8_h2h8fault"
+    expriment_name = "h2h8_h5h7_h1h8_h1h7fault"
+    # expriment_name = "h2h7_h1h8_h2h8fault"
 
     # expriment_name = "fattree_h2h7_h1h5"
     # expriment_name = "h1pingh5h7"
