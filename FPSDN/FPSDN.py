@@ -525,17 +525,28 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     #              }
     
 
-    # h5h7_h1h8_h2h5_h1h8fault --> 3 rcfg
-    in_packets = {"h1toh7": "(pt = 5)"}
-    out_packets = {"h1toh7": "(pt = 20)"}
+    # h5h7_h1h8_h2h5_h2h8fault --> 3 rcfg
+    in_packets = {"h2toh8": "(pt = 20)"}
+    out_packets = {"h2toh8": "(pt = 18)"}
     
     properties = {
-                  "h1toh7": [
+                  "h2toh8": [
                                ("r", "(head(@Program))", "=0", 2),
-                               ("r", "(head(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") })))", "=0", 3),
-                               ("r", "(head(tail(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") }), { rcfg(S53322Reqflow1, \"one\") , rcfg(S53322Upflow1, \"pt = 12 . pt <- 13\") })))", "=0", 5)
+                               ("r", "(head(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") })))", "=0", 3),
+                               ("r", "(head(tail(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") }), { rcfg(S44718Reqflow1, \"one\") , rcfg(S44718Upflow1, \"pt = 7 . pt <- 6\") })))", "=0", 5),
+                               ("r", "(head(tail(tail(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") }), { rcfg(S44718Reqflow1, \"one\") , rcfg(S44718Upflow1, \"pt = 7 . pt <- 6\") }), { rcfg(S44784Reqflow1, \"one\") , rcfg(S44784Upflow1, \"pt = 9 . pt <- 10\") })))", "=0", 5)
                             ]
                  }
+    
+    
+    # properties = {
+    #               "h2toh8": [
+    #                            ("r", "(head(@Program))", "=0", 2),
+    #                            ("r", "(head(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") })))", "=0", 3),
+    #                            ("r", "(head(tail(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") }), { rcfg(S44718Reqflow1, \"one\") , rcfg(S44718Upflow1, \"pt = 7 . pt <- 6\") })))", "=0", 5)
+    #                            ("r", "(head(tail(tail(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") }), { rcfg(S44718Reqflow1, \"one\") , rcfg(S44718Upflow1, \"pt = 7 . pt <- 6\") }), { rcfg(S44784Reqflow1, \"one\") , rcfg(S44784Upflow1, \"pt = 9 . pt <- 10\") })))", "=0", 7)
+    #                         ]
+    #              }
     
 
 
@@ -549,7 +560,8 @@ def DyNetKAT(topo_graph, packets, expriment_name):
 if __name__ == "__main__":
 
 
-    expriment_name = "h2h8_h5h7_h1h8_h1h7fault"
+    expriment_name = "h5h7_h1h8_h2h5_h2h8fault"
+    # expriment_name = "h2h8_h5h7_h1h8_h1h7fault"
     # expriment_name = "h2h7_h1h8_h2h8fault"
 
     # expriment_name = "fattree_h2h7_h1h5"

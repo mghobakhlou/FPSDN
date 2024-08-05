@@ -1,0 +1,20 @@
+before rcfg
+1 rcfg -> 44788
+2 rcfg -> 44788 and 44718
+3 rcfg with 5 unfold -> 44788 and 44718 and 44784
+
+
+Packet: h1toh7 - property: #0: property satisfied.
+Packet: h1toh7 - property: #1: property satisfied.
+Packet: h1toh7 - property: #2: property violated.
+DyNetKAT Total time: 24.06 seconds
+DyNetKAT Preprocessing time: 0.54 seconds
+NetKAT time: 0.04 seconds
+
+
+
+
+before rcfg
+1 rcfg -> 44788
+2 rcfg -> 44788 and 44718
+3 rcfg with 7 unfold -> 44788 and 44718 and 44784
