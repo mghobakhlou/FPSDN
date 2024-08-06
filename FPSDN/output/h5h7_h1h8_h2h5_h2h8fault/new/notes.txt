@@ -1,0 +1,25 @@
+before rcfg
+1 rcfg -> 44788
+2 rcfg -> 44788 and 44718
+3 rcfg with 5 unfold -> 44788 and 44718 and 44784
+
+
+Preprocessing + Extraction Rueles time: 60.27 seconds
+
+END Preprocessing and Extraction Rueles - Now we can run DyNetiKAT
+
+
+Packet: h2toh8 - property: #0: property satisfied.
+Packet: h2toh8 - property: #1: property satisfied.
+Packet: h2toh8 - property: #2: property satisfied.
+Packet: h2toh8 - property: #3: property satisfied.
+DyNetKAT Total time: 14142.89 seconds
+DyNetKAT Preprocessing time: 2.81 seconds
+NetKAT time: 0.29 seconds
+
+
+
+before rcfg
+1 rcfg -> 44788
+2 rcfg -> 44788 and 44718
+3 rcfg with 7 unfold -> 44788 and 44718 and 44784

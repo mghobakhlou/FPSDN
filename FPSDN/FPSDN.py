@@ -120,7 +120,7 @@ def save_topo_graph(topo, ports,path):
             edge_checker.append(edge)
             edge_checker.append(reverse_edge)
     
-    seed = 50
+    seed = 65
     random.seed(seed)
     pos = nx.spring_layout(G, seed=seed) 
     # pos = nx.spring_layout(G)  # Define the layout for better visualization
