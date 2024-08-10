@@ -122,6 +122,7 @@ def save_topo_graph(topo, ports,path):
     
     seed = 50
     random.seed(seed)
+    
     pos = nx.spring_layout(G, seed=seed) 
     # pos = nx.spring_layout(G)  # Define the layout for better visualization
 
@@ -131,7 +132,7 @@ def save_topo_graph(topo, ports,path):
 
     
     # Draw edge labels
-    # nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=8, label_pos=0.5)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=13, label_pos=0.5)
     plt.axis('off')
     plt.savefig(path, format="PNG")
     plt.close()  # Close the figure to free up resources
@@ -436,8 +437,6 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     for i in range(n_switch):
         flow_tables["S"+str(switches[i])] = []
 
-    # print("len events: ", len(events))
-    
     forward_flag = True
     forward_events = {}
     response_events = {}

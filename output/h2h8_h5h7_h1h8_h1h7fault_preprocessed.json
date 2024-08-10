@@ -50,15 +50,15 @@
     },
     "file_name": "h2h8_h5h7_h1h8_h1h7fault.maude",
     "comm": [
+        "(S53252Upflow1, \"pt = 5 . pt <- 6\")",
+        "( S53252Reqflow1,\"one\")",
+        "(S53322Reqflow1,\"one\")",
+        "(S53252Reqflow1,\"one\")",
+        "(S53222Upflow1, \"pt = 10 . pt <- 8\")",
         "( S53322Upflow1,\"pt = 12 . pt <- 13\")",
         "(S53322Upflow1,\"pt = 12 . pt <- 13\")",
-        "( S53252Reqflow1,\"one\")",
-        "(S53252Reqflow1,\"one\")",
-        "(S53322Reqflow1,\"one\")",
         "( S53222Upflow1,\"pt = 10 . pt <- 8\")",
         "(S53252Upflow1,\"pt = 5 . pt <- 6\")",
-        "(S53222Upflow1, \"pt = 10 . pt <- 8\")",
-        "(S53252Upflow1, \"pt = 5 . pt <- 6\")",
         "(S53222Reqflow1,\"one\")"
     ]
 }
