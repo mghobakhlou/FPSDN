@@ -13,7 +13,7 @@ Packet: h2toh8 - property: #0: property satisfied.
 Packet: h2toh8 - property: #1: property satisfied.
 Packet: h2toh8 - property: #2: property satisfied.
 Packet: h2toh8 - property: #3: property satisfied.
-DyNetKAT Total time: 14142.89 seconds
+DyNetKAT Total time: 14142.89 seconds   ---> almost 4 h
 DyNetKAT Preprocessing time: 2.81 seconds
 NetKAT time: 0.29 seconds
 
