@@ -14,26 +14,7 @@
         "S37208Reqflow1",
         "S37208Upflow1"
     ],
-    "in_packets": {
-        "h2toh8": "(pt = 1)"
-    },
-    "out_packets": {
-        "h2toh8": "(pt = 17)"
-    },
-    "properties": {
-        "h2toh8": [
-            [
-                "r",
-                "(head(@Program))",
-                "=0",
-                2
-            ],
-            [
-                "r",
-                "(head(tail(@Program, { rcfg(S37208Reqflow1, \"one\") , rcfg(S37208Upflow1, \"pt = 13 . pt <- 14\") })))",
-                "=0",
-                3
-            ]
-        ]
-    }
+    "in_packets": {},
+    "out_packets": {},
+    "properties": {}
 }

@@ -38,9 +38,9 @@
     },
     "file_name": "h2h7_h1h8_h2h8fault.maude",
     "comm": [
+        "( S37208Upflow1,\"pt = 13 . pt <- 14\")",
         "(S37212Upflow1, \"pt = 5 . pt <- 6\")",
         "(S37208Reqflow1,\"one\")",
-        "( S37208Upflow1,\"pt = 13 . pt <- 14\")",
         "(S37212Reqflow1,\"one\")"
     ]
 }

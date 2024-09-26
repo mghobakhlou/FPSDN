@@ -4,34 +4,14 @@ to_switch: 65402
 to_controller: 6633
 openflow_1_0.type: 10
 openflow.xid: 0
-eth.dst: 00:00:00:00:00:01
-eth.src: 00:00:00:00:00:03
+eth.dst: 00:00:00:00:00:03
+eth.src: 00:00:00:00:00:01
+ip.src: 10.0.0.1
+ip.dst: 10.0.0.3
 
 ----------
 
 Packet 2:
-to_switch: 65402
-to_controller: 6633
-openflow_1_0.type: 14
-openflow.xid: 27
-openflow.eth_src: 00:00:00:00:00:03
-openflow.eth_dst: 00:00:00:00:00:01
-openflow.ofp_match.source_addr: 10.0.0.3
-openflow.ofp_match.dest_addr: 10.0.0.1
-
-----------
-
-Packet 3:
-to_switch: 65402
-to_controller: 6633
-openflow_1_0.type: 10
-openflow.xid: 0
-eth.dst: 00:00:00:00:00:03
-eth.src: 00:00:00:00:00:01
-
-----------
-
-Packet 4:
 to_switch: 65402
 to_controller: 6633
 openflow_1_0.type: 14
@@ -43,39 +23,43 @@ openflow.ofp_match.dest_addr: 10.0.0.3
 
 ----------
 
-Packet 5:
+Packet 3:
 to_switch: 65402
 to_controller: 6633
 openflow_1_0.type: 10
 openflow.xid: 0
-eth.dst: 00:00:00:00:00:02
+eth.dst: 00:00:00:00:00:01
 eth.src: 00:00:00:00:00:03
+ip.src: 10.0.0.3
+ip.dst: 10.0.0.1
 
 ----------
 
-Packet 6:
+Packet 4:
 to_switch: 65402
 to_controller: 6633
 openflow_1_0.type: 14
-openflow.xid: 46
+openflow.xid: 33
 openflow.eth_src: 00:00:00:00:00:03
-openflow.eth_dst: 00:00:00:00:00:02
+openflow.eth_dst: 00:00:00:00:00:01
 openflow.ofp_match.source_addr: 10.0.0.3
-openflow.ofp_match.dest_addr: 10.0.0.2
+openflow.ofp_match.dest_addr: 10.0.0.1
 
 ----------
 
-Packet 7:
+Packet 5:
 to_switch: 65402
 to_controller: 6633
 openflow_1_0.type: 10
 openflow.xid: 0
 eth.dst: 00:00:00:00:00:03
 eth.src: 00:00:00:00:00:02
+ip.src: 10.0.0.2
+ip.dst: 10.0.0.3
 
 ----------
 
-Packet 8:
+Packet 6:
 to_switch: 65402
 to_controller: 6633
 openflow_1_0.type: 14
@@ -84,5 +68,29 @@ openflow.eth_src: 00:00:00:00:00:02
 openflow.eth_dst: 00:00:00:00:00:03
 openflow.ofp_match.source_addr: 10.0.0.2
 openflow.ofp_match.dest_addr: 10.0.0.3
+
+----------
+
+Packet 7:
+to_switch: 65402
+to_controller: 6633
+openflow_1_0.type: 10
+openflow.xid: 0
+eth.dst: 00:00:00:00:00:02
+eth.src: 00:00:00:00:00:03
+ip.src: 10.0.0.3
+ip.dst: 10.0.0.2
+
+----------
+
+Packet 8:
+to_switch: 65402
+to_controller: 6633
+openflow_1_0.type: 14
+openflow.xid: 52
+openflow.eth_src: 00:00:00:00:00:03
+openflow.eth_dst: 00:00:00:00:00:02
+openflow.ofp_match.source_addr: 10.0.0.3
+openflow.ofp_match.dest_addr: 10.0.0.2
 
 ----------

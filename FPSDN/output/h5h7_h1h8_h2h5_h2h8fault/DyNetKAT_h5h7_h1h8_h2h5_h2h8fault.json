@@ -66,20 +66,7 @@
         "S44788Reqflow1",
         "S44788Upflow1"
     ],
-    "in_packets": {
-        "h2toh8": "(pt = 20)"
-    },
-    "out_packets": {
-        "h2toh8": "(pt = 18)"
-    },
-    "properties": {
-        "h2toh8": [
-            [
-                "r",
-                "(head(tail(tail(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") }), { rcfg(S44718Reqflow1, \"one\") , rcfg(S44718Upflow1, \"pt = 7 . pt <- 6\") }), { rcfg(S44784Reqflow1, \"one\") , rcfg(S44784Upflow1, \"pt = 9 . pt <- 10\") })))",
-                "=0",
-                7
-            ]
-        ]
-    }
+    "in_packets": {},
+    "out_packets": {},
+    "properties": {}
 }
