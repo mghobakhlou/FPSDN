@@ -10,16 +10,13 @@ import subprocess
 from time import perf_counter
 import gc
 import random
+import re
 
-
-def find_partial_topology(log_file_path):
+def packets_selector(log_file_path):
     try:
         with pyshark.FileCapture(log_file_path, display_filter='openflow_v1') as cap:
             packets_cap = []
             ipsrc_ipdst_sw_type_packet_checker = []
-        
-            numberofins = 0
-            numberofflowmods = 0
 
             for packet in cap:
                 if int(packet.openflow_v1.openflow_1_0_type) == 10 and packet.openflow_v1.get_field_value("ip.src") != None:
@@ -28,42 +25,13 @@ def find_partial_topology(log_file_path):
                     if src_dst_sw_type not in ipsrc_ipdst_sw_type_packet_checker:
                         ipsrc_ipdst_sw_type_packet_checker.append(src_dst_sw_type)
                         packets_cap.append(packet)
-                        numberofins += 1
                 elif int(packet.openflow_v1.openflow_1_0_type) == 14 and packet.openflow_v1.get_field_value("openflow.ofp_match.source_addr").split(".")[0] == "10" and int(packet.openflow_v1.get_field_value("openflow.ofp_match.dl_type")) != 2054:
                     src_dst_sw_type = packet.openflow_v1.get_field_value("openflow.ofp_match.source_addr") + "_" + packet.openflow_v1.get_field_value("openflow.ofp_match.dest_addr") + "_" + packet.tcp.get_field_value("tcp.dstport") + "_" + str(packet.openflow_v1.openflow_1_0_type)
                     # print(src_dst_sw_type)
                     if src_dst_sw_type not in ipsrc_ipdst_sw_type_packet_checker:
                         ipsrc_ipdst_sw_type_packet_checker.append(src_dst_sw_type)
                         packets_cap.append(packet)
-                        numberofflowmods += 1
-            G = nx.DiGraph()
 
-            number_devices = 0
-
-            for packet in packets_cap:
-                if int(packet.openflow_v1.openflow_1_0_type) == 10:
-                    flag_add_edge = False
-        
-                    host_ip = packet.openflow_v1.get_field_value("ip.src")
-                    host_ip = host_ip.split(".")[-1]
-                    switch = packet.tcp.get_field_value("tcp.srcport")
-                    controller = packet.tcp.get_field_value("tcp.dstport")
-
-                    if not(switch in G):
-                        G.add_node(switch, type='switch', controller = controller)
-                        number_devices+=1
-                    if not(host_ip in G):
-                        G.add_node(host_ip, type='host')
-                        number_devices+=1
-                        flag_add_edge = True
-
-                    if flag_add_edge: 
-                        G.add_edge(switch, host_ip)
-                        G.add_edge(host_ip,switch)
-
-        # print(packets_cap[0])
-        # print("......................................")
-        # print(packets_cap[1])
     except FileNotFoundError:
         print(f"Couldn't find the file: {log_file_path}")
         return None
@@ -71,7 +39,36 @@ def find_partial_topology(log_file_path):
         print(f"An unexpected error occurred: {e}")
         return None
     
-    return packets_cap, G
+    return packets_cap
+
+
+
+def find_partial_topology(packets_cap):
+    
+    G = nx.DiGraph()
+    number_devices = 0
+
+    for packet in packets_cap:
+        if int(packet.openflow_v1.openflow_1_0_type) == 10:
+            flag_add_edge = False
+
+            host_ip = packet.openflow_v1.get_field_value("ip.src")
+            host_ip = host_ip.split(".")[-1]
+            switch = packet.tcp.get_field_value("tcp.srcport")
+            controller = packet.tcp.get_field_value("tcp.dstport")
+
+            if not(switch in G):
+                G.add_node(switch, type='switch', controller = controller)
+                number_devices+=1
+            if not(host_ip in G):
+                G.add_node(host_ip, type='host')
+                number_devices+=1
+                flag_add_edge = True
+
+            if flag_add_edge: 
+                G.add_edge(switch, host_ip)
+                G.add_edge(host_ip,switch)
+    return G
 
 def find_topo(partial_topo, packets):
     G = partial_topo
@@ -423,7 +420,7 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     # topology = "TOPO"
     # print("ports: ", ports)
     # topology = "((pt = 1) + (pt = 2 . pt <- 5) + (pt = 4 . pt <- 7) + (pt = 6))"
-    print("topology: ", topology)
+    # print("topology: ", topology)
 
 
     events = find_events(packets)
@@ -500,55 +497,56 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     data['program'] = "D-1 || C"
     data['channels'] = channels
     
-    # # h2h7_h1h8_h2h8fault
-    # in_packets = {"h2toh8": "(pt = 1)"}
-    # out_packets = {"h2toh8": "(pt = 17)"}
+    in_packets = {}
+    out_packets = {}
+    properties = {}
     
-    # properties = {
-    #               "h2toh8": [
-    #                            ("r", "(head(@Program))", "=0", 2),
-    #                            ("r", "(head(tail(@Program, { rcfg(S37208Reqflow1, \"one\") , rcfg(S37208Upflow1, \"pt = 13 . pt <- 14\") })))", "=0", 3)
-    #                         ]
-    #              }
-
-    # # h2h8_h5h7_h1h8_h1h7fault --> 2 rcfg
-    in_packets = {"h1toh7": "(pt = 5)"}
-    out_packets = {"h1toh7": "(pt = 20)"}
+    # if expriment_name == "h2h7_h1h8_h2h8fault":
+    #     print("example1")
+    #     # # h2h7_h1h8_h2h8fault
+    #     in_packets = {"h2toh8": "(pt = 1)"}
+    #     out_packets = {"h2toh8": "(pt = 17)"}
+    #     properties = {
+    #                 "h2toh8": [
+    #                             ("r", "(head(@Program))", "=0", 2),
+    #                             ("r", "(head(tail(@Program, { rcfg(S37208Reqflow1, \"one\") , rcfg(S37208Upflow1, \"pt = 13 . pt <- 14\") })))", "=0", 3)
+    #                             ]
+    #                 }
+    # elif expriment_name == "h2h8_h5h7_h1h8_h1h7fault":
+    #     print("example2")
+    #     # # h2h8_h5h7_h1h8_h1h7fault --> 2 rcfg
+    #     in_packets = {"h1toh7": "(pt = 5)"}
+    #     out_packets = {"h1toh7": "(pt = 20)"}
+    #     properties = {
+    #                 "h1toh7": [
+    #                             ("r", "(head(@Program))", "=0", 2),
+    #                             ("r", "(head(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") })))", "=0", 3),
+    #                             ("r", "(head(tail(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") }), { rcfg(S53322Reqflow1, \"one\") , rcfg(S53322Upflow1, \"pt = 12 . pt <- 13\") })))", "=0", 5)
+    #                             ]
+    #                 }
+    # elif expriment_name == "h5h7_h1h8_h2h5_h2h8fault":
+    #     print("example3")
+    #     # # h5h7_h1h8_h2h5_h2h8fault --> 3 rcfg
+    #     in_packets = {"h2toh8": "(pt = 20)"}
+    #     out_packets = {"h2toh8": "(pt = 18)"}
+        
+    #     # # properties = {
+    #     # #               "h2toh8": [
+    #     # #                            ("r", "(head(@Program))", "=0", 2),
+    #     # #                            ("r", "(head(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") })))", "=0", 3),
+    #     # #                            ("r", "(head(tail(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") }), { rcfg(S44718Reqflow1, \"one\") , rcfg(S44718Upflow1, \"pt = 7 . pt <- 6\") })))", "=0", 5),
+    #     # #                            ("r", "(head(tail(tail(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") }), { rcfg(S44718Reqflow1, \"one\") , rcfg(S44718Upflow1, \"pt = 7 . pt <- 6\") }), { rcfg(S44784Reqflow1, \"one\") , rcfg(S44784Upflow1, \"pt = 9 . pt <- 10\") })))", "=0", 5)
+    #     # #                         ]
+    #     # #              }
+        
+    #     properties = {
+    #                 "h2toh8": [
+    #                             ("r", "(head(@Program))", "=0", 2),
+    #                             ("r", "(head(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") })))", "=0", 3),
+    #                             ("r", "(head(tail(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") }), { rcfg(S44718Reqflow1, \"one\") , rcfg(S44718Upflow1, \"pt = 7 . pt <- 6\") })))", "=0", 5)
+    #                             ]
+    #                 }
     
-    properties = {
-                  "h1toh7": [
-                               ("r", "(head(@Program))", "=0", 2),
-                               ("r", "(head(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") })))", "=0", 3),
-                               ("r", "(head(tail(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") }), { rcfg(S53322Reqflow1, \"one\") , rcfg(S53322Upflow1, \"pt = 12 . pt <- 13\") })))", "=0", 5)
-                            ]
-                 }
-    
-
-    # h5h7_h1h8_h2h5_h2h8fault --> 3 rcfg
-    # in_packets = {"h2toh8": "(pt = 20)"}
-    # out_packets = {"h2toh8": "(pt = 18)"}
-    
-    # # properties = {
-    # #               "h2toh8": [
-    # #                            ("r", "(head(@Program))", "=0", 2),
-    # #                            ("r", "(head(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") })))", "=0", 3),
-    # #                            ("r", "(head(tail(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") }), { rcfg(S44718Reqflow1, \"one\") , rcfg(S44718Upflow1, \"pt = 7 . pt <- 6\") })))", "=0", 5),
-    # #                            ("r", "(head(tail(tail(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") }), { rcfg(S44718Reqflow1, \"one\") , rcfg(S44718Upflow1, \"pt = 7 . pt <- 6\") }), { rcfg(S44784Reqflow1, \"one\") , rcfg(S44784Upflow1, \"pt = 9 . pt <- 10\") })))", "=0", 5)
-    # #                         ]
-    # #              }
-    
-    
-    # properties = {
-    #               "h2toh8": [
-    #                         #    ("r", "(head(@Program))", "=0", 2),
-    #                         #    ("r", "(head(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") })))", "=0", 3),
-    #                         #    ("r", "(head(tail(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") }), { rcfg(S44718Reqflow1, \"one\") , rcfg(S44718Upflow1, \"pt = 7 . pt <- 6\") })))", "=0", 5)
-    #                            ("r", "(head(tail(tail(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") }), { rcfg(S44718Reqflow1, \"one\") , rcfg(S44718Upflow1, \"pt = 7 . pt <- 6\") }), { rcfg(S44784Reqflow1, \"one\") , rcfg(S44784Upflow1, \"pt = 9 . pt <- 10\") })))", "=0", 7)
-    #                         ]
-    #              }
-    
-
-
 
     data['in_packets'] = in_packets
     data['out_packets'] = out_packets
@@ -556,40 +554,120 @@ def DyNetKAT(topo_graph, packets, expriment_name):
 
     return data
 
-if __name__ == "__main__":
+def extraction_exprs(expriment_names):
+
+    extraction_times = []
 
 
-    # expriment_name = "h5h7_h1h8_h2h5_h2h8fault"
+    for i in range(len(expriment_names)):
+        expriment_name = expriment_names[i]
+        print("expriment_name: ", expriment_name)
+        
+        log_file_path = "./FPSDN/data/" + expriment_name + ".pcapng"
+        save_topo_path = "./FPSDN/output/"+ expriment_name +"/" + expriment_name + ".png"
+        after_preprocessing_log_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_After_Preprocessing.txt"
+        ports_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_ports.txt"
+        save_DyNetKAT_path = "./FPSDN/output/"+ expriment_name +"/" + "DyNetKAT_" + expriment_name + ".json"
+
+        
+        topology_preprocessing_start_time = perf_counter()
+        packets_cap = packets_selector(log_file_path)
+        packets = pre_processing(packets_cap)
+        topology_preprocessing_end_time = perf_counter()
+
+        preprocessing_time = topology_preprocessing_end_time - topology_preprocessing_start_time
+        print("preprocessing_time: ", preprocessing_time)
+
+        FPSDN_start = perf_counter()
+        partial_topo = find_partial_topology(packets_cap)
+        topo_graph = find_topo(partial_topo, packets)
+        data = DyNetKAT(topo_graph, packets, expriment_name)
+        FPSDN_end = perf_counter()
+
+        rules_extraction_time = FPSDN_end-FPSDN_start
+
+        extraction_times.append(rules_extraction_time + preprocessing_time)
+
+        print("Rules Extraction Time:", rules_extraction_time)
+        print("Extraction Rules for " + expriment_name + " expriment Done.\n")
+
+        ports = allocate_ports(topo_graph)
+        os.makedirs(os.path.dirname(ports_path), exist_ok=True)
+        ports_file = open(ports_path, "w")
+        ports_file.write(str(ports))
+
+        save_topo_graph(topo_graph, ports,path=save_topo_path)
+        write_log(packets, after_preprocessing_log_path)
+        Save_Json(data, save_DyNetKAT_path)
+
+    draw_results_extraction_exprs(expriment_names, extraction_times)
+
+
+
+    return True
+
+def draw_results_extraction_exprs(expriment_names, extraction_times):
+    n = len(expriment_names)
+    bar_width = 0.1
+    x = range(len(expriment_names))
+
+    plt.bar([p/n for p in x], extraction_times, width=bar_width, label="Total Extraction Time", color='b', align="center")
+    
+    plt.xlabel("Extraction DyNetKAT Rules for Expriments")
+    plt.ylabel("Time (S)")
+    plt.title("Comparison of Total times")
+    plt.xticks([p/n  for p in x],x)
+    # plt.tight_layout()
+    plt.show()
+
+
+def fattree_result():
     expriment_name = "h2h8_h5h7_h1h8_h1h7fault"
-    # expriment_name = "h2h7_h1h8_h2h8fault"
 
-    # expriment_name = "fattree_h2h7_h1h5"
-    # expriment_name = "h1pingh5h7"
-    # expriment_name = "h1pingall"
-    # expriment_name = "pingall"
-    # expriment_name = "h1pingh2"
-    # expriment_name = "linear_3_1"
-    # expriment_name = "linear_10_1_h1h5_h6h10"
-    # expriment_name = "linear_3_1_new"
-    # expriment_name = "linear_4_1"
-    # expriment_name = "linear_3_2_ping_h1s1_h1s3" 
-    # expriment_name = "single3"
-
+    
+    print(expriment_name)
+    
     log_file_path = "./FPSDN/data/" + expriment_name + ".pcapng"
     save_topo_path = "./FPSDN/output/"+ expriment_name +"/" + expriment_name + ".png"
     after_preprocessing_log_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_After_Preprocessing.txt"
     ports_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_ports.txt"
     save_DyNetKAT_path = "./FPSDN/output/"+ expriment_name +"/" + "DyNetKAT_" + expriment_name + ".json"
 
-    FPSDN_start = perf_counter()
-    packets_cap, partial_topo = find_partial_topology(log_file_path)
+    topology_preprocessing_start_time = perf_counter()
+    packets_cap = packets_selector(log_file_path)
     packets = pre_processing(packets_cap)
+    topology_preprocessing_end_time = perf_counter()
+
+    preprocessing_time = topology_preprocessing_end_time - topology_preprocessing_start_time
+
+    FPSDN_start = perf_counter()
+    partial_topo = find_partial_topology(packets_cap)
     topo_graph = find_topo(partial_topo, packets)
     data = DyNetKAT(topo_graph, packets, expriment_name)
-
     FPSDN_end = perf_counter()
 
-    print("\nPreprocessing + Extraction Rueles time: {:.2f} seconds\n".format(FPSDN_end-FPSDN_start))
+    rules_extraction_time = FPSDN_end-FPSDN_start
+
+    total_extraction_time = preprocessing_time + rules_extraction_time
+
+    maude_path = "./maude-3.1/maude.linux64"
+    netkat_katbv_path = "./netkat/_build/install/default/bin/katbv"
+    example_path = save_DyNetKAT_path
+
+
+    in_packets = {"h1toh7": "(pt = 5)"}
+    out_packets = {"h1toh7": "(pt = 20)"}
+    properties = {
+            "h1toh7": [
+                         ("r", "(head(@Program))", "=0", 2),
+                        ("r", "(head(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") })))", "=0", 3),
+                        ("r", "(head(tail(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") }), { rcfg(S53322Reqflow1, \"one\") , rcfg(S53322Upflow1, \"pt = 12 . pt <- 13\") })))", "=0", 5)
+                        ]
+            }
+
+    data['in_packets'] = in_packets
+    data['out_packets'] = out_packets
+    data['properties'] = properties
 
 
     ports = allocate_ports(topo_graph)
@@ -599,21 +677,142 @@ if __name__ == "__main__":
 
     save_topo_graph(topo_graph, ports,path=save_topo_path)
     write_log(packets, after_preprocessing_log_path)
+    Save_Json(data, save_DyNetKAT_path)
 
-    
 
     Save_Json(data, save_DyNetKAT_path)
 
-    print("END Preprocessing and Extraction Rueles - Now we can run DyNetiKAT\n")
+    DyNetiKAT_output = subprocess.run(["python3", "dnk.py", "--time-stats" , maude_path, netkat_katbv_path, example_path],
+                                    capture_output=True, text=True)
+    output = DyNetiKAT_output.stdout.strip()
+
+    print(output)
+    match_value = re.search(r'DyNetKAT Total time: (\d+.\d+) seconds', output)
+    DyNetKat_total_time = float(match_value.group(1))
+
+    times = []
+    times.append(total_extraction_time)
+    times.append(DyNetKat_total_time)
+
+    print(times)
+
+    draw_results(times)
 
 
-    maude_path = "./maude-3.1/maude.linux64"
-    netkat_katbv_path = "./netkat/_build/install/default/bin/katbv"
-    example_path = save_DyNetKAT_path
-    # example_path = "./FPSDN/output/"+ expriment_name +"/" + "DyNetKAT_" + expriment_name + ".json"
 
+def draw_results(times):
+    n = len(times)
+    bar_width = 0.1
+    x = range(len(times))
 
-    DyNetiKAT_results = subprocess.run(["python3", "dnk.py", "--time-stats" , maude_path, netkat_katbv_path, example_path])
+    plt.bar([p/n for p in x], times, width=bar_width, label="Total Extraction Time", color='g', align="center")
+
     
+    plt.xlabel("Examples")
+    plt.ylabel("Time (Seconds)")
+    plt.title("Comparison of Total times")
+    plt.xticks([p/n for p in x],x)
+    plt.tight_layout()
+    plt.show()
 
 
+
+if __name__ == "__main__":
+
+    expriment_names = ["single3", "linear_4_1", "linear_10_1_h1h5_h6h10", "h2h7_h1h8_h2h8fault", "h2h8_h5h7_h1h8_h1h7fault"]
+    # extraction_times = [1.22, 4.45, 25.55, 46.23, 63.86]
+    # draw_results_extraction_exprs(expriment_names, extraction_times)
+
+    # TODO
+    # extraction_exprs(expriment_names)
+    fattree_result()
+
+
+
+
+    # expriment_names = ["h2h7_h1h8_h2h8fault", "h2h8_h5h7_h1h8_h1h7fault", "h5h7_h1h8_h2h5_h2h8fault"]
+
+
+    # # expriment_name = "h5h7_h1h8_h2h5_h2h8fault"
+    # # expriment_name = "h2h8_h5h7_h1h8_h1h7fault"
+    # # expriment_name = "h2h7_h1h8_h2h8fault"
+
+    # # expriment_name = "fattree_h2h7_h1h5"
+    # # expriment_name = "h1pingh5h7"
+    # # expriment_name = "h1pingall"
+    # # expriment_name = "pingall"
+    # # expriment_name = "h1pingh2"
+    # # expriment_name = "linear_3_1"
+    # # expriment_name = "linear_10_1_h1h5_h6h10"
+    # # expriment_name = "linear_3_1_new"
+    # # expriment_name = "linear_4_1"
+    # # expriment_name = "linear_3_2_ping_h1s1_h1s3" 
+    # # expriment_name = "single3"
+
+    # extraction_times = []
+    # DyNetKat_times = []
+
+    # for i in range(len(expriment_names)):
+    #     expriment_name = expriment_names[i]
+    #     print(expriment_name)
+        
+    #     log_file_path = "./FPSDN/data/" + expriment_name + ".pcapng"
+    #     save_topo_path = "./FPSDN/output/"+ expriment_name +"/" + expriment_name + ".png"
+    #     after_preprocessing_log_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_After_Preprocessing.txt"
+    #     ports_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_ports.txt"
+    #     save_DyNetKAT_path = "./FPSDN/output/"+ expriment_name +"/" + "DyNetKAT_" + expriment_name + ".json"
+
+    #     topology_preprocessing_start_time = perf_counter()
+    #     packets_cap = packets_selector(log_file_path)
+    #     packets = pre_processing(packets_cap)
+    #     topology_preprocessing_end_time = perf_counter()
+
+    #     preprocessing_time = topology_preprocessing_end_time - topology_preprocessing_start_time
+    #     print("preprocessing_time: ", preprocessing_time)
+
+    #     FPSDN_start = perf_counter()
+    #     partial_topo = find_partial_topology(packets_cap)
+    #     topo_graph = find_topo(partial_topo, packets)
+    #     data = DyNetKAT(topo_graph, packets, expriment_name)
+    #     FPSDN_end = perf_counter()
+
+    #     rules_extraction_time = FPSDN_end-FPSDN_start
+    #     print("Rules Extraction Time:", rules_extraction_time)
+
+
+    #     ports = allocate_ports(topo_graph)
+    #     os.makedirs(os.path.dirname(ports_path), exist_ok=True)
+    #     ports_file = open(ports_path, "w")
+    #     ports_file.write(str(ports))
+
+    #     save_topo_graph(topo_graph, ports,path=save_topo_path)
+    #     write_log(packets, after_preprocessing_log_path)
+    #     Save_Json(data, save_DyNetKAT_path)
+
+    #     print("END Preprocessing and Extraction Rueles - Now we can run DyNetiKAT\n")
+
+
+    #     maude_path = "./maude-3.1/maude.linux64"
+    #     netkat_katbv_path = "./netkat/_build/install/default/bin/katbv"
+    #     example_path = save_DyNetKAT_path
+
+    #     DyNetiKAT_output = subprocess.run(["python3", "dnk.py", "--time-stats" , maude_path, netkat_katbv_path, example_path],
+    #                                     capture_output=True, text=True)
+    #     output = DyNetiKAT_output.stdout.strip()
+        
+    #     # print(output)
+
+    #     match_value = re.search(r'DyNetKAT Total time: (\d+.\d+) seconds', output)
+    #     DyNetKat_total_time = float(match_value.group(1))
+
+    #     print("DyNetKat_total_time: ", DyNetKat_total_time)
+
+    #     extraction_time = preprocessing_time + rules_extraction_time
+
+    #     extraction_times.append(extraction_time)
+    #     DyNetKat_times.append(DyNetKat_total_time)
+
+
+    # draw_results(extraction_times, DyNetKat_times)
+
+    
