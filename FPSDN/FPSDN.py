@@ -21,17 +21,14 @@ def packets_selector(log_file_path):
             for packet in cap:
                 if int(packet.openflow_v1.openflow_1_0_type) == 10 and packet.openflow_v1.get_field_value("ip.src") != None:
                     src_dst_sw_type = packet.openflow_v1.get_field_value("ip.src") + "_" + packet.openflow_v1.get_field_value("ip.dst") + "_" + packet.tcp.get_field_value("tcp.srcport") + "_" + str(packet.openflow_v1.openflow_1_0_type)
-                    # print(src_dst_sw_type)
                     if src_dst_sw_type not in ipsrc_ipdst_sw_type_packet_checker:
                         ipsrc_ipdst_sw_type_packet_checker.append(src_dst_sw_type)
                         packets_cap.append(packet)
                 elif int(packet.openflow_v1.openflow_1_0_type) == 14 and packet.openflow_v1.get_field_value("openflow.ofp_match.source_addr").split(".")[0] == "10" and int(packet.openflow_v1.get_field_value("openflow.ofp_match.dl_type")) != 2054:
                     src_dst_sw_type = packet.openflow_v1.get_field_value("openflow.ofp_match.source_addr") + "_" + packet.openflow_v1.get_field_value("openflow.ofp_match.dest_addr") + "_" + packet.tcp.get_field_value("tcp.dstport") + "_" + str(packet.openflow_v1.openflow_1_0_type)
-                    # print(src_dst_sw_type)
                     if src_dst_sw_type not in ipsrc_ipdst_sw_type_packet_checker:
                         ipsrc_ipdst_sw_type_packet_checker.append(src_dst_sw_type)
                         packets_cap.append(packet)
-
     except FileNotFoundError:
         print(f"Couldn't find the file: {log_file_path}")
         return None
@@ -51,7 +48,6 @@ def find_partial_topology(packets_cap):
     for packet in packets_cap:
         if int(packet.openflow_v1.openflow_1_0_type) == 10:
             flag_add_edge = False
-
             host_ip = packet.openflow_v1.get_field_value("ip.src")
             host_ip = host_ip.split(".")[-1]
             switch = packet.tcp.get_field_value("tcp.srcport")
@@ -86,7 +82,6 @@ def find_topo(partial_topo, packets):
     return G
 
 def save_topo_graph(topo, ports,path):
-
     G = topo
     color_map = []
     for node in list(G.nodes()):
@@ -94,10 +89,7 @@ def save_topo_graph(topo, ports,path):
             color_map.append('pink')
         else: 
             color_map.append('lightblue')
-    
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    
-   
     
     # Prepare edge labels with port information
     edge_labels = {}
@@ -107,8 +99,6 @@ def save_topo_graph(topo, ports,path):
         src, dst = edge
         reverse_edge = (dst, src)
         if edge not in edge_checker and reverse_edge not in edge_checker and (src, dst) in ports and (dst, src) in ports:
-            # print(edge)
-            # print(f"{ports[(src, dst)]}--{ports[(dst, src)]}")
             edge_labels[edge] = f"{ports[(src, dst)]}--{ports[(dst, src)]}"
             edge_checker.append(edge)
             edge_checker.append(reverse_edge)
@@ -168,12 +158,6 @@ def allocate_ports(topo):
             for n in topo.neighbors(node):
                 ports[(node,n)] = counter 
                 counter += 1
-                # if topo.nodes[n]["type"] == "host":
-                #     ports[(node,n)] = n
-                # else:
-                #     ports[(node,n)] = port_counter_for_switches
-                #     port_counter_for_switches +=1
-    # print("ports: ", ports)
     return ports
 
 def string_topo(topo,ports):
@@ -192,9 +176,6 @@ def string_topo(topo,ports):
     
 def sorted_packets(packets_cap):
     # Sort packets based on packet_in and corresponding response after that
-
-
-    # Convert capture to a list to allow indexing
     packets = packets_cap
     
     sorted_packets = []
@@ -217,17 +198,8 @@ def sorted_packets(packets_cap):
     return sorted_packets
 
 def pre_processing(packets_cap):
-    # packets = sorted_packets(packets_cap) 
  
     packets = packets_cap
-    # print(len(packets))  
-
-    
-    # important_fields = ["openflow_1_0.type", "openflow.xid", "openflow.in_port", "openflow.eth_src",
-    #                 "openflow.eth_dst", "openflow.dl_vlan", "openflow.ofp_match.dl_type", "openflow.ofp_match.nw_proto", 
-    #                 "openflow.ofp_match.source_addr", "openflow.ofp_match.dest_addr", "openflow.ofp_match.source_port",
-    #                 "openflow.ofp_match.dest_port", "openflow.command", "openflow.reason", "openflow.priority", "eth.src", "eth.dst",
-    #                 "openflow.action_typ"]
 
     important_fields = ["openflow_1_0.type", "openflow.xid", "openflow.eth_src",
                     "openflow.eth_dst", "openflow.ofp_match.source_addr", 
@@ -320,7 +292,6 @@ def calculate_recursive_variables(initial_policy, topology, flow_tables, C):
 
     combinations = list(it.product(*(merged_dict[x] for x in merged_dict.keys())))
 
-    # print(merged_dict)
     channels = []
     id_dict = {}
     comms = {}
@@ -417,14 +388,8 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     ports = allocate_ports(topo_graph)
     topo_str = string_topo(topo_graph, ports)
     topology = topo_str
-    # topology = "TOPO"
-    # print("ports: ", ports)
-    # topology = "((pt = 1) + (pt = 2 . pt <- 5) + (pt = 4 . pt <- 7) + (pt = 6))"
-    # print("topology: ", topology)
-
 
     events = find_events(packets)
-
 
     policy = {}
     for i in range(n_switch):
@@ -444,18 +409,13 @@ def DyNetKAT(topo_graph, packets, expriment_name):
         else:
             response_events[k] = v
             forward_flag = True
-    
-    # print("len(forward)", len(forward_events))
-    # print("len(response)", len(response_events))
 
     events = forward_events
 
     event_iteration = 1
     for k, v in events.items():
-        # print("event_iteration: ", event_iteration)
         event_iteration += 1
         path = path_event(v)
-        # print("path: ", path)
         path_l = len(path)
         for i in range(1, path_l-1):
             sw = path[i]
@@ -468,18 +428,6 @@ def DyNetKAT(topo_graph, packets, expriment_name):
                     policy["S"+sw] = rule
                 elif policy["S"+sw] != rule:
                     flow_tables["S"+sw].append(rule)
-
-
-    # return None
-    # n_combinations = 1
-    # print("flow tables:")
-    # for k, v in flow_tables.items():
-    #     n_combinations = n_combinations * (len(v)+1)
-    #     print(k, " --> policy: ", policy[k])
-    #     print(k, " --> number of rules: ", len(v), " rules: ",v)
-    
-    # print("n_combinations: ", n_combinations)
-
 
 
     C = ""
@@ -501,52 +449,6 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     out_packets = {}
     properties = {}
     
-    # if expriment_name == "h2h7_h1h8_h2h8fault":
-    #     print("example1")
-    #     # # h2h7_h1h8_h2h8fault
-    #     in_packets = {"h2toh8": "(pt = 1)"}
-    #     out_packets = {"h2toh8": "(pt = 17)"}
-    #     properties = {
-    #                 "h2toh8": [
-    #                             ("r", "(head(@Program))", "=0", 2),
-    #                             ("r", "(head(tail(@Program, { rcfg(S37208Reqflow1, \"one\") , rcfg(S37208Upflow1, \"pt = 13 . pt <- 14\") })))", "=0", 3)
-    #                             ]
-    #                 }
-    # elif expriment_name == "h2h8_h5h7_h1h8_h1h7fault":
-    #     print("example2")
-    #     # # h2h8_h5h7_h1h8_h1h7fault --> 2 rcfg
-    #     in_packets = {"h1toh7": "(pt = 5)"}
-    #     out_packets = {"h1toh7": "(pt = 20)"}
-    #     properties = {
-    #                 "h1toh7": [
-    #                             ("r", "(head(@Program))", "=0", 2),
-    #                             ("r", "(head(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") })))", "=0", 3),
-    #                             ("r", "(head(tail(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") }), { rcfg(S53322Reqflow1, \"one\") , rcfg(S53322Upflow1, \"pt = 12 . pt <- 13\") })))", "=0", 5)
-    #                             ]
-    #                 }
-    # elif expriment_name == "h5h7_h1h8_h2h5_h2h8fault":
-    #     print("example3")
-    #     # # h5h7_h1h8_h2h5_h2h8fault --> 3 rcfg
-    #     in_packets = {"h2toh8": "(pt = 20)"}
-    #     out_packets = {"h2toh8": "(pt = 18)"}
-        
-    #     # # properties = {
-    #     # #               "h2toh8": [
-    #     # #                            ("r", "(head(@Program))", "=0", 2),
-    #     # #                            ("r", "(head(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") })))", "=0", 3),
-    #     # #                            ("r", "(head(tail(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") }), { rcfg(S44718Reqflow1, \"one\") , rcfg(S44718Upflow1, \"pt = 7 . pt <- 6\") })))", "=0", 5),
-    #     # #                            ("r", "(head(tail(tail(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") }), { rcfg(S44718Reqflow1, \"one\") , rcfg(S44718Upflow1, \"pt = 7 . pt <- 6\") }), { rcfg(S44784Reqflow1, \"one\") , rcfg(S44784Upflow1, \"pt = 9 . pt <- 10\") })))", "=0", 5)
-    #     # #                         ]
-    #     # #              }
-        
-    #     properties = {
-    #                 "h2toh8": [
-    #                             ("r", "(head(@Program))", "=0", 2),
-    #                             ("r", "(head(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") })))", "=0", 3),
-    #                             ("r", "(head(tail(tail(@Program, { rcfg(S44788Reqflow1, \"one\") , rcfg(S44788Upflow1, \"pt = 15 . pt <- 14\") }), { rcfg(S44718Reqflow1, \"one\") , rcfg(S44718Upflow1, \"pt = 7 . pt <- 6\") })))", "=0", 5)
-    #                             ]
-    #                 }
-    
 
     data['in_packets'] = in_packets
     data['out_packets'] = out_packets
@@ -554,10 +456,10 @@ def DyNetKAT(topo_graph, packets, expriment_name):
 
     return data
 
-def extraction_exprs(expriment_names):
+def extraction_expriments(expriment_names):
 
+    preprocesssing_times = []
     extraction_times = []
-
 
     for i in range(len(expriment_names)):
         expriment_name = expriment_names[i]
@@ -586,7 +488,11 @@ def extraction_exprs(expriment_names):
 
         rules_extraction_time = FPSDN_end-FPSDN_start
 
-        extraction_times.append(rules_extraction_time + preprocessing_time)
+        preprocessing_time = float("{:.2f}".format(preprocessing_time))
+        rules_extraction_time = float("{:.2f}".format(rules_extraction_time*1000))
+
+        preprocesssing_times.append(preprocessing_time)
+        extraction_times.append(rules_extraction_time)
 
         print("Rules Extraction Time:", rules_extraction_time)
         print("Extraction Rules for " + expriment_name + " expriment Done.\n")
@@ -600,11 +506,30 @@ def extraction_exprs(expriment_names):
         write_log(packets, after_preprocessing_log_path)
         Save_Json(data, save_DyNetKAT_path)
 
+    print("preprocesssing_times: ", preprocesssing_times)
+    print("extraction_times", extraction_times)
+    draw_results_preprocessingtime_exprs(expriment_names, preprocesssing_times)
     draw_results_extraction_exprs(expriment_names, extraction_times)
 
-
-
     return True
+
+def draw_results_preprocessingtime_exprs(expriment_names, times):
+    n = len(expriment_names)
+    bar_width = 0.1
+    x = range(len(expriment_names))
+
+    plt.bar([p/n for p in x], times, width=bar_width, color='b', align="center")
+    
+    plt.xlabel("Preprocessing Time")
+    plt.ylabel("Time (S)")
+    plt.xticks([p/n  for p in x],expriment_names)
+
+    for i in x:
+        plt.text(i/n, times[i] + 0.1, str(times[i]), ha='center',  color = 'black', fontweight = 'bold')
+        
+    path = "./FPSDN/output/result1.png"
+    plt.savefig(path, format="PNG")
+    plt.close()
 
 def draw_results_extraction_exprs(expriment_names, extraction_times):
     n = len(expriment_names)
@@ -613,18 +538,23 @@ def draw_results_extraction_exprs(expriment_names, extraction_times):
 
     plt.bar([p/n for p in x], extraction_times, width=bar_width, label="Total Extraction Time", color='b', align="center")
     
-    plt.xlabel("Extraction DyNetKAT Rules for Expriments")
-    plt.ylabel("Time (S)")
-    plt.title("Comparison of Total times")
-    plt.xticks([p/n  for p in x],x)
-    # plt.tight_layout()
-    plt.show()
+    plt.xlabel("DyNetKAT Rules Extraction Time")
+    plt.ylabel("Time (mS)")
+    plt.xticks([p/n  for p in x],expriment_names)
+
+    for i in x:
+        plt.text(i/n, extraction_times[i] + 0.01, str(extraction_times[i]), ha='center',  color = 'black', fontweight = 'bold')
+
+    path = "./FPSDN/output/result2.png"
+    plt.savefig(path, format="PNG")
+    plt.close()
+
+
+
 
 
 def fattree_result():
-    expriment_name = "h2h8_h5h7_h1h8_h1h7fault"
-
-    
+    expriment_name = "Fattree_2"
     print(expriment_name)
     
     log_file_path = "./FPSDN/data/" + expriment_name + ".pcapng"
@@ -650,11 +580,14 @@ def fattree_result():
 
     total_extraction_time = preprocessing_time + rules_extraction_time
 
+    total_extraction_time = float("{:.2f}".format(total_extraction_time))
+
     maude_path = "./maude-3.1/maude.linux64"
     netkat_katbv_path = "./netkat/_build/install/default/bin/katbv"
     example_path = save_DyNetKAT_path
 
 
+    # h2h8_h5h7_h1h8_h1h7fault ---> Fattree_2
     in_packets = {"h1toh7": "(pt = 5)"}
     out_packets = {"h1toh7": "(pt = 20)"}
     properties = {
@@ -689,6 +622,7 @@ def fattree_result():
     print(output)
     match_value = re.search(r'DyNetKAT Total time: (\d+.\d+) seconds', output)
     DyNetKat_total_time = float(match_value.group(1))
+    DyNetKat_total_time = float("{:.2f}".format(DyNetKat_total_time))
 
     times = []
     times.append(total_extraction_time)
@@ -703,51 +637,39 @@ def fattree_result():
 def draw_results(times):
     n = len(times)
     bar_width = 0.1
-    x = range(len(times))
+    x = [0.1, 0.3]
 
-    plt.bar([p/n for p in x], times, width=bar_width, label="Total Extraction Time", color='g', align="center")
+    plt.bar([p for p in x], times, width=bar_width, label="Total Extraction Time", color='g', align="center")
 
-    
-    plt.xlabel("Examples")
+    plt.xlabel("")
     plt.ylabel("Time (Seconds)")
-    plt.title("Comparison of Total times")
-    plt.xticks([p/n for p in x],x)
-    plt.tight_layout()
-    plt.show()
+    xticks_label = ["Extraction Time", "DyNetKAT Time"]
+    plt.xticks([p for p in x],xticks_label)
+
+    for i in range(len(x)):
+        plt.text(x[i], times[i] + 0.1, str(times[i]), ha='center',  color = 'black', fontweight = 'bold')
+
+    path = "./FPSDN/output/result3.png"
+    plt.savefig(path, format="PNG")
+    plt.close()
+
 
 
 
 if __name__ == "__main__":
 
-    expriment_names = ["single3", "linear_4_1", "linear_10_1_h1h5_h6h10", "h2h7_h1h8_h2h8fault", "h2h8_h5h7_h1h8_h1h7fault"]
-    # extraction_times = [1.22, 4.45, 25.55, 46.23, 63.86]
-    # draw_results_extraction_exprs(expriment_names, extraction_times)
+    expriment_names = ["Linear_4switch", "Linear_10switch", "Fattree_1", "Fattree_2"]
 
-    # TODO
-    # extraction_exprs(expriment_names)
+    # extraction_expriments(expriment_names)
     fattree_result()
 
 
+    # # expriment_name = "Fattree_2"
+    # # expriment_name = "Fattree_1"
+    # # expriment_name = "Fattree_3"
+    # # expriment_name = "linear_10switch"
+    # # expriment_name = "linear_4switch"
 
-
-    # expriment_names = ["h2h7_h1h8_h2h8fault", "h2h8_h5h7_h1h8_h1h7fault", "h5h7_h1h8_h2h5_h2h8fault"]
-
-
-    # # expriment_name = "h5h7_h1h8_h2h5_h2h8fault"
-    # # expriment_name = "h2h8_h5h7_h1h8_h1h7fault"
-    # # expriment_name = "h2h7_h1h8_h2h8fault"
-
-    # # expriment_name = "fattree_h2h7_h1h5"
-    # # expriment_name = "h1pingh5h7"
-    # # expriment_name = "h1pingall"
-    # # expriment_name = "pingall"
-    # # expriment_name = "h1pingh2"
-    # # expriment_name = "linear_3_1"
-    # # expriment_name = "linear_10_1_h1h5_h6h10"
-    # # expriment_name = "linear_3_1_new"
-    # # expriment_name = "linear_4_1"
-    # # expriment_name = "linear_3_2_ping_h1s1_h1s3" 
-    # # expriment_name = "single3"
 
     # extraction_times = []
     # DyNetKat_times = []
