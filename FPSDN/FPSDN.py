@@ -1,6 +1,5 @@
 import os
 import pyshark
-import pickle
 import json
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -8,9 +7,12 @@ from collections import OrderedDict
 import itertools as it
 import subprocess
 from time import perf_counter
-import gc
 import random
 import re
+import optparse
+import sys
+
+
 
 def packets_selector(log_file_path):
     try:
@@ -456,7 +458,8 @@ def DyNetKAT(topo_graph, packets, expriment_name):
 
     return data
 
-def extraction_expriments(expriment_names):
+def extraction_expriments():
+    expriment_names = ["Linear_4switch", "Linear_10switch", "Fattree_1", "Fattree_2"]
 
     preprocesssing_times = []
     extraction_times = []
@@ -553,22 +556,25 @@ def draw_results_extraction_exprs(expriment_names, extraction_times):
 
 
 
-def fattree_result():
+def fattree_result(maude_path, netkat_katbv_path):
     expriment_name = "Fattree_2"
-    print(expriment_name)
+    print("Expriment Name: ", expriment_name)
     
     log_file_path = "./FPSDN/data/" + expriment_name + ".pcapng"
     save_topo_path = "./FPSDN/output/"+ expriment_name +"/" + expriment_name + ".png"
     after_preprocessing_log_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_After_Preprocessing.txt"
     ports_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_ports.txt"
     save_DyNetKAT_path = "./FPSDN/output/"+ expriment_name +"/" + "DyNetKAT_" + expriment_name + ".json"
-
+    
+    print("Preprocessing...")
     topology_preprocessing_start_time = perf_counter()
     packets_cap = packets_selector(log_file_path)
     packets = pre_processing(packets_cap)
     topology_preprocessing_end_time = perf_counter()
 
     preprocessing_time = topology_preprocessing_end_time - topology_preprocessing_start_time
+    preprocessing_time = float("{:.2f}".format(preprocessing_time))
+    print("Preprocessing Done. Total Preprocessing time: ", preprocessing_time)
 
     FPSDN_start = perf_counter()
     partial_topo = find_partial_topology(packets_cap)
@@ -577,13 +583,15 @@ def fattree_result():
     FPSDN_end = perf_counter()
 
     rules_extraction_time = FPSDN_end-FPSDN_start
+    rules_extraction_time = float("{:.4f}".format(rules_extraction_time))
+    print("DyNetKAT Rules Extraction Done. Total DyNetKAT Rules Extraction time: ", rules_extraction_time)
 
     total_extraction_time = preprocessing_time + rules_extraction_time
 
     total_extraction_time = float("{:.2f}".format(total_extraction_time))
 
-    maude_path = "./maude-3.1/maude.linux64"
-    netkat_katbv_path = "./netkat/_build/install/default/bin/katbv"
+    # maude_path = "./maude-3.1/maude.linux64"
+    # netkat_katbv_path = "./netkat/_build/install/default/bin/katbv"
     example_path = save_DyNetKAT_path
 
 
@@ -612,8 +620,7 @@ def fattree_result():
     write_log(packets, after_preprocessing_log_path)
     Save_Json(data, save_DyNetKAT_path)
 
-
-    Save_Json(data, save_DyNetKAT_path)
+    print("Checking DyNetKAT Properties...")
 
     DyNetiKAT_output = subprocess.run(["python3", "dnk.py", "--time-stats" , maude_path, netkat_katbv_path, example_path],
                                     capture_output=True, text=True)
@@ -625,10 +632,10 @@ def fattree_result():
     DyNetKat_total_time = float("{:.2f}".format(DyNetKat_total_time))
 
     times = []
-    times.append(total_extraction_time)
+    times.append(preprocessing_time)
+    times.append(rules_extraction_time)
     times.append(DyNetKat_total_time)
 
-    print(times)
 
     draw_results(times)
 
@@ -636,105 +643,138 @@ def fattree_result():
 
 def draw_results(times):
     n = len(times)
-    bar_width = 0.1
-    x = [0.1, 0.3]
+    bar_width = 0.05
+    x = [0.1, 0.3, 0.5]
 
     plt.bar([p for p in x], times, width=bar_width, label="Total Extraction Time", color='g', align="center")
 
     plt.xlabel("")
-    plt.ylabel("Time (Seconds)")
-    xticks_label = ["Extraction Time", "DyNetKAT Time"]
+    plt.ylabel("Time (s)")
+    xticks_label = ["Preprocessing Time", "DyNetKAT Extraction Time","DyNetKAT Time"]
     plt.xticks([p for p in x],xticks_label)
+    plt.yscale('log')
 
     for i in range(len(x)):
-        plt.text(x[i], times[i] + 0.1, str(times[i]), ha='center',  color = 'black', fontweight = 'bold')
+        if i == 1:
+            plt.text(x[i], times[i] + 0.0001, str(times[i]), ha='center',  color = 'black', fontweight = 'bold')
+        else:
+            plt.text(x[i], times[i] + 0.1, str(times[i]), ha='center',  color = 'black', fontweight = 'bold')
+   
 
     path = "./FPSDN/output/result3.png"
     plt.savefig(path, format="PNG")
     plt.close()
 
+def is_json(fpath):
+    return len(fpath) > 5 and fpath[-5:] == ".json"
+
+def is_exe(fpath):
+    return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+
+def extraction_from_logfile(logfile_path):
+    expriment_name = logfile_path.split(".")[0]
+
+    print(expriment_name)
+    
+    log_file_path = logfile_path
+    save_topo_path = "./FPSDN/output/"+ expriment_name +"/" + expriment_name + ".png"
+    after_preprocessing_log_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_After_Preprocessing.txt"
+    ports_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_ports.txt"
+    save_DyNetKAT_path = "./FPSDN/output/"+ expriment_name +"/" + "DyNetKAT_" + expriment_name + ".json"
+
+    topology_preprocessing_start_time = perf_counter()
+    packets_cap = packets_selector(log_file_path)
+    packets = pre_processing(packets_cap)
+    topology_preprocessing_end_time = perf_counter()
+
+    preprocessing_time = topology_preprocessing_end_time - topology_preprocessing_start_time
+
+    FPSDN_start = perf_counter()
+    partial_topo = find_partial_topology(packets_cap)
+    topo_graph = find_topo(partial_topo, packets)
+    data = DyNetKAT(topo_graph, packets, expriment_name)
+    FPSDN_end = perf_counter()
+
+    rules_extraction_time = FPSDN_end-FPSDN_start
+
+    total_extraction_time = preprocessing_time + rules_extraction_time
+
+    total_extraction_time = float("{:.2f}".format(total_extraction_time))
+
+
+    in_packets = {}
+    out_packets = {}
+    properties = {}
+
+    data['in_packets'] = in_packets
+    data['out_packets'] = out_packets
+    data['properties'] = properties
+
+
+    ports = allocate_ports(topo_graph)
+    os.makedirs(os.path.dirname(ports_path), exist_ok=True)
+    ports_file = open(ports_path, "w")
+    ports_file.write(str(ports))
+
+    save_topo_graph(topo_graph, ports,path=save_topo_path)
+    write_log(packets, after_preprocessing_log_path)
+    Save_Json(data, save_DyNetKAT_path)
+
+    print(f"Total Extraction time: {total_extraction_time} Seconds")
+    print("Done. You can see topology and DyNetKAT rules in ./FPSDN/output/")
 
 
 
 if __name__ == "__main__":
 
-    expriment_names = ["Linear_4switch", "Linear_10switch", "Fattree_1", "Fattree_2"]
+    parser = optparse.OptionParser()
+    parser.add_option("-e", "--extraction-expriments", dest="extraction_expriments", default=False, action="store_true",
+                      help="Extract Topology and DyNetKAT rules of expriments and save results.")
+    parser.add_option("-f", "--fattree-expriment", dest="fattree_expriment", default=False, action="store_true",
+                      help="Extract Topology and DyNetKAT rules of Fattree example and save results.")
+    parser.add_option("-l", "--from-logfile", dest="from_logfile", default=False, action="store_true",
+                      help="Extract Topology and DyNetKAT rules of your logfile (provide correct lof file path).")
+    
+    
+    (options, args) = parser.parse_args()
 
-    # extraction_expriments(expriment_names)
-    fattree_result()
+    if options.from_logfile and len(args) < 3:
+        print("Error: provide the arguments <path_to_maude> <path_to_netkat> <input_log_file_path(.pcapng)>.")
+        sys.exit()
 
+    if not options.from_logfile and len(args) < 2:
+        print("Error: provide the arguments <path_to_maude> <path_to_netkat> ")
+        sys.exit()
 
-    # # expriment_name = "Fattree_2"
-    # # expriment_name = "Fattree_1"
-    # # expriment_name = "Fattree_3"
-    # # expriment_name = "linear_10switch"
-    # # expriment_name = "linear_4switch"
+    if not os.path.exists(args[0]) or not is_exe(args[0]):
+        print("Please provide the path to the Maude executable!")
+        sys.exit()
 
+    if not os.path.exists(args[1]) or not is_exe(args[1]):
+        print("NetKAT tool could not be found in the given path!")
+        sys.exit()
 
-    # extraction_times = []
-    # DyNetKat_times = []
+    if options.from_logfile:
+        if not os.path.exists(args[2]) or args[2][-7:] != ".pcapng":
+            print("Please provide a .pcapng file path!")
+            sys.exit()
 
-    # for i in range(len(expriment_names)):
-    #     expriment_name = expriment_names[i]
-    #     print(expriment_name)
+    maude_path = args[0]
+    netkat_path = args[1]
+    
+    if options.extraction_expriments:
+        extraction_expriments()
+
+    if options.fattree_expriment:
+        fattree_result(maude_path, netkat_path)
+
+    if options.from_logfile:
+        extraction_from_logfile
         
-    #     log_file_path = "./FPSDN/data/" + expriment_name + ".pcapng"
-    #     save_topo_path = "./FPSDN/output/"+ expriment_name +"/" + expriment_name + ".png"
-    #     after_preprocessing_log_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_After_Preprocessing.txt"
-    #     ports_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_ports.txt"
-    #     save_DyNetKAT_path = "./FPSDN/output/"+ expriment_name +"/" + "DyNetKAT_" + expriment_name + ".json"
 
-    #     topology_preprocessing_start_time = perf_counter()
-    #     packets_cap = packets_selector(log_file_path)
-    #     packets = pre_processing(packets_cap)
-    #     topology_preprocessing_end_time = perf_counter()
-
-    #     preprocessing_time = topology_preprocessing_end_time - topology_preprocessing_start_time
-    #     print("preprocessing_time: ", preprocessing_time)
-
-    #     FPSDN_start = perf_counter()
-    #     partial_topo = find_partial_topology(packets_cap)
-    #     topo_graph = find_topo(partial_topo, packets)
-    #     data = DyNetKAT(topo_graph, packets, expriment_name)
-    #     FPSDN_end = perf_counter()
-
-    #     rules_extraction_time = FPSDN_end-FPSDN_start
-    #     print("Rules Extraction Time:", rules_extraction_time)
-
-
-    #     ports = allocate_ports(topo_graph)
-    #     os.makedirs(os.path.dirname(ports_path), exist_ok=True)
-    #     ports_file = open(ports_path, "w")
-    #     ports_file.write(str(ports))
-
-    #     save_topo_graph(topo_graph, ports,path=save_topo_path)
-    #     write_log(packets, after_preprocessing_log_path)
-    #     Save_Json(data, save_DyNetKAT_path)
-
-    #     print("END Preprocessing and Extraction Rueles - Now we can run DyNetiKAT\n")
-
-
-    #     maude_path = "./maude-3.1/maude.linux64"
-    #     netkat_katbv_path = "./netkat/_build/install/default/bin/katbv"
-    #     example_path = save_DyNetKAT_path
-
-    #     DyNetiKAT_output = subprocess.run(["python3", "dnk.py", "--time-stats" , maude_path, netkat_katbv_path, example_path],
-    #                                     capture_output=True, text=True)
-    #     output = DyNetiKAT_output.stdout.strip()
-        
-    #     # print(output)
-
-    #     match_value = re.search(r'DyNetKAT Total time: (\d+.\d+) seconds', output)
-    #     DyNetKat_total_time = float(match_value.group(1))
-
-    #     print("DyNetKat_total_time: ", DyNetKat_total_time)
-
-    #     extraction_time = preprocessing_time + rules_extraction_time
-
-    #     extraction_times.append(extraction_time)
-    #     DyNetKat_times.append(DyNetKat_total_time)
-
-
-    # draw_results(extraction_times, DyNetKat_times)
 
     
+
+
+
