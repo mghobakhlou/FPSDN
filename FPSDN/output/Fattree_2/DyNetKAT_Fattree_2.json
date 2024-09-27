@@ -30,18 +30,6 @@
         "h1toh7": [
             [
                 "r",
-                "(head(@Program))",
-                "=0",
-                2
-            ],
-            [
-                "r",
-                "(head(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") })))",
-                "=0",
-                3
-            ],
-            [
-                "r",
                 "(head(tail(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") }), { rcfg(S53322Reqflow1, \"one\") , rcfg(S53322Upflow1, \"pt = 12 . pt <- 13\") })))",
                 "=0",
                 5

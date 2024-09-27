@@ -20,33 +20,7 @@
         "S53322Reqflow1",
         "S53322Upflow1"
     ],
-    "in_packets": {
-        "h1toh7": "(pt = 5)"
-    },
-    "out_packets": {
-        "h1toh7": "(pt = 20)"
-    },
-    "properties": {
-        "h1toh7": [
-            [
-                "r",
-                "(head(tail(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") }), { rcfg(S53322Reqflow1, \"one\") , rcfg(S53322Upflow1, \"pt = 12 . pt <- 13\") })))",
-                "=0",
-                5
-            ]
-        ]
-    },
-    "file_name": "Fattree_2.maude",
-    "comm": [
-        "(S53222Reqflow1,\"one\")",
-        "( S53322Upflow1,\"pt = 12 . pt <- 13\")",
-        "(S53252Reqflow1,\"one\")",
-        "(S53252Upflow1, \"pt = 5 . pt <- 6\")",
-        "(S53222Upflow1, \"pt = 10 . pt <- 8\")",
-        "( S53222Upflow1,\"pt = 10 . pt <- 8\")",
-        "(S53322Reqflow1,\"one\")",
-        "(S53252Upflow1,\"pt = 5 . pt <- 6\")",
-        "( S53252Reqflow1,\"one\")",
-        "(S53322Upflow1,\"pt = 12 . pt <- 13\")"
-    ]
+    "in_packets": {"h1toh7": "(pt = 5)"},
+    "out_packets": {"h1toh7": "(pt = 20)"},
+    "properties": {"h1toh7": [("r", "(head(@Program))", "=0", 2)]}
 }

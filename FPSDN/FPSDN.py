@@ -595,21 +595,6 @@ def fattree_result(maude_path, netkat_katbv_path):
     example_path = save_DyNetKAT_path
 
 
-    # h2h8_h5h7_h1h8_h1h7fault ---> Fattree_2
-    in_packets = {"h1toh7": "(pt = 5)"}
-    out_packets = {"h1toh7": "(pt = 20)"}
-    properties = {
-            "h1toh7": [
-                         ("r", "(head(@Program))", "=0", 2),
-                        ("r", "(head(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") })))", "=0", 3),
-                        ("r", "(head(tail(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") }), { rcfg(S53322Reqflow1, \"one\") , rcfg(S53322Upflow1, \"pt = 12 . pt <- 13\") })))", "=0", 5)
-                        ]
-            }
-
-    data['in_packets'] = in_packets
-    data['out_packets'] = out_packets
-    data['properties'] = properties
-
 
     ports = allocate_ports(topo_graph)
     os.makedirs(os.path.dirname(ports_path), exist_ok=True)
@@ -620,22 +605,44 @@ def fattree_result(maude_path, netkat_katbv_path):
     write_log(packets, after_preprocessing_log_path)
     Save_Json(data, save_DyNetKAT_path)
 
-    print("Checking DyNetKAT Properties...")
+    # h2h8_h5h7_h1h8_h1h7fault ---> Fattree_2
+    in_packets = {"h1toh7": "(pt = 5)"}
+    out_packets = {"h1toh7": "(pt = 20)"}
+    data['in_packets'] = in_packets
+    data['out_packets'] = out_packets
 
-    DyNetiKAT_output = subprocess.run(["python3", "dnk.py", "--time-stats" , maude_path, netkat_katbv_path, example_path],
-                                    capture_output=True, text=True)
-    output = DyNetiKAT_output.stdout.strip()
-
-    print(output)
-    match_value = re.search(r'DyNetKAT Total time: (\d+.\d+) seconds', output)
-    DyNetKat_total_time = float(match_value.group(1))
-    DyNetKat_total_time = float("{:.2f}".format(DyNetKat_total_time))
+    p =[("r", "(head(@Program))", "=0", 2),
+        ("r", "(head(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") })))", "=0", 3),
+        ("r", "(head(tail(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") }), { rcfg(S53322Reqflow1, \"one\") , rcfg(S53322Upflow1, \"pt = 12 . pt <- 13\") })))", "=0", 5)
+    ]
+    
+    properties = {
+            "h1toh7": []
+            }
 
     times = []
-    times.append(preprocessing_time)
-    times.append(rules_extraction_time)
-    times.append(DyNetKat_total_time)
+    
+    for i in range(len(p)):
+        print("Checking DyNetKAT Property ", i)
+        properties["h1toh7"] = [p[i]]
+        data['properties'] = properties
+        Save_Json(data, save_DyNetKAT_path)
 
+        # print("data: ", data)
+
+        DyNetiKAT_output = subprocess.run(["python3", "dnk.py", "--time-stats" , maude_path, netkat_katbv_path, example_path],
+                                        capture_output=True, text=True)
+        output = DyNetiKAT_output.stdout.strip()
+
+        print(output)
+        # TODO : write property output for each property
+        match_value = re.search(r'DyNetKAT Total time: (\d+.\d+) seconds', output)
+        DyNetKat_total_time = float(match_value.group(1))
+        DyNetKat_total_time = float("{:.4f}".format(DyNetKat_total_time))
+        times.append(DyNetKat_total_time)
+
+
+    print(times)
 
     draw_results(times)
 
@@ -644,13 +651,20 @@ def fattree_result(maude_path, netkat_katbv_path):
 def draw_results(times):
     n = len(times)
     bar_width = 0.05
-    x = [0.1, 0.3, 0.5]
+    x = []
+    x1 = 0.1
+    xtickes = []
+    for i in range(n):
+        x.append(x1)
+        x1 += 0.2
+        text = "Property_" + str(i)
+        xtickes.append(text)
 
     plt.bar([p for p in x], times, width=bar_width, label="Total Extraction Time", color='g', align="center")
 
     plt.xlabel("")
     plt.ylabel("Time (s)")
-    xticks_label = ["Preprocessing Time", "DyNetKAT Extraction Time","DyNetKAT Time"]
+    xticks_label = xtickes
     plt.xticks([p for p in x],xticks_label)
     plt.yscale('log')
 
@@ -730,11 +744,11 @@ if __name__ == "__main__":
 
     parser = optparse.OptionParser()
     parser.add_option("-e", "--extraction-expriments", dest="extraction_expriments", default=False, action="store_true",
-                      help="Extract Topology and DyNetKAT rules of expriments and save results.")
+                      help="Extract Topology and DyNetKAT rules of expriments (linear topology with 4 switches, linear topology with 10 switches, fattree topology, fattree topology with more complicated log file) and save results.")
     parser.add_option("-f", "--fattree-expriment", dest="fattree_expriment", default=False, action="store_true",
-                      help="Extract Topology and DyNetKAT rules of Fattree example and save results.")
+                      help="Fault Scenario: Extract Topology and DyNetKAT rules of Fattree example and save results.")
     parser.add_option("-l", "--from-logfile", dest="from_logfile", default=False, action="store_true",
-                      help="Extract Topology and DyNetKAT rules of your logfile (provide correct lof file path).")
+                      help="Extract Topology and DyNetKAT rules of your specific logfile (provide correct lof file path).")
     
     
     (options, args) = parser.parse_args()
@@ -770,7 +784,7 @@ if __name__ == "__main__":
         fattree_result(maude_path, netkat_path)
 
     if options.from_logfile:
-        extraction_from_logfile
+        extraction_from_logfile(args[2])
         
 
 
