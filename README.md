@@ -36,6 +36,8 @@ NetKAT tool ([netkat-idd](https://github.com/netkat-lang/netkat))
 
 ## Replicating Experiments
 
+To replicate the experiments conducted in this project, you can use the provided script to extract topology and DyNetKAT rules for the specified experiments, including those based on the FatTree topology. The following command will help you run these experiments:
+
     python3 ./FPSDN/FPSDN.py --extraction-expriments --fattree-expriment <path_to_maude> <path_to_netkat>
     
 ## Experiment Results
