@@ -18,20 +18,20 @@ NetKAT tool ([netkat-idd](https://github.com/netkat-lang/netkat))
 ## Usage
 
     python ./FPSDN/FPSDN.py <path_to_maude> <path_to_netkat> <input_log_file_path(.pcapng)>
-    
-
-Options:
-  -h, --help            show this help message and exit
-  -e, --extraction-expriments
-                        Extract Topology and DyNetKAT rules of expriments
-                        (linear topology with 4 switches, linear topology with
-                        10 switches, fattree topology, fattree topology with
-                        more complicated log file) and save results.
-  -f, --fattree-expriment
-                        Fault Scenario: Extract Topology and DyNetKAT rules of
-                        Fattree example and save results.
-  -l, --from-logfile    Extract Topology and DyNetKAT rules of your specific
-                        logfile (provide correct lof file path).
+     
+ 
+    Options:
+     -h, --help            show this help message and exit
+     -e, --extraction-expriments
+                           Extract Topology and DyNetKAT rules of expriments
+                           (linear topology with 4 switches, linear topology with
+                           10 switches, fattree topology, fattree topology with
+                           more complicated log file) and save results.
+     -f, --fattree-expriment
+                           Fault Scenario: Extract Topology and DyNetKAT rules of
+                           Fattree example and save results.
+     -l, --from-logfile    Extract Topology and DyNetKAT rules of your specific
+                           logfile (provide correct lof file path).
 
 
 ## Replicating Experiments
@@ -40,7 +40,9 @@ Options:
     
 ## Experiment Results
 
+## Input format
 
+The input to this tool can include a `.pcapng` log file captured via Wireshark. This file format is used to store network packet data and is essential for extracting topology and DyNetKAT rules.
 ## output
 
 This tool extracts network topology and DyNetKAT specifications from log files located in the [/FPSDN/output](/FPSDN/output).
