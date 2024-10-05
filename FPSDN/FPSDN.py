@@ -424,7 +424,7 @@ def extraction_expriments():
         topology_preprocessing_end_time = perf_counter()
 
         preprocessing_time = topology_preprocessing_end_time - topology_preprocessing_start_time
-        print("preprocessing_time: ", preprocessing_time)
+        print("preprocessing_time(s): ", preprocessing_time)
 
         FPSDN_start = perf_counter()
         partial_topo = find_partial_topology(packets_cap)
@@ -440,7 +440,7 @@ def extraction_expriments():
         preprocesssing_times.append(preprocessing_time)
         extraction_times.append(rules_extraction_time)
 
-        print("Rules Extraction Time:", rules_extraction_time)
+        print("Rules Extraction Time(ms):", rules_extraction_time)
         print("Extraction Rules for " + expriment_name + " expriment Done.\n")
 
         ports = allocate_ports(topo_graph)
@@ -452,8 +452,8 @@ def extraction_expriments():
         write_log(packets, after_preprocessing_log_path)
         Save_Json(data, save_DyNetKAT_path)
 
-    print("preprocesssing_times: ", preprocesssing_times)
-    print("extraction_times", extraction_times)
+    print("preprocesssing_times(s): ", preprocesssing_times)
+    print("extraction_times(ms): ", extraction_times)
     draw_results_preprocessingtime_exprs(expriment_names, preprocesssing_times)
     draw_results_extraction_exprs(expriment_names, extraction_times)
 
