@@ -42,6 +42,10 @@ A linux enviroment with [Python (>= 3.10.12)](https://www.python.org/downloads/)
      -l, --from-logfile    Extract Topology and DyNetKAT rules of your specific
                            logfile (provide correct .pcapng log file path).
 
+`<path_to_maude>`: the path should be as follows: `./maude-3.1/maude.linux64`. <br>
+`<path_to_netkat>`: the path should be as follows: `./netkat/_build/install/default/bin/katbv`.
+
+
 
 ## Replicating Results of FatTree Fault Scenario
 
