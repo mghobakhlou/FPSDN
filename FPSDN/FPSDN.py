@@ -1,20 +1,19 @@
 import os
 import pyshark
-import json
 import networkx as nx
 import matplotlib.pyplot as plt
 from collections import OrderedDict
 import itertools as it
 import subprocess
 from time import perf_counter
-import random
 import re
 import optparse
 import sys
+from util import save_topo_graph, Save_Json, write_log, is_exe, merge_two_dicts
 
 
 
-def packets_selector(log_file_path):
+def read_log_file(log_file_path):
     try:
         with pyshark.FileCapture(log_file_path, display_filter='openflow_v1') as cap:
             packets_cap = []
@@ -39,7 +38,6 @@ def packets_selector(log_file_path):
         return None
     
     return packets_cap
-
 
 
 def find_partial_topology(packets_cap):
@@ -68,6 +66,7 @@ def find_partial_topology(packets_cap):
                 G.add_edge(host_ip,switch)
     return G
 
+
 def find_topo(partial_topo, packets):
     G = partial_topo
     switches_links = []
@@ -82,49 +81,6 @@ def find_topo(partial_topo, packets):
     G.add_edges_from(switches_links)
     
     return G
-
-def save_topo_graph(topo, ports,path):
-    G = topo
-    color_map = []
-    for node in list(G.nodes()):
-        if G.nodes[node]["type"] == "host":
-            color_map.append('pink')
-        else: 
-            color_map.append('lightblue')
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    
-    # Prepare edge labels with port information
-    edge_labels = {}
-    checker = []
-    edge_checker = []
-    for edge in G.edges():
-        src, dst = edge
-        reverse_edge = (dst, src)
-        if edge not in edge_checker and reverse_edge not in edge_checker and (src, dst) in ports and (dst, src) in ports:
-            edge_labels[edge] = f"{ports[(src, dst)]}--{ports[(dst, src)]}"
-            edge_checker.append(edge)
-            edge_checker.append(reverse_edge)
-        elif edge not in edge_checker and reverse_edge not in edge_checker and (src, dst) in ports:
-            edge_labels[edge] = f"{ports[(src, dst)]}"
-            edge_checker.append(edge)
-            edge_checker.append(reverse_edge)
-    
-    seed = 50
-    random.seed(seed)
-    
-    pos = nx.spring_layout(G, seed=seed) 
-    # pos = nx.spring_layout(G)  # Define the layout for better visualization
-
-    plt.figure(figsize=(15, 12))
-    # Draw the nodes and edges
-    nx.draw(G, pos, node_color=color_map, with_labels=True, node_size=700, font_size=16)
-
-    
-    # Draw edge labels
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=13, label_pos=0.5)
-    plt.axis('off')
-    plt.savefig(path, format="PNG")
-    plt.close()  # Close the figure to free up resources
 
 
 def list_of_hosts(topo_graph):
@@ -146,6 +102,7 @@ def list_of_switches(topo_graph):
             switches.append(node)
     return switches
 
+
 def number_of_switches(topo_graph):
     return len(list_of_switches(topo_graph))    
 
@@ -162,6 +119,7 @@ def allocate_ports(topo):
                 counter += 1
     return ports
 
+
 def string_topo(topo,ports):
     l = [] 
     for k in ports.keys():
@@ -174,30 +132,8 @@ def string_topo(topo,ports):
             t = "(pt = " + str(ports[(s2,s1)]) +")"
         l.append(t)
     topo = "(" + " + ".join(l) + ")"
-    return topo
-    
-def sorted_packets(packets_cap):
-    # Sort packets based on packet_in and corresponding response after that
-    packets = packets_cap
-    
-    sorted_packets = []
-    matched_flow_mod_packet = []
-    matched_packet_out = []
-    
-    for i in range(len(packets)):
-        if int(packets[i].openflow_v1.openflow_1_0_type) == 10 and packets[i].openflow_v1.get_field_value("eth.dst").split(":")[0] == "00": # PACKET_IN
-            packet_in = packets[i]
-            for j in range(i+1, len(packets)):
-                response_packet = packets[j]
+    return topo   
 
-                if (int(response_packet.openflow_v1.openflow_1_0_type) == 14) and (not(j in matched_flow_mod_packet)): # FLOW_MOD
-                    matched_flow_mod_packet.append(j)
-                    sorted_packets.append(packet_in)
-                    sorted_packets.append(response_packet)
-                    break
-                elif (int(response_packet.openflow_v1.openflow_1_0_type) == 13) and (not(j in matched_packet_out)): # PACKET_OUT ---> Drop or forward ?
-                    matched_packet_out.append(j)
-    return sorted_packets
 
 def pre_processing(packets_cap):
  
@@ -244,14 +180,6 @@ def pre_processing(packets_cap):
 
     return result
 
-def write_log(openflow_packets, path):
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    all_openflow_messages = open(path, "w")
-    for idx, packet in enumerate(openflow_packets, 1):
-        all_openflow_messages.write(f"\nPacket {idx}:\n")
-        for field, value in packet.items():
-            all_openflow_messages.write(f"{field}: {value}\n")
-        all_openflow_messages.write("\n----------\n")
 
 def find_src_dst(packet):
     try:
@@ -262,15 +190,12 @@ def find_src_dst(packet):
         dst = packet["openflow.ofp_match.dest_addr"]
     return src,dst
 
+
 def find_match_rules(packet):
     match_src = packet["openflow.ofp_match.source_addr"]
     match_dst = packet["openflow.ofp_match.dest_addr"]
     return match_src,match_dst
 
-def Save_Json(data, path):
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, 'w') as f:
-        json.dump(data, f, ensure_ascii=False, indent=4)
 
 def change_controller(C, ch1, ch2, m):
     if C == "":
@@ -340,10 +265,6 @@ def calculate_recursive_variables(initial_policy, topology, flow_tables, C):
         output[current_var] = rec_var_def.replace("@Pol", initial_term).replace("@IRV", current_var).replace("@sum", ' o+ '.join(comm))
     return output, C, channels
 
-def merge_two_dicts(x, y):
-    z = x.copy()
-    z.update(y)
-    return z
 
 def find_events(packets):
     events = {}
@@ -382,7 +303,8 @@ def path_event(event):
             path.append(event[i]["ip.dst"].split(".")[-1])
     return path
 
-def DyNetKAT(topo_graph, packets, expriment_name):
+
+def DyNetKAT(topo_graph, packets, expriment_name, add_first_switch_rule_as_predefined_rule_in_switch=False):
     switches = list_of_switches(topo_graph)
     hosts = list_of_hosts(topo_graph)
     n_switch = number_of_switches(topo_graph)
@@ -414,22 +336,42 @@ def DyNetKAT(topo_graph, packets, expriment_name):
 
     events = forward_events
 
-    event_iteration = 1
-    for k, v in events.items():
-        event_iteration += 1
-        path = path_event(v)
-        path_l = len(path)
-        for i in range(1, path_l-1):
-            sw = path[i]
-            p1 = ports[(sw, path[i-1])]
-            p2 = ports[(sw, path[i+1])]
-            rule = construct_rule(p1,p2)
-            reverse_rule = construct_rule(p2,p1)
-            if rule not in flow_tables["S"+sw] and reverse_rule not in flow_tables["S"+sw]:
-                if policy["S"+sw] == "":
-                    policy["S"+sw] = rule
-                elif policy["S"+sw] != rule:
+    
+    if add_first_switch_rule_as_predefined_rule_in_switch:
+        event_iteration = 1
+        for k, v in events.items():
+            event_iteration += 1
+            path = path_event(v)
+            path_l = len(path)
+            for i in range(1, path_l-1):
+                sw = path[i]
+                p1 = ports[(sw, path[i-1])]
+                p2 = ports[(sw, path[i+1])]
+                rule = construct_rule(p1,p2)
+                reverse_rule = construct_rule(p2,p1)
+                if rule not in flow_tables["S"+sw] and reverse_rule not in flow_tables["S"+sw]:
+                    if policy["S"+sw] == "":
+                        policy["S"+sw] = rule
+                    elif policy["S"+sw] != rule:
+                        flow_tables["S"+sw].append(rule)
+    else:
+        for i in range(n_switch):
+            policy["S"+str(switches[i])] = "pt = 0"
+
+        event_iteration = 1
+        for k, v in events.items():
+            event_iteration += 1
+            path = path_event(v)
+            path_l = len(path)
+            for i in range(1, path_l-1):
+                sw = path[i]
+                p1 = ports[(sw, path[i-1])]
+                p2 = ports[(sw, path[i+1])]
+                rule = construct_rule(p1,p2)
+                reverse_rule = construct_rule(p2,p1)
+                if rule not in flow_tables["S"+sw] and reverse_rule not in flow_tables["S"+sw]:
                     flow_tables["S"+sw].append(rule)
+
 
 
     C = ""
@@ -437,7 +379,7 @@ def DyNetKAT(topo_graph, packets, expriment_name):
     switch_rec_vars, new_C, channels = calculate_recursive_variables(policy, topology, flow_tables, C)
 
     controllers = {}
-    controllers["C"] = new_C    # controllers["C2"] = '((upS2 ! "zero") ; ((syn ? "one") ; ((upS4 ! "{}") ; ((upS6 ! "{}") ; bot))))'.format(flow_tables["S4"][0], flow_tables["S6"][0])
+    controllers["C"] = new_C    
     
     recursive_variables = merge_two_dicts(controllers, switch_rec_vars)
     
@@ -458,6 +400,7 @@ def DyNetKAT(topo_graph, packets, expriment_name):
 
     return data
 
+
 def extraction_expriments():
     expriment_names = ["Linear_4switch", "Linear_10switch", "Fattree_1", "Fattree_2"]
 
@@ -476,7 +419,7 @@ def extraction_expriments():
 
         
         topology_preprocessing_start_time = perf_counter()
-        packets_cap = packets_selector(log_file_path)
+        packets_cap = read_log_file(log_file_path)
         packets = pre_processing(packets_cap)
         topology_preprocessing_end_time = perf_counter()
 
@@ -516,6 +459,7 @@ def extraction_expriments():
 
     return True
 
+
 def draw_results_preprocessingtime_exprs(expriment_names, times):
     n = len(expriment_names)
     bar_width = 0.1
@@ -533,6 +477,7 @@ def draw_results_preprocessingtime_exprs(expriment_names, times):
     path = "./FPSDN/output/result1.png"
     plt.savefig(path, format="PNG")
     plt.close()
+
 
 def draw_results_extraction_exprs(expriment_names, extraction_times):
     n = len(expriment_names)
@@ -553,22 +498,19 @@ def draw_results_extraction_exprs(expriment_names, extraction_times):
     plt.close()
 
 
-
-
-
-def fattree_result(maude_path, netkat_katbv_path):
-    expriment_name = "Fattree_2"
-    print("Expriment Name: ", expriment_name)
+def fattree_fault_scenario(maude_path, netkat_katbv_path):
+    expriment_name = "Fattree"
+    print("####Running FatTree Fault Scenario####")
     
-    log_file_path = "./FPSDN/data/" + expriment_name + ".pcapng"
-    save_topo_path = "./FPSDN/output/"+ expriment_name +"/" + expriment_name + ".png"
-    after_preprocessing_log_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_After_Preprocessing.txt"
-    ports_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_ports.txt"
-    save_DyNetKAT_path = "./FPSDN/output/"+ expriment_name +"/" + "DyNetKAT_" + expriment_name + ".json"
+    log_file_path = "./Fattree/" + expriment_name + ".pcapng"
+    save_topo_path = "./Fattree/"+ expriment_name +"/" + expriment_name + ".png"
+    after_preprocessing_log_path = "./Fattree/" +  expriment_name +"/"  + expriment_name + "_After_Preprocessing.txt"
+    ports_path = "./Fattree/" +  expriment_name +"/"  + expriment_name + "_ports.txt"
+    save_DyNetKAT_path = "./Fattree/"+ expriment_name +"/" + "DyNetKAT_" + expriment_name + ".json"
     
     print("Preprocessing...")
     topology_preprocessing_start_time = perf_counter()
-    packets_cap = packets_selector(log_file_path)
+    packets_cap = read_log_file(log_file_path)
     packets = pre_processing(packets_cap)
     topology_preprocessing_end_time = perf_counter()
 
@@ -579,7 +521,7 @@ def fattree_result(maude_path, netkat_katbv_path):
     FPSDN_start = perf_counter()
     partial_topo = find_partial_topology(packets_cap)
     topo_graph = find_topo(partial_topo, packets)
-    data = DyNetKAT(topo_graph, packets, expriment_name)
+    data = DyNetKAT(topo_graph, packets, expriment_name, add_first_switch_rule_as_predefined_rule_in_switch=True)
     FPSDN_end = perf_counter()
 
     rules_extraction_time = FPSDN_end-FPSDN_start
@@ -590,11 +532,7 @@ def fattree_result(maude_path, netkat_katbv_path):
 
     total_extraction_time = float("{:.2f}".format(total_extraction_time))
 
-    # maude_path = "./maude-3.1/maude.linux64"
-    # netkat_katbv_path = "./netkat/_build/install/default/bin/katbv"
     example_path = save_DyNetKAT_path
-
-
 
     ports = allocate_ports(topo_graph)
     os.makedirs(os.path.dirname(ports_path), exist_ok=True)
@@ -642,13 +580,13 @@ def fattree_result(maude_path, netkat_katbv_path):
         times.append(DyNetKat_total_time)
 
 
-    print(times)
+    print("FatTree Fault Scenario Ran Successfully.")
+    print("Also, you can see the results in ./Fattree folder. ")
 
-    draw_results(times)
+    draw_results_Fattree(times)
 
 
-
-def draw_results(times):
+def draw_results_Fattree(times):
     n = len(times)
     bar_width = 0.05
     x = []
@@ -679,12 +617,6 @@ def draw_results(times):
     plt.savefig(path, format="PNG")
     plt.close()
 
-def is_json(fpath):
-    return len(fpath) > 5 and fpath[-5:] == ".json"
-
-def is_exe(fpath):
-    return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
-
 
 def extraction_from_logfile(logfile_path):
     expriment_name = logfile_path.split(".")[0]
@@ -698,7 +630,7 @@ def extraction_from_logfile(logfile_path):
     save_DyNetKAT_path = "./FPSDN/output/"+ expriment_name +"/" + "DyNetKAT_" + expriment_name + ".json"
 
     topology_preprocessing_start_time = perf_counter()
-    packets_cap = packets_selector(log_file_path)
+    packets_cap = read_log_file(log_file_path)
     packets = pre_processing(packets_cap)
     topology_preprocessing_end_time = perf_counter()
 
@@ -781,10 +713,14 @@ if __name__ == "__main__":
         extraction_expriments()
 
     if options.fattree_expriment:
-        fattree_result(maude_path, netkat_path)
+        fattree_fault_scenario(maude_path, netkat_path)
 
     if options.from_logfile:
         extraction_from_logfile(args[2])
+
+
+
+
         
 
 
