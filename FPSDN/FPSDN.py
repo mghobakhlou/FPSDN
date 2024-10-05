@@ -412,10 +412,10 @@ def extraction_expriments():
         print("expriment_name: ", expriment_name)
         
         log_file_path = "./FPSDN/data/" + expriment_name + ".pcapng"
-        save_topo_path = "./FPSDN/output/"+ expriment_name +"/" + expriment_name + ".png"
-        after_preprocessing_log_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_After_Preprocessing.txt"
-        ports_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_ports.txt"
-        save_DyNetKAT_path = "./FPSDN/output/"+ expriment_name +"/" + "DyNetKAT_" + expriment_name + ".json"
+        save_topo_path = "./FPSDN/output_results/"+ expriment_name +"/" + expriment_name + ".png"
+        after_preprocessing_log_path = "./FPSDN/output_results/" +  expriment_name +"/"  + expriment_name + "_After_Preprocessing.txt"
+        ports_path = "./FPSDN/output_results/" +  expriment_name +"/"  + expriment_name + "_ports.txt"
+        save_DyNetKAT_path = "./FPSDN/output_results/"+ expriment_name +"/" + "DyNetKAT_" + expriment_name + ".json"
 
         
         topology_preprocessing_start_time = perf_counter()
@@ -474,7 +474,7 @@ def draw_results_preprocessingtime_exprs(expriment_names, times):
     for i in x:
         plt.text(i/n, times[i] + 0.1, str(times[i]), ha='center',  color = 'black', fontweight = 'bold')
         
-    path = "./FPSDN/output/result1.png"
+    path = "./FPSDN/output_results/result1.png"
     plt.savefig(path, format="PNG")
     plt.close()
 
@@ -493,7 +493,7 @@ def draw_results_extraction_exprs(expriment_names, extraction_times):
     for i in x:
         plt.text(i/n, extraction_times[i] + 0.01, str(extraction_times[i]), ha='center',  color = 'black', fontweight = 'bold')
 
-    path = "./FPSDN/output/result2.png"
+    path = "./FPSDN/output_results/result2.png"
     plt.savefig(path, format="PNG")
     plt.close()
 
@@ -613,7 +613,7 @@ def draw_results_Fattree(times):
             plt.text(x[i], times[i] + 0.1, str(times[i]), ha='center',  color = 'black', fontweight = 'bold')
    
 
-    path = "./FPSDN/output/result3.png"
+    path = "./FPSDN/output_results/result3.png"
     plt.savefig(path, format="PNG")
     plt.close()
 
@@ -624,10 +624,10 @@ def extraction_from_logfile(logfile_path):
     print(expriment_name)
     
     log_file_path = logfile_path
-    save_topo_path = "./FPSDN/output/"+ expriment_name +"/" + expriment_name + ".png"
-    after_preprocessing_log_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_After_Preprocessing.txt"
-    ports_path = "./FPSDN/output/" +  expriment_name +"/"  + expriment_name + "_ports.txt"
-    save_DyNetKAT_path = "./FPSDN/output/"+ expriment_name +"/" + "DyNetKAT_" + expriment_name + ".json"
+    save_topo_path = "./FPSDN/output_results/"+ expriment_name +"/" + expriment_name + ".png"
+    after_preprocessing_log_path = "./FPSDN/output_results/" +  expriment_name +"/"  + expriment_name + "_After_Preprocessing.txt"
+    ports_path = "./FPSDN/output_results/" +  expriment_name +"/"  + expriment_name + "_ports.txt"
+    save_DyNetKAT_path = "./FPSDN/output_results/"+ expriment_name +"/" + "DyNetKAT_" + expriment_name + ".json"
 
     topology_preprocessing_start_time = perf_counter()
     packets_cap = read_log_file(log_file_path)
@@ -668,7 +668,7 @@ def extraction_from_logfile(logfile_path):
     Save_Json(data, save_DyNetKAT_path)
 
     print(f"Total Extraction time: {total_extraction_time} Seconds")
-    print("Done. You can see topology and DyNetKAT rules in ./FPSDN/output/")
+    print("Done. You can see topology and DyNetKAT rules in ./FPSDN/output_results/")
 
 
 
