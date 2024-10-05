@@ -2,6 +2,7 @@
 # sudo apt-get update
 sudo apt install libncurses5 opam git python3-pip --assume-yes
 pip3 install numpy networkx --break-system-packages
+pip3 install pyshark matplotlib --break-system-packages
 
 #install NetKAT tool
 # git clone https://github.com/netkat-lang/netkat/
@@ -21,3 +22,5 @@ unzip Maude-3.1-linux.zip
 rm Maude-3.1-linux.zip
 cd maude-3.1
 chmod +x maude.linux64
+cd ..
+chmod +x run_test.sh
