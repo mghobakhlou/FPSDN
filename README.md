@@ -11,13 +11,13 @@ A linux enviroment with [Python (>= 3.10.12)](https://www.python.org/downloads/)
 
   #### Steps
   1. Clone this repository if it's not yet on your machine.
-  2. Navigate to the root of the project (FPSDN folder that contain install.sh)
+  2. Navigate to the root of the FPSDN project (FPSDN folder that contain install.sh)
   3. Run the following commands: `Chmod +x install.sh` and `./install.sh`
       > Note: this can take a while.
   4. To check instalation run `bash run_test.sh`, you should get the following output:
   
       ```sh
-        ~/DyNetiKAT_contained$ bash run_test.sh
+        ~/FPSDN$  ./run_test.sh
         Packet: int_to_ext - property: #0: property satisfied.
         Packet: int_to_ext - property: #1: property satisfied.
         Packet: ext_to_int - property: #0: property satisfied.
@@ -40,20 +40,23 @@ A linux enviroment with [Python (>= 3.10.12)](https://www.python.org/downloads/)
                            Fault Scenario: Extract Topology and DyNetKAT rules of
                            Fattree example and save results.
      -l, --from-logfile    Extract Topology and DyNetKAT rules of your specific
-                           logfile (provide correct lof file path).
+                           logfile (provide correct .pcapng log file path).
 
 
 ## Replicating Results of FatTree Fault Scenario
 
-    you 
+    To replicate the results presented in the "[Faults Prediction in Software Defined Networks](https://www.overleaf.com/read/qxhpvjvccdnf#7b3104)" section on "Fault Scenario", execute the following command in your terminal:
+
+        `./run_fattree_fault_scenario.sh`  
 
 
 
 
 ## Replicating Result of Extraction Rules Experiments
+    To replicate the results presented in the "[Faults Prediction in Software Defined Networks](https://www.overleaf.com/read/qxhpvjvccdnf#7b3104)" section on "Implementation", execute the following command in your terminal:
 
+    `./run_extraction_rules_4expriments.sh`
     
-## Experiment Results
 
 ## Input format
 
