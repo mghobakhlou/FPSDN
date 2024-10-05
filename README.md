@@ -47,7 +47,7 @@ A linux enviroment with [Python (>= 3.10.12)](https://www.python.org/downloads/)
 
 To replicate the results presented in the "[Faults Prediction in Software Defined Networks](https://www.overleaf.com/read/qxhpvjvccdnf#7b3104)" section on "Fault Scenario", execute the following command in your terminal:
 
-        `./run_fattree_fault_scenario.sh`  
+    `./run_fattree_fault_scenario.sh`  
 
 
 
