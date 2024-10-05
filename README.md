@@ -4,16 +4,25 @@
 This project provides a robust framework for extracting specifications from real-world Software Defined Network (SDN) datasets using [DyNetKAT](https://arxiv.org/abs/2102.10035) and identifying potential faulty behaviors within these networks. Our goal is to enhance the reliability and efficiency of SDNs by facilitating detailed analysis and troubleshooting in a fully automated manner. This project builds on the DyNetiKAT tool to provide enhanced network verification capabilities based on the DyNetKAT language. The tool allows for reasoning on reachability and waypointing properties within dynamic networks. Our implementation integrates additional functionalities for extracting topology and DyNetKAT rules from various experiments, including a FatTree example.
 
 ## Requirements
+  
+A linux enviroment with [Python (>= 3.10.12)](https://www.python.org/downloads/)
 
-To run this project, ensure you have the following dependencies installed:
+##  HOW TO INSTALL FPSDN
 
-[DyNetiKAT](https://github.com/hcantunc/DyNetiKAT/tree/master): If you encounter any issues during installation, please follow the instructions provided in [this document](https://docs.google.com/document/d/1DMl_rSSX-YirfjB2lLB2S2PeMhQExXavpIEZJ_5Mxos/edit?usp=sharing).
- 
-[Python (>= 3.7)](https://www.python.org/downloads/) including the packages: pyshark and networkx.
-
-[Maude (>= 3.0)](http://maude.cs.illinois.edu/w/index.php/All_Maude_3_versions)
-
-NetKAT tool ([netkat-idd](https://github.com/netkat-lang/netkat))
+  #### Steps
+  1. Clone this repository if it's not yet on your machine.
+  2. Navigate to the root of the project (FPSDN folder that contain install.sh)
+  3. Run the following commands: `Chmod +x install.sh` and `./install.sh`
+      > Note: this can take a while.
+  4. To check instalation run `bash run_test.sh`, you should get the following output:
+  
+      ```sh
+        ~/DyNetiKAT_contained$ bash run_test.sh
+        Packet: int_to_ext - property: #0: property satisfied.
+        Packet: int_to_ext - property: #1: property satisfied.
+        Packet: ext_to_int - property: #0: property satisfied.
+        Packet: ext_to_int - property: #1: property satisfied.
+      ```
 
 ## Usage
 
@@ -34,11 +43,15 @@ NetKAT tool ([netkat-idd](https://github.com/netkat-lang/netkat))
                            logfile (provide correct lof file path).
 
 
-## Replicating Experiments
+## Replicating Results of FatTree Fault Scenario
 
-To replicate the experiments conducted in this project, you can use the provided script to extract topology and DyNetKAT rules for the specified experiments, including those based on the FatTree topology. The following command will help you run these experiments:
+    you 
 
-    python3 ./FPSDN/FPSDN.py --extraction-expriments --fattree-expriment <path_to_maude> <path_to_netkat>
+
+
+
+## Replicating Result of Extraction Rules Experiments
+
     
 ## Experiment Results
 
