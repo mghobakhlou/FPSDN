@@ -618,6 +618,131 @@ def draw_results_Fattree(times):
     plt.close()
 
 
+
+def linear_fault_scenario(maude_path, netkat_katbv_path):
+    expriment_name = "Linear"
+    print("####Running Linear Fault Scenario####")
+    
+    log_file_path = "./Linear/" + expriment_name + ".pcapng"
+    save_topo_path = "./Linear/"+ expriment_name +"/" + expriment_name + ".png"
+    after_preprocessing_log_path = "./Linear/" +  expriment_name +"/"  + expriment_name + "_After_Preprocessing.txt"
+    ports_path = "./Linear/" +  expriment_name +"/"  + expriment_name + "_ports.txt"
+    save_DyNetKAT_path = "./Linear/"+ expriment_name +"/" + "DyNetKAT_" + expriment_name + ".json"
+    
+    print("Preprocessing...")
+    topology_preprocessing_start_time = perf_counter()
+    packets_cap = read_log_file(log_file_path)
+    packets = pre_processing(packets_cap)
+    topology_preprocessing_end_time = perf_counter()
+
+    preprocessing_time = topology_preprocessing_end_time - topology_preprocessing_start_time
+    preprocessing_time = float("{:.2f}".format(preprocessing_time))
+    print("Preprocessing Done. Total Preprocessing time: ", preprocessing_time)
+
+    FPSDN_start = perf_counter()
+    partial_topo = find_partial_topology(packets_cap)
+    topo_graph = find_topo(partial_topo, packets)
+    data = DyNetKAT(topo_graph, packets, expriment_name, add_first_switch_rule_as_predefined_rule_in_switch=True)
+    FPSDN_end = perf_counter()
+
+    rules_extraction_time = FPSDN_end-FPSDN_start
+    rules_extraction_time = float("{:.4f}".format(rules_extraction_time))
+    print("DyNetKAT Rules Extraction Done. Total DyNetKAT Rules Extraction time: ", rules_extraction_time)
+
+    total_extraction_time = preprocessing_time + rules_extraction_time
+
+    total_extraction_time = float("{:.2f}".format(total_extraction_time))
+
+    example_path = save_DyNetKAT_path
+
+    ports = allocate_ports(topo_graph)
+    os.makedirs(os.path.dirname(ports_path), exist_ok=True)
+    ports_file = open(ports_path, "w")
+    ports_file.write(str(ports))
+
+    save_topo_graph(topo_graph, ports,path=save_topo_path)
+    write_log(packets, after_preprocessing_log_path)
+    Save_Json(data, save_DyNetKAT_path)
+
+
+    # linear_h7h10_h6h10_h4h8_h4h10fault ---> linear
+    in_packets = {"h4toh10": "(pt = 14)"}
+    out_packets = {"h4toh10": "(pt = 9)"}
+    data['in_packets'] = in_packets
+    data['out_packets'] = out_packets
+
+    p =[("r", "(head(@Program))", "=0", 2),
+        ("r", "(head(tail(@Program, { rcfg(S38128Reqflow1, \"one\") , rcfg(S38128Upflow1, \"pt = 3 . pt <- 2\") })))", "=0", 3),
+        ("r", "(head(tail(tail(@Program, { rcfg(S38128Reqflow1, \"one\") , rcfg(S38128Upflow1, \"pt = 3 . pt <- 2\") }), { rcfg(S38086Reqflow1, \"one\") , rcfg(S38086Upflow1, \"pt = 13 . pt <- 12\") })))", "=0", 5)
+    ]
+    
+    properties = {
+            "h4toh10": []
+            }
+
+    times = []
+    
+    for i in range(len(p)):
+        print("Checking DyNetKAT Property ", i)
+        properties["h4toh10"] = [p[i]]
+        data['properties'] = properties
+        Save_Json(data, save_DyNetKAT_path)
+
+        # print("data: ", data)
+
+        DyNetiKAT_output = subprocess.run(["python3", "dnk.py", "--time-stats" , maude_path, netkat_katbv_path, example_path],
+                                        capture_output=True, text=True)
+        output = DyNetiKAT_output.stdout.strip()
+
+        print(output)
+        # TODO : write property output for each property
+        match_value = re.search(r'DyNetKAT Total time: (\d+.\d+) seconds', output)
+        DyNetKat_total_time = float(match_value.group(1))
+        DyNetKat_total_time = float("{:.4f}".format(DyNetKat_total_time))
+        times.append(DyNetKat_total_time)
+
+
+    print("FatTree Fault Scenario Ran Successfully.")
+    print("Also, you can see the results in ./Fattree folder. ")
+
+    draw_results_Fattree(times)
+
+
+def draw_results_linear(times):
+    n = len(times)
+    bar_width = 0.05
+    x = []
+    x1 = 0.1
+    xtickes = []
+    for i in range(n):
+        x.append(x1)
+        x1 += 0.2
+        text = "Property_" + str(i)
+        xtickes.append(text)
+
+    plt.bar([p for p in x], times, width=bar_width, label="Total Extraction Time", color='g', align="center")
+
+    plt.xlabel("")
+    plt.ylabel("Time (s)")
+    xticks_label = xtickes
+    plt.xticks([p for p in x],xticks_label)
+    plt.yscale('log')
+
+    for i in range(len(x)):
+        if i == 1:
+            plt.text(x[i], times[i] + 0.0001, str(times[i]), ha='center',  color = 'black', fontweight = 'bold')
+        else:
+            plt.text(x[i], times[i] + 0.1, str(times[i]), ha='center',  color = 'black', fontweight = 'bold')
+   
+
+    path = "./FPSDN/output_results/result3.png"
+    plt.savefig(path, format="PNG")
+    plt.close()
+
+
+
+
+
 def extraction_from_logfile(logfile_path):
     expriment_name = logfile_path.split(".")[0]
 
@@ -674,11 +799,15 @@ def extraction_from_logfile(logfile_path):
 
 if __name__ == "__main__":
 
+    #  TODO --> Clean fault scenarios and generate properties automatically.
+
     parser = optparse.OptionParser()
     parser.add_option("-e", "--extraction-expriments", dest="extraction_expriments", default=False, action="store_true",
                       help="Extract Topology and DyNetKAT rules of expriments (linear topology with 4 switches, linear topology with 10 switches, fattree topology, fattree topology with more complicated log file) and save results.")
     parser.add_option("-f", "--fattree-expriment", dest="fattree_expriment", default=False, action="store_true",
                       help="Fault Scenario: Extract Topology and DyNetKAT rules of Fattree example and save results.")
+    parser.add_option("-i", "--linear-expriment", dest="linear_expriment", default=False, action="store_true",
+                      help="Fault Scenario: Extract Topology and DyNetKAT rules of Linear example and save results.")
     parser.add_option("-l", "--from-logfile", dest="from_logfile", default=False, action="store_true",
                       help="Extract Topology and DyNetKAT rules of your specific logfile (provide correct lof file path).")
     
@@ -714,6 +843,9 @@ if __name__ == "__main__":
 
     if options.fattree_expriment:
         fattree_fault_scenario(maude_path, netkat_path)
+
+    if options.linear_expriment:
+        linear_fault_scenario(maude_path, netkat_path)
 
     if options.from_logfile:
         extraction_from_logfile(args[2])
