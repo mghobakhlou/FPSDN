@@ -14,7 +14,7 @@ A linux enviroment with [Python (>= 3.10.12)](https://www.python.org/downloads/)
   2. Navigate to the root of the FPSDN project (FPSDN folder that contain install.sh)
   3. Run the following commands: `Chmod +x install.sh` and `./install.sh`
       > Note: this can take a while.
-  4. To check instalation run `bash run_test.sh`, you should get the following output:
+  4. To check instalation run `./run_test.sh`, you should get the following output:
   
       ```sh
         ~/FPSDN$  ./run_test.sh
@@ -26,7 +26,7 @@ A linux enviroment with [Python (>= 3.10.12)](https://www.python.org/downloads/)
 
 ## Usage
 
-    python ./FPSDN/FPSDN.py <path_to_maude> <path_to_netkat> <input_log_file_path(.pcapng)>
+    python ./FPSDN/FPSDN.py <path_to_maude> <path_to_netkat> <path_to_logfiles(directory of .pcapng files)>
      
  
     Options:
@@ -36,22 +36,20 @@ A linux enviroment with [Python (>= 3.10.12)](https://www.python.org/downloads/)
                            (linear topology with 4 switches, linear topology with
                            10 switches, fattree topology, fattree topology with
                            more complicated log file) and save results.
-     -f, --fattree-expriment
-                           Fault Scenario: Extract Topology and DyNetKAT rules of
-                           Fattree example and save results.
-     -l, --from-logfile    Extract Topology and DyNetKAT rules of your specific
-                           logfile (provide correct .pcapng log file path).
+     -f, --fault_scenarios
+                           Fault Scenarios: Extract Topology and DyNetKAT rules of fault scenarios and save                                 results.
+     -l, --from-logfiles    Extract Topology and DyNetKAT rules of your specific log files.
 
-`<path_to_maude>`: the path should be as follows: `./maude-3.1/maude.linux64`. <br>
-`<path_to_netkat>`: the path should be as follows: `./netkat/_build/install/default/bin/katbv`.
-
+`<path_to_maude>` --> The path should be as follows: `./maude-3.1/maude.linux64`. <br>
+`<path_to_netkat>` --> The path should be as follows: `./netkat/_build/install/default/bin/katbv`.
+`<path_to_logfiles(directory of .pcapng files)>` --> The path should be as follows: `./Expriments/Fault_Scenarios`
 
 
-## Replicating Results of FatTree Fault Scenario
+## Replicating Results of Fault Scenarios
 
-To replicate the results presented in the "[Faults Prediction in Software Defined Networks](https://www.overleaf.com/read/qxhpvjvccdnf#7b3104)" section on "Fault Scenario", execute the following command in your terminal:
+To replicate the results presented in the "[Faults Prediction in Software Defined Networks](https://www.overleaf.com/read/qxhpvjvccdnf#7b3104)" section on "Fault Scenarios", execute the following command in your terminal:
 
-    `./run_fattree_fault_scenario.sh`  
+    ./run_fault_scenarios.sh  
 
 
 
@@ -59,7 +57,7 @@ To replicate the results presented in the "[Faults Prediction in Software Define
 ## Replicating Result of Extraction Rules Experiments
 To replicate the results presented in the "[Faults Prediction in Software Defined Networks](https://www.overleaf.com/read/qxhpvjvccdnf#7b3104)" section on "Implementation", execute the following command in your terminal:
 
-    `./run_extraction_rules_4expriments.sh`
+    ./run_extraction_rules_expriments.sh
     
 
 ## Input format
