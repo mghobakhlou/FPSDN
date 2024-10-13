@@ -531,9 +531,9 @@ if __name__ == "__main__":
     parser.add_option("-e", "--extraction-expriments", dest="extraction_expriments", default=False, action="store_true",
                       help="Extract Topology and DyNetKAT rules of expriments (linear topology with 4 switches, linear topology with 10 switches, fattree topology, fattree topology with more complicated log file) and save results.")
     parser.add_option("-f", "--fault_scenarios", dest="fault_scenarios", default=False, action="store_true",
-                      help="Fault Scenarios: Extract Topology and DyNetKAT rules of fault scenarios example and save results.")
-    parser.add_option("-l", "--from-logfile", dest="from_logfile", default=False, action="store_true",
-                      help="Extract Topology and DyNetKAT rules of your specific logfile (provide correct lof file path).")
+                      help="Fault Scenarios: Extract Topology and DyNetKAT rules of fault scenarios and save results.")
+    parser.add_option("-l", "--from-logfiles", dest="from_logfile", default=False, action="store_true",
+                      help="Extract Topology and DyNetKAT rules of your specific log files")
     
     
     (options, args) = parser.parse_args()
