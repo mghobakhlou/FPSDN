@@ -5,6 +5,74 @@ import matplotlib.pyplot as plt
 import json
 
 
+def draw_Fault_Scenario(folder_path, expriment_name, times):
+    n = len(times)
+    bar_width = 0.05
+    x = []
+    x1 = 0.1
+    xtickes = []
+    for i in range(n):
+        x.append(x1)
+        x1 += 0.2
+        text = "Property_" + str(i)
+        xtickes.append(text)
+
+    plt.bar([p for p in x], times, width=bar_width, label="Total Extraction Time", color='g', align="center")
+
+    plt.xlabel("")
+    plt.ylabel("Time (s)")
+    xticks_label = xtickes
+    plt.xticks([p for p in x],xticks_label)
+    plt.yscale('log')
+
+    for i in range(len(x)):
+        if i == 1:
+            plt.text(x[i], times[i] + 0.0001, str(times[i]), ha='center',  color = 'black', fontweight = 'bold')
+        else:
+            plt.text(x[i], times[i] + 0.1, str(times[i]), ha='center',  color = 'black', fontweight = 'bold')
+   
+
+    path = folder_path + expriment_name + "property_time_result" + ".png"
+    plt.savefig(path, format="PNG")
+    plt.close()
+
+
+def draw_results_extraction_exprs(folder_path, expriment_names, extraction_times):
+    n = len(expriment_names)
+    bar_width = 0.1
+    x = range(len(expriment_names))
+
+    plt.bar([p/n for p in x], extraction_times, width=bar_width, label="Total Extraction Time", color='b', align="center")
+    
+    plt.xlabel("DyNetKAT Rules Extraction Time")
+    plt.ylabel("Time (mS)")
+    plt.xticks([p/n  for p in x],expriment_names)
+
+    for i in x:
+        plt.text(i/n, extraction_times[i] + 0.01, str(extraction_times[i]), ha='center',  color = 'black', fontweight = 'bold')
+
+    path = folder_path +"Rules_Extraction_Time.png"
+    plt.savefig(path, format="PNG")
+    plt.close()
+
+
+def draw_results_preprocessingtime_exprs(folder_path, expriment_names, times):
+    n = len(expriment_names)
+    bar_width = 0.1
+    x = range(len(expriment_names))
+
+    plt.bar([p/n for p in x], times, width=bar_width, color='b', align="center")
+    
+    plt.xlabel("Preprocessing Time")
+    plt.ylabel("Time (S)")
+    plt.xticks([p/n  for p in x],expriment_names)
+
+    for i in x:
+        plt.text(i/n, times[i] + 0.1, str(times[i]), ha='center',  color = 'black', fontweight = 'bold')
+        
+    path = folder_path + "Preprocessing_Time.png"
+    plt.savefig(path, format="PNG")
+    plt.close()
 
 def write_log(openflow_packets, path):
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -80,6 +148,8 @@ def save_topo_graph(topo, ports,path):
 
 
 def sort_packets(packets_cap):
+
+
     # Sort packets based on packet_in and corresponding response after that
     packets = packets_cap
     

@@ -83,11 +83,11 @@ if __name__ == "__main__":
     max_netkat_time = 0
     for (packet, prop_num), (v, netkat_time), in result.items():
         if v == "satisfied":
-            print("Packet: {} - property: #{}: property satisfied.".format(packet, prop_num))
+            print("Packet: {}: property satisfied.".format(packet, prop_num))
         elif v == "violated":
-            print("Packet: {} - property: #{}: property violated.".format(packet, prop_num))
+            print("Packet: {}: property violated.".format(packet, prop_num))
         elif v == "error":
-            print("Packet: {} - property: #{}: an error occurred while checking this property."
+            print("Packet: {}: an error occurred while checking this property."
                   .format(packet, prop_num))
         if netkat_time > max_netkat_time:
             max_netkat_time = netkat_time
@@ -97,5 +97,5 @@ if __name__ == "__main__":
     if options.time_stats:
         program_stop = perf_counter()
         print("DyNetKAT Total time: {:.2f} seconds".format(program_stop-program_start))
-        print("DyNetKAT Preprocessing time: {:.2f} seconds".format(preprocessing_stop-preprocessing_start))
-        print("NetKAT time: {:.2f} seconds".format(max_netkat_time))
+        # print("DyNetKAT Preprocessing time: {:.2f} seconds".format(preprocessing_stop-preprocessing_start))
+        # print("NetKAT time: {:.2f} seconds".format(max_netkat_time))

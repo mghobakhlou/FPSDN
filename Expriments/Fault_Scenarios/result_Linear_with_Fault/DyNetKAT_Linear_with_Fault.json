@@ -1,5 +1,5 @@
 {
-    "module_name": "Linear",
+    "module_name": "Linear_with_Fault",
     "recursive_variables": {
         "C": "((S38128Reqflow1 ? \"one\") ; ((S38128Upflow1 ! \"pt = 3 . pt <- 2\") ; C)) o+ ((S38122Reqflow1 ? \"one\") ; ((S38122Upflow1 ! \"pt = 6 . pt <- 4\") ; C)) o+ ((S38086Reqflow1 ? \"one\") ; ((S38086Upflow1 ! \"pt = 13 . pt <- 12\") ; C))",
         "D-1": "\"((pt = 1 . pt <- 2 + pt = 6 . pt <- 5 + pt = 8 . pt <- 7 + pt = 10 . pt <- 9 + pt = 11 . pt <- 12 + pt = 14 . pt <- 15 + pt = 17 . pt <- 16) . (((pt = 1) + (pt = 2 . pt <- 6) + (pt = 3 . pt <- 12) + (pt = 4) + (pt = 5 . pt <- 8) + (pt = 6 . pt <- 2) + (pt = 7 . pt <- 10) + (pt = 8 . pt <- 5) + (pt = 9) + (pt = 10 . pt <- 7) + (pt = 11) + (pt = 12 . pt <- 3) + (pt = 13 . pt <- 16) + (pt = 14) + (pt = 15 . pt <- 17) + (pt = 16 . pt <- 13) + (pt = 17 . pt <- 15)))) *\" ; D-1 o+ (S38128Reqflow1 ! \"one\") ; D-1 o+ (S38128Upflow1 ? \"pt = 3 . pt <- 2\") ; D-5 o+ (S38122Reqflow1 ! \"one\") ; D-1 o+ (S38122Upflow1 ? \"pt = 6 . pt <- 4\") ; D-3 o+ (S38086Reqflow1 ! \"one\") ; D-1 o+ (S38086Upflow1 ? \"pt = 13 . pt <- 12\") ; D-2",
@@ -28,6 +28,18 @@
     },
     "properties": {
         "h4toh10": [
+            [
+                "r",
+                "(head(@Program))",
+                "=0",
+                2
+            ],
+            [
+                "r",
+                "(head(tail(@Program, { rcfg(S38128Reqflow1, \"one\") , rcfg(S38128Upflow1, \"pt = 3 . pt <- 2\") })))",
+                "=0",
+                3
+            ],
             [
                 "r",
                 "(head(tail(tail(@Program, { rcfg(S38128Reqflow1, \"one\") , rcfg(S38128Upflow1, \"pt = 3 . pt <- 2\") }), { rcfg(S38086Reqflow1, \"one\") , rcfg(S38086Upflow1, \"pt = 13 . pt <- 12\") })))",
