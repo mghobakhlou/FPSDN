@@ -32,7 +32,7 @@ def draw_Fault_Scenario(folder_path, expriment_name, times):
             plt.text(x[i], times[i] + 0.1, str(times[i]), ha='center',  color = 'black', fontweight = 'bold')
    
 
-    path = folder_path + expriment_name + "property_time_result" + ".png"
+    path = folder_path + "/" + expriment_name + "_property_time_result" + ".png"
     plt.savefig(path, format="PNG")
     plt.close()
 
@@ -51,7 +51,7 @@ def draw_results_extraction_exprs(folder_path, expriment_names, extraction_times
     for i in x:
         plt.text(i/n, extraction_times[i] + 0.01, str(extraction_times[i]), ha='center',  color = 'black', fontweight = 'bold')
 
-    path = folder_path +"Rules_Extraction_Time.png"
+    path = folder_path + "/" +"Rules_Extraction_Time.png"
     plt.savefig(path, format="PNG")
     plt.close()
 
@@ -70,7 +70,7 @@ def draw_results_preprocessingtime_exprs(folder_path, expriment_names, times):
     for i in x:
         plt.text(i/n, times[i] + 0.1, str(times[i]), ha='center',  color = 'black', fontweight = 'bold')
         
-    path = folder_path + "Preprocessing_Time.png"
+    path = folder_path + "/" + "Preprocessing_Time.png"
     plt.savefig(path, format="PNG")
     plt.close()
 
