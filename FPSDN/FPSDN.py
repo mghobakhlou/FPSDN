@@ -430,8 +430,8 @@ def run(folder_path, expriment_name, add_first_switch_rule_as_predefined_rule_in
     topo_graph = find_topo(partial_topo, packets)
     data = DyNetKAT(topo_graph, packets, expriment_name, add_first_switch_rule_as_predefined_rule_in_switch=add_first_switch_rule_as_predefined_rule_in_switch)
     FPSDN_end = perf_counter()
-    rules_extraction_time = FPSDN_end-FPSDN_start
-    rules_extraction_time = float("{:.4f}".format(rules_extraction_time))
+    rules_extraction_time = (FPSDN_end-FPSDN_start) * 1000
+    rules_extraction_time = float("{:.2f}".format(rules_extraction_time))
     print("DyNetKAT Rules Extraction Done. Total DyNetKAT Rules Extraction time(s): ", rules_extraction_time)
 
     total_extraction_time = preprocessing_time + rules_extraction_time
