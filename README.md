@@ -65,4 +65,4 @@ To replicate the results presented in the "[Faults Prediction in Software Define
 The input to this tool can include a `.pcapng` log file captured via Wireshark. This file format is used to store network packet data and is essential for extracting topology and DyNetKAT rules.
 ## output
 
-This tool extracts network topology and DyNetKAT specifications from log files located in the [/FPSDN/output](/FPSDN/output_results).
+This tool extracts network topology and DyNetKAT specifications from log files located in the [/FPSDN/Expriments/](https://github.com/mghobakhlou/FPSDN/tree/main/Expriments).
