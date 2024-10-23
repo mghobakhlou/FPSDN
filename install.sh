@@ -24,5 +24,5 @@ cd maude-3.1
 chmod +x maude.linux64
 cd ..
 chmod +x run_test.sh
-chmod +x run_fattree_fault_scenario.sh
-chmod +x run_extraction_rules_4expriments.sh
+chmod +x run_fault_scenarios.sh
+chmod +x run_extraction_rules_expriments.sh
