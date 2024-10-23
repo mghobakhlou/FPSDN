@@ -12,7 +12,7 @@ A linux enviroment with [Python (>= 3.10.12)](https://www.python.org/downloads/)
   #### Steps
   1. Clone this repository if it's not yet on your machine.
   2. Navigate to the root of the FPSDN project (FPSDN folder that contain install.sh)
-  3. Run the following commands: `Chmod +x install.sh` and `./install.sh`
+  3. Run the following commands: `chmod +x install.sh` and `./install.sh`
       > Note: this can take a while.
   4. To check instalation run `./run_test.sh`, you should get the following output:
   
