@@ -3,6 +3,9 @@
 sudo apt install tshark libncurses5 opam git python3-pip --assume-yes
 pip3 install numpy networkx --break-system-packages
 pip3 install pyshark matplotlib --break-system-packages
+pip3 install numpy networkx
+pip3 install pyshark matplotlib
+
 
 #install NetKAT tool
 # git clone https://github.com/netkat-lang/netkat/
@@ -27,5 +30,3 @@ cd ..
 chmod +x run_test.sh
 chmod +x run_fault_scenarios.sh
 chmod +x run_extraction_rules_expriments.sh
-pip3 install numpy networkx
-pip3 install pyshark matplotlib
