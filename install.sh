@@ -27,4 +27,5 @@ cd ..
 chmod +x run_test.sh
 chmod +x run_fault_scenarios.sh
 chmod +x run_extraction_rules_expriments.sh
-pip3 install numpy
+pip3 install numpy networkx
+pip3 install pyshark matplotlib
