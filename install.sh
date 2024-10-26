@@ -12,6 +12,7 @@ opam init -y
 eval $(opam env)
 opam install mparser=1.2.3 -y
 opam install . --deps-only -y
+opam install printbox printbox-text printbox-html
 eval $(opam env)
 make
 cd ..
@@ -26,3 +27,4 @@ cd ..
 chmod +x run_test.sh
 chmod +x run_fault_scenarios.sh
 chmod +x run_extraction_rules_expriments.sh
+pip3 install numpy
