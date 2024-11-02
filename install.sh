@@ -1,5 +1,5 @@
 #install all the dependencies
-# sudo apt-get update
+sudo apt-get update
 sudo apt install git python3-pip --assume-yes
 sudo apt install tshark libncurses5 opam --assume-yes
 #pip3 install numpy networkx --break-system-packages
