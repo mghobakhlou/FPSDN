@@ -16,7 +16,7 @@ opam init -y
 eval $(opam env)
 opam install mparser=1.2.3 -y
 opam install . --deps-only -y
-opam install printbox printbox-text printbox-html
+opam install printbox printbox-text printbox-html -y
 eval $(opam env)
 make
 cd ..
