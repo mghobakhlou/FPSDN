@@ -8,7 +8,6 @@ pip3 install pyshark matplotlib numpy networkx
 #install NetKAT tool
 # git clone https://github.com/netkat-lang/netkat/
 cd netkat
-eval $(opam env)
 opam init -y
 eval $(opam env)
 opam install printbox-text printbox-html
