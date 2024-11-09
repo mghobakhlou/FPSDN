@@ -10,7 +10,7 @@ pip3 install pyshark matplotlib numpy networkx
 cd netkat
 opam init -y
 eval $(opam env)
-opam install printbox-text printbox-html
+opam install printbox-text printbox-html -y
 opam install mparser=1.2.3 -y
 opam install . --deps-only -y
 eval $(opam env)
