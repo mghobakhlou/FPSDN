@@ -2,10 +2,7 @@
 sudo apt-get update
 sudo apt install git python3-pip --assume-yes
 sudo apt install tshark libncurses5 opam --assume-yes
-#pip3 install numpy networkx --break-system-packages
-#pip3 install pyshark matplotlib --break-system-packages
-pip3 install numpy networkx
-pip3 install pyshark matplotlib
+pip3 install pyshark matplotlib numpy networkx
 
 
 #install NetKAT tool
@@ -14,7 +11,7 @@ cd netkat
 eval $(opam env)
 opam init -y
 eval $(opam env)
-opam install printbox printbox-text printbox-html
+opam install printbox-text printbox-html
 opam install mparser=1.2.3 -y
 opam install . --deps-only -y
 eval $(opam env)
