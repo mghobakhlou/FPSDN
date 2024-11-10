@@ -13,6 +13,7 @@ eval $(opam env)
 opam install printbox-text printbox-html -y
 opam install mparser=1.2.3 -y
 opam install . --deps-only -y
+opam install core_unix -y
 eval $(opam env)
 make
 cd ..
