@@ -28,11 +28,13 @@ This project provides a robust framework for extracting specifications from real
   2. Clone this repository if it's not yet on your machine. Then, navigate to the root of the FPSDN project (FPSDN folder that contain in Dockerfile).
 
   3. Open a shell/terminal. If you are a Windows user, we recommend powerShell of Git Bash. To load the docker image, run:
-      ```sh
+      > Note: this can take more than 15 minutes based on your machine.
+
+     ```sh
         ~/FPSDN$  docker build -t fpsdn .
       ```
   This command creates the docker image "fpsdn:latest".
-      > Note: this can take more than 15 minutes based on your machine.
+      
       
   4. 
 
