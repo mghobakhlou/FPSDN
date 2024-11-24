@@ -23,9 +23,21 @@ This project provides a robust framework for extracting specifications from real
         Packet: ext_to_int - property: #1: property satisfied.
       ```
   ### Install On Docker(Any OS)
-  1. install Docker on your machine. Follow [this link](https://docs.docker.com/engine/install/)
-  
-  1. clone this rep
+  1. install Docker on your machine. Follow [this link](https://docs.docker.com/engine/install/). We strongly recommend Windows users to use WSL2 to use docker.
+
+  2. Clone this repository if it's not yet on your machine. Then, navigate to the root of the FPSDN project (FPSDN folder that contain in Dockerfile).
+
+  3. Open a shell/terminal. If you are a Windows user, we recommend powerShell of Git Bash. To load the docker image, run:
+      ```sh
+        ~/FPSDN$  docker build -t fpsdn .
+      ```
+  This command creates the docker image "fpsdn:latest".
+      > Note: this can take more than 15 minutes based on your machine.
+      
+  4. 
+
+  5. Run the following commands: `chmod +x install.sh` and `./install.sh`
+      > Note: this can take a while.
 ## Usage
 
     python ./FPSDN/FPSDN.py <path_to_maude> <path_to_netkat> <path_to_logfiles(directory of .pcapng files)>
