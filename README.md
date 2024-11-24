@@ -5,11 +5,10 @@ This project provides a robust framework for extracting specifications from real
 
 ## Requirements
   
-A linux enviroment with [Python (>= 3.10.12)](https://www.python.org/downloads/)
+A Linux environment earlier than version 22.04 with [Python (>= 3.10.12)](https://www.python.org/downloads/)
 
 ##  HOW TO INSTALL FPSDN
 
-  #### Steps
   1. Clone this repository if it's not yet on your machine.
   2. Navigate to the root of the FPSDN project (FPSDN folder that contain install.sh)
   3. Run the following commands: `chmod +x install.sh` and `./install.sh`
