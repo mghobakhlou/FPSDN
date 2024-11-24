@@ -5,18 +5,17 @@ This project provides a robust framework for extracting specifications from real
 
 
 ##  HOW TO Install and Use FPSDN.
-  In this section we provide guideline how to install FPSDN on Ubuntu OS or any Docker environment.
-  Best way to use FPSDN is using a Ubuntu OS earlier than version 22.04 with [Python (>= 3.10.12)](https://www.python.org/downloads/). 
+  In this section, we provide guidelines on how to install FPSDN on Ubuntu OS or any Docker environment.
+  
+  The best way to use FPSDN is on a Ubuntu OS version earlier than 22.04 with [Python (>= 3.10.12)](https://www.python.org/downloads/). 
 
   ### Install On Ubuntu 22.04
   1. Clone this repository if it's not yet on your machine.
   2. Navigate to the root of the FPSDN project (FPSDN folder that contain install.sh)
   3. Run the following commands: `chmod +x install.sh` and `./install.sh`
       > Note: this can take a while.
-  4. To check instalation run `./run_test.sh`, you should get the following output:
+  4. To check instalation run `./run_test.sh`. You should get the following output:
 
-      
-  
       ```sh
         ~/FPSDN$  ./run_test.sh
         Packet: int_to_ext - property: #0: property satisfied.
@@ -25,30 +24,30 @@ This project provides a robust framework for extracting specifications from real
         Packet: ext_to_int - property: #1: property satisfied.
       ```
   ### Install On Docker(Any OS)
-  1. install Docker on your machine. Follow [this link](https://docs.docker.com/engine/install/). We strongly recommend Windows users to use WSL2 to use docker.
+  1. Install Docker on your machine by following [this link](https://docs.docker.com/engine/install/). We strongly recommend that Windows users use WSL2 for running Docker.
 
-  2. Clone this repository if it's not yet on your machine. Then, navigate to the root of the FPSDN project (FPSDN folder that contain in Dockerfile).
-
-  3. Open a shell/terminal. If you are a Windows user, we recommend powerShell of Git Bash. To load the docker image, run:
+  2. Clone this repository if it is not already on your machine. Then, navigate to the root of the FPSDN project (the FPSDN folder that contains the Dockerfile).
+  
+  3.Open a shell or terminal. If you are a Windows user, we recommend using PowerShell or Git Bash. To load the Docker image, run the following command:
       > Note: this can take more than 15 minutes based on your machine.
 
       ```sh
         docker build -t fpsdn .
       ```
        
-      This command creates the docker image "fpsdn:latest".
-      Now you need to run the image and obtain a shell inside the container with the following command.
-      This command also mounts the app/Expriments directory of docker to ./Expriments directory of your computer where input and output files locate.
+      This command creates the Docker image "fpsdn:latest".
+      You now need to run the image and access a shell inside the container using the following command.
+      This command also mounts the app/Expriments directory in the Docker container to the ./Expriments directory on your computer, where input and output files are located.
     
-      Run the following command if you use a Linux-based OS:
+      Run the following command if you are using a Linux-based OS:
           
           docker run -v "${pwd}"/Expriments:/app/Expriments -it --entrypoint=/bin/bash fpsdn -i
           
-      If you are using powerShell on Windows, run this command:
+      If you are using PowerShell on Windows, run the following command:
         
           docker run -v ${pwd}/Expriments:/app/Expriments -it --entrypoint=/bin/bash fpsdn -i
          
-      and run this command if you are Git Bash on Windows:
+      And run the following command if you are using Git Bash on Windows:
     
           docker run -v "${pwd}/Expriments":/app/Expriments -it --entrypoint= bash fpsdn -i
     
