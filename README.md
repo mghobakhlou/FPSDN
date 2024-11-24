@@ -79,7 +79,7 @@ This project provides a robust framework for extracting specifications from real
 
 ## Replicating Results of Fault Scenarios
 
-To replicate the results presented in the "[Faults Prediction in Software Defined Networks](https://www.overleaf.com/read/qxhpvjvccdnf#7b3104)" section on "Fault Scenarios", execute the following command in your terminal:
+To replicate the results presented in the "[Faults Prediction in Software Defined Networks](https://www.overleaf.com/read/qxhpvjvccdnf#7b3104)" section on "Fault Scenarios", execute the following command in your terminal or in the docker shell:
 
     ./run_fault_scenarios.sh  
 
@@ -87,7 +87,7 @@ To replicate the results presented in the "[Faults Prediction in Software Define
 
 
 ## Replicating Result of Extraction Rules Experiments
-To replicate the results presented in the "[Faults Prediction in Software Defined Networks](https://www.overleaf.com/read/qxhpvjvccdnf#7b3104)" section on "Implementation", execute the following command in your terminal:
+To replicate the results presented in the "[Faults Prediction in Software Defined Networks](https://www.overleaf.com/read/qxhpvjvccdnf#7b3104)" section on "Implementation", execute the following command in your terminal or in the docker shell:
 
     ./run_extraction_rules_expriments.sh
     
