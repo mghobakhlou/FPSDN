@@ -40,9 +40,9 @@ This project provides a robust framework for extracting specifications from real
 
   Run the following command if you use a Linux-based OS:
   
-    ```sh
-      docker run -v "${pwd}"/Expriments:/app/Expriments -it --entrypoint=/bin/bash fpsdn -i
-    ```
+        ```sh
+          docker run -v "${pwd}"/Expriments:/app/Expriments -it --entrypoint=/bin/bash fpsdn -i
+        ```
       
   If you are using powerShell on Windows, run this command:
     
