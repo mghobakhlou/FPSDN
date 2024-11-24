@@ -23,7 +23,7 @@ This project provides a robust framework for extracting specifications from real
           Packet: ext_to_int - property: #1: property satisfied.
         ```
   ### Install On Docker(Any OS)
-    1. install Docker on your machine. Follow [this link.](https://docs.docker.com/engine/install/)
+    1. install Docker on your machine. Follow [this link](https://docs.docker.com/engine/install/)
     
     1. clone this rep
 ## Usage
