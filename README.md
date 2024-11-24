@@ -35,23 +35,23 @@ This project provides a robust framework for extracting specifications from real
       docker build -t fpsdn .
       
        
-    This command creates the Docker image "fpsdn:latest".
-    You now need to run the image and access a shell inside the container using the following command.
-    This command also mounts the app/Expriments directory in the Docker container to the ./Expriments directory on your computer, where input and output files are located.
-  
-    Run the following command if you are using a Linux-based OS:
+  This command creates the Docker image "fpsdn:latest".
+  You now need to run the image and access a shell inside the container using the following command.
+  This command also mounts the app/Expriments directory in the Docker container to the ./Expriments directory on your computer, where input and output files are located.
+
+  Run the following command if you are using a Linux-based OS:
           
-        docker run -v "${pwd}"/Expriments:/app/Expriments -it --entrypoint=/bin/bash fpsdn -i
+      docker run -v "${pwd}"/Expriments:/app/Expriments -it --entrypoint=/bin/bash fpsdn -i
           
-    If you are using PowerShell on Windows, run the following command:
+  If you are using PowerShell on Windows, run the following command:
         
-        docker run -v ${pwd}/Expriments:/app/Expriments -it --entrypoint=/bin/bash fpsdn -i
+      docker run -v ${pwd}/Expriments:/app/Expriments -it --entrypoint=/bin/bash fpsdn -i
          
-    And run the following command if you are using Git Bash on Windows:
-    
-        docker run -v "${pwd}/Expriments":/app/Expriments -it --entrypoint= bash fpsdn -i
-    
-    Some systems ask user to give access to mount the directory, give them this access.
+  And run the following command if you are using Git Bash on Windows:
+  
+      docker run -v "${pwd}/Expriments":/app/Expriments -it --entrypoint= bash fpsdn -i
+  
+  Some systems ask user to give access to mount the directory, give them this access.
       
   4. The environment is ready. Enjoy FPSDN.
      
