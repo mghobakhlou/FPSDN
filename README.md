@@ -23,7 +23,7 @@ This project provides a robust framework for extracting specifications from real
         Packet: ext_to_int - property: #0: property satisfied.
         Packet: ext_to_int - property: #1: property satisfied.
       ```
-  ### Install On Docker(Any OS)
+  ### Installation Using Docker (Any OS)
   1. Install Docker on your machine by following [this link](https://docs.docker.com/engine/install/). We strongly recommend that Windows users use WSL2 for running Docker.
 
   2. Clone this repository if it is not already on your machine. Then, navigate to the root of the FPSDN project (the FPSDN folder that contains the Dockerfile).
