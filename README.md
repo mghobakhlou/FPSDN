@@ -41,9 +41,9 @@ This project provides a robust framework for extracting specifications from real
   This command also mounts the app/Expriments directory of docker to ./Expriments directory of your computer where input and output files locate.
 
   Run the following command if you use a Linux-based OS:
-  
+      
       ```sh
-          docker run -v "${pwd}"/Expriments:/app/Expriments -it --entrypoint=/bin/bash fpsdn -i
+            docker run -v "${pwd}"/Expriments:/app/Expriments -it --entrypoint=/bin/bash fpsdn -i
       ```
       
   If you are using powerShell on Windows, run this command:
