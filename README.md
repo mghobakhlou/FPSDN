@@ -36,24 +36,24 @@ This project provides a robust framework for extracting specifications from real
         docker build -t fpsdn .
       ```
        
-  This command creates the docker image "fpsdn:latest".
-  Now you need to run the image and obtain a shell inside the container with the following command.
-  This command also mounts the app/Expriments directory of docker to ./Expriments directory of your computer where input and output files locate.
-
-  Run the following command if you use a Linux-based OS:
-      
-      docker run -v "${pwd}"/Expriments:/app/Expriments -it --entrypoint=/bin/bash fpsdn -i
-      
-  If you are using powerShell on Windows, run this command:
+      This command creates the docker image "fpsdn:latest".
+      Now you need to run the image and obtain a shell inside the container with the following command.
+      This command also mounts the app/Expriments directory of docker to ./Expriments directory of your computer where input and output files locate.
     
-      docker run -v ${pwd}/Expriments:/app/Expriments -it --entrypoint=/bin/bash fpsdn -i
-     
-  and run this command if you are Git Bash on Windows:
-
-      docker run -v "${pwd}/Expriments":/app/Expriments -it --entrypoint= bash fpsdn -i
-
-  Some systems ask user to give access to mount the directory, give them this access.
-  
+      Run the following command if you use a Linux-based OS:
+          
+          docker run -v "${pwd}"/Expriments:/app/Expriments -it --entrypoint=/bin/bash fpsdn -i
+          
+      If you are using powerShell on Windows, run this command:
+        
+          docker run -v ${pwd}/Expriments:/app/Expriments -it --entrypoint=/bin/bash fpsdn -i
+         
+      and run this command if you are Git Bash on Windows:
+    
+          docker run -v "${pwd}/Expriments":/app/Expriments -it --entrypoint= bash fpsdn -i
+    
+      Some systems ask user to give access to mount the directory, give them this access.
+      
   4. The environment is ready. Enjoy FPSDN.
      
 ## Usage
