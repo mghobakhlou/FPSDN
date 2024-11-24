@@ -30,7 +30,7 @@ This project provides a robust framework for extracting specifications from real
   
   3.Open a shell or terminal. If you are a Windows user, we recommend using PowerShell or Git Bash. To load the Docker image, run the following command:
       
-      > Note: this can take more than 15 minutes based on your machine.
+  > Note: this can take more than 15 minutes based on your machine.
       
       docker build -t fpsdn .
       
