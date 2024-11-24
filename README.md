@@ -31,11 +31,27 @@ This project provides a robust framework for extracting specifications from real
       > Note: this can take more than 15 minutes based on your machine.
 
      ```sh
-        ~/FPSDN$  docker build -t fpsdn .
+        docker build -t fpsdn .
       ```
   This command creates the docker image "fpsdn:latest".
+  Now you need to run the image and obtain a shell inside the container with the following command.
+  This command also mounts the app/Expriments directory of docker to ./Expriments directory of your computer where input and output files locate.
+
+  Run the following command if you use a Linux-based OS:
+      ```sh
+        docker run -v "${pwd}"/Expriments:/app/Expriments -it --entrypoint=/bin/bash fpsdn -i
+      ```
       
-      
+    If you are using powerShell on Windows, run this command:
+      ```sh
+        docker run -v ${pwd}/Expriments:/app/Expriments -it --entrypoint=/bin/bash fpsdn -i
+      ```
+
+    and run this command if you are Git Bash on Windows:
+      ```sh
+        docker run -v "${pwd}/Expriments":/app/Expriments -it --entrypoint= bash fpsdn -i
+      ```
+  
   4. 
 
   5. Run the following commands: `chmod +x install.sh` and `./install.sh`
