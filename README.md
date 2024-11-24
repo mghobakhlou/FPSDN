@@ -14,6 +14,8 @@ This project provides a robust framework for extracting specifications from real
   3. Run the following commands: `chmod +x install.sh` and `./install.sh`
       > Note: this can take a while.
   4. To check instalation run `./run_test.sh`, you should get the following output:
+
+      
   
       ```sh
         ~/FPSDN$  ./run_test.sh
@@ -30,9 +32,9 @@ This project provides a robust framework for extracting specifications from real
   3. Open a shell/terminal. If you are a Windows user, we recommend powerShell of Git Bash. To load the docker image, run:
       > Note: this can take more than 15 minutes based on your machine.
 
-       ```sh
+      ```sh
         docker build -t fpsdn .
-       ```
+      ```
        
   This command creates the docker image "fpsdn:latest".
   Now you need to run the image and obtain a shell inside the container with the following command.
@@ -40,15 +42,15 @@ This project provides a robust framework for extracting specifications from real
 
   Run the following command if you use a Linux-based OS:
   
-        ```sh
+      ```sh
           docker run -v "${pwd}"/Expriments:/app/Expriments -it --entrypoint=/bin/bash fpsdn -i
-        ```
+      ```
       
   If you are using powerShell on Windows, run this command:
     
-    ```sh
+      ```sh
       docker run -v ${pwd}/Expriments:/app/Expriments -it --entrypoint=/bin/bash fpsdn -i
-    ```
+      ```
 
   and run this command if you are Git Bash on Windows:
     
