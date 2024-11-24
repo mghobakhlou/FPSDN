@@ -3,26 +3,29 @@
 
 This project provides a robust framework for extracting specifications from real-world Software Defined Network (SDN) datasets using [DyNetKAT](https://arxiv.org/abs/2102.10035) and identifying potential faulty behaviors within these networks. Our goal is to enhance the reliability and efficiency of SDNs by facilitating detailed analysis and troubleshooting in a fully automated manner. This project builds on the DyNetiKAT tool to provide enhanced network verification capabilities based on the DyNetKAT language. The tool allows for reasoning on reachability and waypointing properties within dynamic networks. Our implementation integrates additional functionalities for extracting topology and DyNetKAT rules from various experiments, including a FatTree example.
 
-## Requirements
-  
-A Linux environment earlier than version 22.04 with [Python (>= 3.10.12)](https://www.python.org/downloads/)
 
-##  HOW TO INSTALL FPSDN
+##  HOW TO Install and Use FPSDN.
+  In this section we provide guideline how to install FPSDN on Ubuntu OS or any Docker environment.
+  Best way to use FPSDN is using a Ubuntu OS earlier than version 22.04 with [Python (>= 3.10.12)](https://www.python.org/downloads/). 
 
-  1. Clone this repository if it's not yet on your machine.
-  2. Navigate to the root of the FPSDN project (FPSDN folder that contain install.sh)
-  3. Run the following commands: `chmod +x install.sh` and `./install.sh`
-      > Note: this can take a while.
-  4. To check instalation run `./run_test.sh`, you should get the following output:
-  
-      ```sh
-        ~/FPSDN$  ./run_test.sh
-        Packet: int_to_ext - property: #0: property satisfied.
-        Packet: int_to_ext - property: #1: property satisfied.
-        Packet: ext_to_int - property: #0: property satisfied.
-        Packet: ext_to_int - property: #1: property satisfied.
-      ```
-
+  ### Install On Ubuntu 22.04
+    1. Clone this repository if it's not yet on your machine.
+    2. Navigate to the root of the FPSDN project (FPSDN folder that contain install.sh)
+    3. Run the following commands: `chmod +x install.sh` and `./install.sh`
+        > Note: this can take a while.
+    4. To check instalation run `./run_test.sh`, you should get the following output:
+    
+        ```sh
+          ~/FPSDN$  ./run_test.sh
+          Packet: int_to_ext - property: #0: property satisfied.
+          Packet: int_to_ext - property: #1: property satisfied.
+          Packet: ext_to_int - property: #0: property satisfied.
+          Packet: ext_to_int - property: #1: property satisfied.
+        ```
+  ### Install On Docker(Any OS)
+    1. install Docker on your machine. Follow [this link.](https://docs.docker.com/engine/install/)
+    
+    1. clone this rep
 ## Usage
 
     python ./FPSDN/FPSDN.py <path_to_maude> <path_to_netkat> <path_to_logfiles(directory of .pcapng files)>
