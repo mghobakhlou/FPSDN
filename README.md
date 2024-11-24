@@ -52,11 +52,10 @@ This project provides a robust framework for extracting specifications from real
 
       docker run -v "${pwd}/Expriments":/app/Expriments -it --entrypoint= bash fpsdn -i
 
+  Some systems ask user to give access to mount the directory, give them this access.
   
-  4. 
-
-  5. Run the following commands: `chmod +x install.sh` and `./install.sh`
-      > Note: this can take a while.
+  4. The environment is ready. Enjoy FPSDN.
+     
 ## Usage
 
     python ./FPSDN/FPSDN.py <path_to_maude> <path_to_netkat> <path_to_logfiles(directory of .pcapng files)>
