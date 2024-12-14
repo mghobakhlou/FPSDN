@@ -2,7 +2,7 @@
 sudo apt-get update
 sudo apt install git python3-pip --assume-yes
 sudo apt install tshark libncurses5 opam --assume-yes
-pip3 install pyshark matplotlib numpy networkx
+pip3 install pandas pyshark matplotlib numpy networkx
 
 
 #install NetKAT tool

@@ -1,0 +1,480 @@
+
+Packet 1:
+to_switch: 48892
+to_controller: 6633
+openflow_1_0.type: 10
+openflow.xid: 0
+eth.dst: 9a:16:00:94:12:03
+eth.src: 16:eb:95:b1:8d:71
+ip.src: 10.0.0.1
+ip.dst: 10.0.0.2
+
+----------
+
+Packet 2:
+to_switch: 48892
+to_controller: 6633
+openflow_1_0.type: 14
+openflow.xid: 208
+openflow.eth_src: 16:eb:95:b1:8d:71
+openflow.eth_dst: 9a:16:00:94:12:03
+openflow.ofp_match.source_addr: 10.0.0.1
+openflow.ofp_match.dest_addr: 10.0.0.2
+
+----------
+
+Packet 3:
+to_switch: 48914
+to_controller: 6633
+openflow_1_0.type: 10
+openflow.xid: 0
+eth.dst: 9a:16:00:94:12:03
+eth.src: 16:eb:95:b1:8d:71
+ip.src: 10.0.0.1
+ip.dst: 10.0.0.2
+
+----------
+
+Packet 4:
+to_switch: 48914
+to_controller: 6633
+openflow_1_0.type: 14
+openflow.xid: 217
+openflow.eth_src: 16:eb:95:b1:8d:71
+openflow.eth_dst: 9a:16:00:94:12:03
+openflow.ofp_match.source_addr: 10.0.0.1
+openflow.ofp_match.dest_addr: 10.0.0.2
+
+----------
+
+Packet 5:
+to_switch: 48914
+to_controller: 6633
+openflow_1_0.type: 10
+openflow.xid: 0
+eth.dst: 16:eb:95:b1:8d:71
+eth.src: 9a:16:00:94:12:03
+ip.src: 10.0.0.2
+ip.dst: 10.0.0.1
+
+----------
+
+Packet 6:
+to_switch: 48914
+to_controller: 6633
+openflow_1_0.type: 14
+openflow.xid: 226
+openflow.eth_src: 9a:16:00:94:12:03
+openflow.eth_dst: 16:eb:95:b1:8d:71
+openflow.ofp_match.source_addr: 10.0.0.2
+openflow.ofp_match.dest_addr: 10.0.0.1
+
+----------
+
+Packet 7:
+to_switch: 48892
+to_controller: 6633
+openflow_1_0.type: 10
+openflow.xid: 0
+eth.dst: 16:eb:95:b1:8d:71
+eth.src: 9a:16:00:94:12:03
+ip.src: 10.0.0.2
+ip.dst: 10.0.0.1
+
+----------
+
+Packet 8:
+to_switch: 48892
+to_controller: 6633
+openflow_1_0.type: 14
+openflow.xid: 235
+openflow.eth_src: 9a:16:00:94:12:03
+openflow.eth_dst: 16:eb:95:b1:8d:71
+openflow.ofp_match.source_addr: 10.0.0.2
+openflow.ofp_match.dest_addr: 10.0.0.1
+
+----------
+
+Packet 9:
+to_switch: 48892
+to_controller: 6633
+openflow_1_0.type: 10
+openflow.xid: 0
+eth.dst: de:85:e4:e1:f6:0b
+eth.src: 16:eb:95:b1:8d:71
+ip.src: 10.0.0.1
+ip.dst: 10.0.0.3
+
+----------
+
+Packet 10:
+to_switch: 48892
+to_controller: 6633
+openflow_1_0.type: 14
+openflow.xid: 268
+openflow.eth_src: 16:eb:95:b1:8d:71
+openflow.eth_dst: de:85:e4:e1:f6:0b
+openflow.ofp_match.source_addr: 10.0.0.1
+openflow.ofp_match.dest_addr: 10.0.0.3
+
+----------
+
+Packet 11:
+to_switch: 48908
+to_controller: 6633
+openflow_1_0.type: 10
+openflow.xid: 0
+eth.dst: de:85:e4:e1:f6:0b
+eth.src: 16:eb:95:b1:8d:71
+ip.src: 10.0.0.1
+ip.dst: 10.0.0.3
+
+----------
+
+Packet 12:
+to_switch: 48908
+to_controller: 6633
+openflow_1_0.type: 14
+openflow.xid: 271
+openflow.eth_src: 16:eb:95:b1:8d:71
+openflow.eth_dst: de:85:e4:e1:f6:0b
+openflow.ofp_match.source_addr: 10.0.0.1
+openflow.ofp_match.dest_addr: 10.0.0.3
+
+----------
+
+Packet 13:
+to_switch: 48908
+to_controller: 6633
+openflow_1_0.type: 10
+openflow.xid: 0
+eth.dst: 16:eb:95:b1:8d:71
+eth.src: de:85:e4:e1:f6:0b
+ip.src: 10.0.0.3
+ip.dst: 10.0.0.1
+
+----------
+
+Packet 14:
+to_switch: 48908
+to_controller: 6633
+openflow_1_0.type: 14
+openflow.xid: 274
+openflow.eth_src: de:85:e4:e1:f6:0b
+openflow.eth_dst: 16:eb:95:b1:8d:71
+openflow.ofp_match.source_addr: 10.0.0.3
+openflow.ofp_match.dest_addr: 10.0.0.1
+
+----------
+
+Packet 15:
+to_switch: 48892
+to_controller: 6633
+openflow_1_0.type: 10
+openflow.xid: 0
+eth.dst: 16:eb:95:b1:8d:71
+eth.src: de:85:e4:e1:f6:0b
+ip.src: 10.0.0.3
+ip.dst: 10.0.0.1
+
+----------
+
+Packet 16:
+to_switch: 48892
+to_controller: 6633
+openflow_1_0.type: 14
+openflow.xid: 277
+openflow.eth_src: de:85:e4:e1:f6:0b
+openflow.eth_dst: 16:eb:95:b1:8d:71
+openflow.ofp_match.source_addr: 10.0.0.3
+openflow.ofp_match.dest_addr: 10.0.0.1
+
+----------
+
+Packet 17:
+to_switch: 48892
+to_controller: 6633
+openflow_1_0.type: 10
+openflow.xid: 0
+eth.dst: ea:4c:43:27:b0:a2
+eth.src: 16:eb:95:b1:8d:71
+ip.src: 10.0.0.1
+ip.dst: 10.0.0.4
+
+----------
+
+Packet 18:
+to_switch: 48892
+to_controller: 6633
+openflow_1_0.type: 14
+openflow.xid: 316
+openflow.eth_src: 16:eb:95:b1:8d:71
+openflow.eth_dst: ea:4c:43:27:b0:a2
+openflow.ofp_match.source_addr: 10.0.0.1
+openflow.ofp_match.dest_addr: 10.0.0.4
+
+----------
+
+Packet 19:
+to_switch: 48924
+to_controller: 6633
+openflow_1_0.type: 10
+openflow.xid: 0
+eth.dst: ea:4c:43:27:b0:a2
+eth.src: 16:eb:95:b1:8d:71
+ip.src: 10.0.0.1
+ip.dst: 10.0.0.4
+
+----------
+
+Packet 20:
+to_switch: 48924
+to_controller: 6633
+openflow_1_0.type: 14
+openflow.xid: 319
+openflow.eth_src: 16:eb:95:b1:8d:71
+openflow.eth_dst: ea:4c:43:27:b0:a2
+openflow.ofp_match.source_addr: 10.0.0.1
+openflow.ofp_match.dest_addr: 10.0.0.4
+
+----------
+
+Packet 21:
+to_switch: 48924
+to_controller: 6633
+openflow_1_0.type: 10
+openflow.xid: 0
+eth.dst: 16:eb:95:b1:8d:71
+eth.src: ea:4c:43:27:b0:a2
+ip.src: 10.0.0.4
+ip.dst: 10.0.0.1
+
+----------
+
+Packet 22:
+to_switch: 48924
+to_controller: 6633
+openflow_1_0.type: 14
+openflow.xid: 322
+openflow.eth_src: ea:4c:43:27:b0:a2
+openflow.eth_dst: 16:eb:95:b1:8d:71
+openflow.ofp_match.source_addr: 10.0.0.4
+openflow.ofp_match.dest_addr: 10.0.0.1
+
+----------
+
+Packet 23:
+to_switch: 48892
+to_controller: 6633
+openflow_1_0.type: 10
+openflow.xid: 0
+eth.dst: 16:eb:95:b1:8d:71
+eth.src: ea:4c:43:27:b0:a2
+ip.src: 10.0.0.4
+ip.dst: 10.0.0.1
+
+----------
+
+Packet 24:
+to_switch: 48892
+to_controller: 6633
+openflow_1_0.type: 14
+openflow.xid: 325
+openflow.eth_src: ea:4c:43:27:b0:a2
+openflow.eth_dst: 16:eb:95:b1:8d:71
+openflow.ofp_match.source_addr: 10.0.0.4
+openflow.ofp_match.dest_addr: 10.0.0.1
+
+----------
+
+Packet 25:
+to_switch: 48892
+to_controller: 6633
+openflow_1_0.type: 10
+openflow.xid: 0
+eth.dst: ca:63:22:c0:e0:88
+eth.src: 16:eb:95:b1:8d:71
+ip.src: 10.0.0.1
+ip.dst: 10.0.0.5
+
+----------
+
+Packet 26:
+to_switch: 48892
+to_controller: 6633
+openflow_1_0.type: 14
+openflow.xid: 420
+openflow.eth_src: 16:eb:95:b1:8d:71
+openflow.eth_dst: ca:63:22:c0:e0:88
+openflow.ofp_match.source_addr: 10.0.0.1
+openflow.ofp_match.dest_addr: 10.0.0.5
+
+----------
+
+Packet 27:
+to_switch: 48938
+to_controller: 6633
+openflow_1_0.type: 10
+openflow.xid: 0
+eth.dst: ca:63:22:c0:e0:88
+eth.src: 16:eb:95:b1:8d:71
+ip.src: 10.0.0.1
+ip.dst: 10.0.0.5
+
+----------
+
+Packet 28:
+to_switch: 48938
+to_controller: 6633
+openflow_1_0.type: 14
+openflow.xid: 423
+openflow.eth_src: 16:eb:95:b1:8d:71
+openflow.eth_dst: ca:63:22:c0:e0:88
+openflow.ofp_match.source_addr: 10.0.0.1
+openflow.ofp_match.dest_addr: 10.0.0.5
+
+----------
+
+Packet 29:
+to_switch: 48938
+to_controller: 6633
+openflow_1_0.type: 10
+openflow.xid: 0
+eth.dst: 16:eb:95:b1:8d:71
+eth.src: ca:63:22:c0:e0:88
+ip.src: 10.0.0.5
+ip.dst: 10.0.0.1
+
+----------
+
+Packet 30:
+to_switch: 48938
+to_controller: 6633
+openflow_1_0.type: 14
+openflow.xid: 426
+openflow.eth_src: ca:63:22:c0:e0:88
+openflow.eth_dst: 16:eb:95:b1:8d:71
+openflow.ofp_match.source_addr: 10.0.0.5
+openflow.ofp_match.dest_addr: 10.0.0.1
+
+----------
+
+Packet 31:
+to_switch: 48892
+to_controller: 6633
+openflow_1_0.type: 10
+openflow.xid: 0
+eth.dst: 16:eb:95:b1:8d:71
+eth.src: ca:63:22:c0:e0:88
+ip.src: 10.0.0.5
+ip.dst: 10.0.0.1
+
+----------
+
+Packet 32:
+to_switch: 48892
+to_controller: 6633
+openflow_1_0.type: 14
+openflow.xid: 429
+openflow.eth_src: ca:63:22:c0:e0:88
+openflow.eth_dst: 16:eb:95:b1:8d:71
+openflow.ofp_match.source_addr: 10.0.0.5
+openflow.ofp_match.dest_addr: 10.0.0.1
+
+----------
+
+Packet 33:
+to_switch: 48892
+to_controller: 6633
+openflow_1_0.type: 10
+openflow.xid: 0
+eth.dst: fe:8b:75:4b:b3:48
+eth.src: 16:eb:95:b1:8d:71
+ip.src: 10.0.0.1
+ip.dst: 10.0.0.6
+
+----------
+
+Packet 34:
+to_switch: 48892
+to_controller: 6633
+openflow_1_0.type: 14
+openflow.xid: 724
+openflow.eth_src: 16:eb:95:b1:8d:71
+openflow.eth_dst: fe:8b:75:4b:b3:48
+openflow.ofp_match.source_addr: 10.0.0.1
+openflow.ofp_match.dest_addr: 10.0.0.6
+
+----------
+
+Packet 35:
+to_switch: 48886
+to_controller: 6633
+openflow_1_0.type: 10
+openflow.xid: 0
+eth.dst: fe:8b:75:4b:b3:48
+eth.src: 16:eb:95:b1:8d:71
+ip.src: 10.0.0.1
+ip.dst: 10.0.0.6
+
+----------
+
+Packet 36:
+to_switch: 48886
+to_controller: 6633
+openflow_1_0.type: 14
+openflow.xid: 727
+openflow.eth_src: 16:eb:95:b1:8d:71
+openflow.eth_dst: fe:8b:75:4b:b3:48
+openflow.ofp_match.source_addr: 10.0.0.1
+openflow.ofp_match.dest_addr: 10.0.0.6
+
+----------
+
+Packet 37:
+to_switch: 48886
+to_controller: 6633
+openflow_1_0.type: 10
+openflow.xid: 0
+eth.dst: 16:eb:95:b1:8d:71
+eth.src: fe:8b:75:4b:b3:48
+ip.src: 10.0.0.6
+ip.dst: 10.0.0.1
+
+----------
+
+Packet 38:
+to_switch: 48886
+to_controller: 6633
+openflow_1_0.type: 14
+openflow.xid: 730
+openflow.eth_src: fe:8b:75:4b:b3:48
+openflow.eth_dst: 16:eb:95:b1:8d:71
+openflow.ofp_match.source_addr: 10.0.0.6
+openflow.ofp_match.dest_addr: 10.0.0.1
+
+----------
+
+Packet 39:
+to_switch: 48892
+to_controller: 6633
+openflow_1_0.type: 10
+openflow.xid: 0
+eth.dst: 16:eb:95:b1:8d:71
+eth.src: fe:8b:75:4b:b3:48
+ip.src: 10.0.0.6
+ip.dst: 10.0.0.1
+
+----------
+
+Packet 40:
+to_switch: 48892
+to_controller: 6633
+openflow_1_0.type: 14
+openflow.xid: 733
+openflow.eth_src: fe:8b:75:4b:b3:48
+openflow.eth_dst: 16:eb:95:b1:8d:71
+openflow.ofp_match.source_addr: 10.0.0.6
+openflow.ofp_match.dest_addr: 10.0.0.1
+
+----------

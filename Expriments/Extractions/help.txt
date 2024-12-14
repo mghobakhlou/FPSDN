@@ -1,0 +1,160 @@
+mesh: 6 switches - h1 ping all 
+---> h2 must be reachable from h1 at the first. all other hosts(h3, h4, h5, h6) must be reachable from h1 after one rcfg   
+= 5 correct property - 0 fault 
+
+
+
+
+---------------------------------------------------------------------------------------------------
+star: s7 as hub. 6 switches among s7. h1 ping all. then h2 ping h6(unnecessary). 
+
+all hosts must be reachable after one rcfg.  
+= 5 correct property - 0 fault 
+
+
+---------------------------------------------------------------------------------------------------
+ring: h1 ping h5 and h3 ping h6 
+---> h5 must be reach from h1(default) -
+h6 must be reachable from h3 (2 rcfg - 59464 and 59480) 
+- h5 must not be reachable from h3 but after one rcfg (59464) it can --> fault
+= 2 correct property - 1 fault 
+
+---------------------------------------------------------------------------------------------------
+
+
+
+linear blackhole : 
+h1 ping h4 
+h2 ping h3
+
+h4 must be reachable from h1 
+h3 must not be reachable from h2 at default
+after both rcfg h3 must be reach able from h2
+
+after only rcfg of 34922 h4 is reachable from h2(fault)
+after only rcfg of 34930 h3 became reachable from h1 (fault).
+  
+
+= 3 correct property - 2 fault 
+
+
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------
+
+linear isolation: h1 ping h4 and h3 ping h6
+h4 must be reachable from h1 at default
+h4 must be reachable after rcfg of 56680.
+h6 must not be reachable from h1 after rcfg of 56692(fault)
+
+= 2 correct - 1 fault
+
+---------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+race condition - h1 send packets to h3 and h2 send packets to h4
+
+h3 must be reachable from h1 
+h4 must be reachable from h2 after 2 rcfgs.
+
+h3 became reachable from h2 after rcfg of 35864. and h4 became reachable h1 after rcfg of 35882. (2 fault)
+
+
+= 2 correct and 2 faults.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------
+
+linear with fault : h7 ping h10 - h6 ping h10 - h4 ping h8 - 
+
+correct: h10 must be reachable from h7. default
+correct: h10 must be reachable from h6. 1rcfg -> s38128
+
+fault: h10 became reachable from h4. rcfg 38086 and 38128.
+
+
+fault h8 can be reachable from h6. after rcfg 38128 and 38122
+
+= 2 correct and 2 fauls.
+
+
+----------------------------------------------------------------------------------
+
+fattree with fault:  h2 ping h8 - h5 ping h7 - h1 ping h8 - 
+
+correct: h8 must be reachable from h2 at default. 
+correct: h7 must be reachable from h5 rcfg 53222 and 53322
+correct: h8 must be reachable from h1 rcfg 53252 
+
+fault: h7 became reachable from h1 after rcfg 53252 and 53322.
+fault: h8 became reachable from h5 after rcfg 53222.
+fault: h7 became reachable from h2 after rcfg 53322
+
+= 3 correct and 3 fault
+
+----------------------------
+
+
+
+
+--------------
+SUM: 24 correct. 11 fault
+--------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

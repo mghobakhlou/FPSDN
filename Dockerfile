@@ -14,7 +14,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
     apt-get install -y git python3-pip tshark libncurses5 opam wget unzip && \
-    pip3 install pyshark matplotlib numpy networkx
+    pip3 install pandas pyshark matplotlib numpy networkx
 
 
 RUN cd netkat && \

@@ -1,0 +1,33 @@
+{
+    "module_name": "blackhole",
+    "recursive_variables": {
+        "C": "((S34922Reqflow1 ? \"one\") ; ((S34922Upflow1 ! \"pt = 3 . pt <- 4\") ; C)) o+ ((S34930Reqflow1 ? \"one\") ; ((S34930Upflow1 ! \"pt = 8 . pt <- 6\") ; C))",
+        "D-1": "\"((pt = 1 . pt <- 2 + pt = 5 . pt <- 4 + pt = 8 . pt <- 7 + pt = 10 . pt <- 9) . (((pt = 1) + (pt = 2 . pt <- 5) + (pt = 3) + (pt = 4 . pt <- 8) + (pt = 5 . pt <- 2) + (pt = 6) + (pt = 7 . pt <- 10) + (pt = 8 . pt <- 4) + (pt = 9) + (pt = 10 . pt <- 7)))) *\" ; D-1 o+ (S34922Reqflow1 ! \"one\") ; D-1 o+ (S34922Upflow1 ? \"pt = 3 . pt <- 4\") ; D-3 o+ (S34930Reqflow1 ! \"one\") ; D-1 o+ (S34930Upflow1 ? \"pt = 8 . pt <- 6\") ; D-2",
+        "D-2": "\"((pt = 1 . pt <- 2 + pt = 5 . pt <- 4 + pt = 8 . pt <- 6 + pt = 10 . pt <- 9) . (((pt = 1) + (pt = 2 . pt <- 5) + (pt = 3) + (pt = 4 . pt <- 8) + (pt = 5 . pt <- 2) + (pt = 6) + (pt = 7 . pt <- 10) + (pt = 8 . pt <- 4) + (pt = 9) + (pt = 10 . pt <- 7)))) *\" ; D-2 o+ (S34922Reqflow1 ! \"one\") ; D-2 o+ (S34922Upflow1 ? \"pt = 3 . pt <- 4\") ; D-4 o+ (S34930Reqflow1 ! \"one\") ; D-2 o+ (S34930Upflow1 ? \"pt = 8 . pt <- 6\") ; D-2",
+        "D-3": "\"((pt = 1 . pt <- 2 + pt = 3 . pt <- 4 + pt = 8 . pt <- 7 + pt = 10 . pt <- 9) . (((pt = 1) + (pt = 2 . pt <- 5) + (pt = 3) + (pt = 4 . pt <- 8) + (pt = 5 . pt <- 2) + (pt = 6) + (pt = 7 . pt <- 10) + (pt = 8 . pt <- 4) + (pt = 9) + (pt = 10 . pt <- 7)))) *\" ; D-3 o+ (S34922Reqflow1 ! \"one\") ; D-3 o+ (S34922Upflow1 ? \"pt = 3 . pt <- 4\") ; D-3 o+ (S34930Reqflow1 ! \"one\") ; D-3 o+ (S34930Upflow1 ? \"pt = 8 . pt <- 6\") ; D-4",
+        "D-4": "\"((pt = 1 . pt <- 2 + pt = 3 . pt <- 4 + pt = 8 . pt <- 6 + pt = 10 . pt <- 9) . (((pt = 1) + (pt = 2 . pt <- 5) + (pt = 3) + (pt = 4 . pt <- 8) + (pt = 5 . pt <- 2) + (pt = 6) + (pt = 7 . pt <- 10) + (pt = 8 . pt <- 4) + (pt = 9) + (pt = 10 . pt <- 7)))) *\" ; D-4 o+ (S34922Reqflow1 ! \"one\") ; D-4 o+ (S34922Upflow1 ? \"pt = 3 . pt <- 4\") ; D-4 o+ (S34930Reqflow1 ! \"one\") ; D-4 o+ (S34930Upflow1 ? \"pt = 8 . pt <- 6\") ; D-4"
+    },
+    "program": "D-1 || C",
+    "channels": [
+        "S34922Reqflow1",
+        "S34922Upflow1",
+        "S34930Reqflow1",
+        "S34930Upflow1"
+    ],
+    "in_packets": {
+        "h2h3_after_rcfgs": "(pt = 3)"
+    },
+    "out_packets": {
+        "h2h3_after_rcfgs": "(pt = 6)"
+    },
+    "properties": {
+        "h2h3_after_rcfgs": [
+            [
+                "r",
+                "(head(tail(tail(@Program, { rcfg(S34922Reqflow1, \"one\") , rcfg(S34922Upflow1, \"pt = 3 . pt <- 4\") }), { rcfg(S34930Reqflow1, \"one\") , rcfg(S34930Upflow1, \"pt = 8 . pt <- 6\") })))",
+                "!0",
+                5
+            ]
+        ]
+    }
+}

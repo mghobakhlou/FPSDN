@@ -9,17 +9,80 @@ from time import perf_counter
 import re
 import optparse
 import sys
+import pandas as pd
 from util import save_topo_graph, Save_Json, write_log, is_exe, merge_two_dicts
 from util import draw_Fault_Scenario
 from util import draw_results_preprocessingtime_exprs, draw_results_extraction_exprs
+
+# properties_json = {exprimentname: {prperty:[{in_packets}, {out_packets}, [probs]]}}
+properties_json ={"mesh":{"h1h2":[{"h1h2": "(pt = 1)"}, {"h1h2": "(pt = 7)"}, [("r", "(head(@Program))", "!0", 2)]], 
+                          "h1h3":[{"h1h3": "(pt = 1)"}, {"h1h3": "(pt = 9)"}, [("r", "(head(tail(@Program, { rcfg(S48892Reqflow1, \"one\") , rcfg(S48892Upflow1, \"pt = 1 . pt <- 3\") })))", "!0", 3)]],
+                          "h1h4":[{"h1h4": "(pt = 1)"}, {"h1h4": "(pt = 11)"}, [("r", "(head(tail(@Program, { rcfg(S48892Reqflow2, \"one\") , rcfg(S48892Upflow2, \"pt = 1 . pt <- 4\") })))", "!0", 3)]],
+                          "h1h5":[{"h1h5": "(pt = 1)"}, {"h1h5": "(pt = 13)"}, [("r", "(head(tail(@Program, { rcfg(S48892Reqflow3, \"one\") , rcfg(S48892Upflow3, \"pt = 1 . pt <- 5\") })))", "!0", 3)]],
+                          "h1h6":[{"h1h6": "(pt = 1)"}, {"h1h6": "(pt = 15)"}, [("r", "(head(tail(@Program, { rcfg(S48892Reqflow4, \"one\") , rcfg(S48892Upflow4, \"pt = 1 . pt <- 6\") })))", "!0", 3)]]                          
+                        },
+                  
+                    "star":{"h1h2":[{"h1h2": "(pt = 1)"}, {"h1h2": "(pt = 9)"}, [("r", "(head(@Program))", "!0", 2)]], 
+                          "h1h3":[{"h1h3": "(pt = 1)"}, {"h1h3": "(pt = 11)"}, [("r", "(head(tail(@Program, { rcfg(S42348Reqflow1, \"one\") , rcfg(S42348Upflow1, \"pt = 4 . pt <- 5\") })))", "!0", 3)]],
+                          "h1h4":[{"h1h4": "(pt = 1)"}, {"h1h4": "(pt = 13)"}, [("r", "(head(tail(@Program, { rcfg(S42348Reqflow2, \"one\") , rcfg(S42348Upflow2, \"pt = 4 . pt <- 6\") })))", "!0", 3)]],
+                          "h1h5":[{"h1h5": "(pt = 1)"}, {"h1h5": "(pt = 15)"}, [("r", "(head(tail(@Program, { rcfg(S42348Reqflow3, \"one\") , rcfg(S42348Upflow3, \"pt = 4 . pt <- 7\") })))", "!0", 3)]],
+                          "h1h6":[{"h1h6": "(pt = 1)"}, {"h1h6": "(pt = 17)"}, [("r", "(head(tail(@Program, { rcfg(S42348Reqflow4, \"one\") , rcfg(S42348Upflow4, \"pt = 4 . pt <- 8\") })))", "!0", 3)]]                          
+                        },
+
+                    "ring":{"h1h5":[{"h1h5": "(pt = 1)"}, {"h1h5": "(pt = 10)"}, [("r", "(head(@Program))", "!0", 2)]], 
+                          "h3h6":[{"h3h6": "(pt = 5)"}, {"h3h6": "(pt = 13)"}, [("r", "(head(tail(tail(@Program, { rcfg(S59464Reqflow1, \"one\") , rcfg(S59464Upflow1, \"pt = 5 . pt <- 6\") }), { rcfg(S59480Reqflow1, \"one\") , rcfg(S59480Upflow1, \"pt = 11 . pt <- 12\") })))", "!0", 5)]],
+                          "h3h5":[{"h3h5": "(pt = 5)"}, {"h3h5": "(pt = 10)"}, [("r", "(head(tail(@Program, { rcfg(S59464Reqflow1, \"one\") , rcfg(S59464Upflow1, \"pt = 5 . pt <- 6\") })))", "=0", 3)]],
+                          },
+
+                    "blackhole":{"h1h4":[{"h1h4": "(pt = 1)"}, {"h1h4": "(pt = 9)"}, [("r", "(head(@Program))", "!0", 2)]],
+                          "h2h3_before_rcfg":[{"h2h3_before_rcfg": "(pt = 3)"}, {"h2h3_before_rcfg": "(pt = 6)"}, [("r", "(head(@Program))", "=0", 2)]],
+                          "h2h3_after_rcfgs":[{"h2h3_after_rcfgs": "(pt = 3)"}, {"h2h3_after_rcfgs": "(pt = 6)"}, [("r", "(head(tail(tail(@Program, { rcfg(S34922Reqflow1, \"one\") , rcfg(S34922Upflow1, \"pt = 3 . pt <- 4\") }), { rcfg(S34930Reqflow1, \"one\") , rcfg(S34930Upflow1, \"pt = 8 . pt <- 6\") })))", "!0", 5)]],
+                          "h2h4":[{"h2h4": "(pt = 3)"}, {"h2h4": "(pt = 9)"}, [("r", "(head(tail(@Program, { rcfg(S34922Reqflow1, \"one\") , rcfg(S34922Upflow1, \"pt = 3 . pt <- 4\") })))", "=0", 3)]],
+                          "h1h3":[{"h1h3": "(pt = 1)"}, {"h1h3": "(pt = 6)"}, [("r", "(head(tail(@Program, { rcfg(S34930Reqflow1, \"one\") , rcfg(S34930Upflow1, \"pt = 8 . pt <- 6\") })))", "=0", 3)]] 
+                          },
+                        
+
+                    "isolation":{"h1h4":[{"h1h4": "(pt = 1)"}, {"h1h4": "(pt = 8)"}, [("r", "(head(@Program))", "!0", 2)]], 
+                          "h3h6":[{"h3h6": "(pt = 5)"}, {"h3h6": "(pt = 13)"}, [("r", "(head(tail(tail(@Program, { rcfg(S56680Reqflow1, \"one\") , rcfg(S56680Upflow1, \"pt = 5 . pt <- 6\") }), { rcfg(S56692Reqflow1, \"one\") , rcfg(S56692Upflow1, \"pt = 9 . pt <- 10\") })))", "!0", 5)]],
+                          "h1h6":[{"h1h6": "(pt = 1)"}, {"h1h6": "(pt = 13)"}, [("r", "(head(tail(@Program, { rcfg(S56692Reqflow1, \"one\") , rcfg(S56692Upflow1, \"pt = 9 . pt <- 10\") })))", "=0", 3)]],
+                          },
+
+                    "race_condition":{"h1h3":[{"h1h3": "(pt = 1)"}, {"h1h3": "(pt = 9)"}, [("r", "(head(@Program))", "!0", 2)]], 
+                          "h2h4":[{"h2h4": "(pt = 11)"}, {"h2h4": "(pt = 13)"}, [("r", "(head(tail(tail(@Program, { rcfg(S35864Reqflow1, \"one\") , rcfg(S35864Upflow1, \"pt = 5 . pt <- 3\") }), { rcfg(S35882Reqflow1, \"one\") , rcfg(S35882Upflow1, \"pt = 7 . pt <- 8\") })))", "!0", 5)]],
+                          "h1h4":[{"h1h4": "(pt = 1)"}, {"h1h4": "(pt = 13)"}, [("r", "(head(tail(@Program, { rcfg(S35882Reqflow1, \"one\") , rcfg(S35882Upflow1, \"pt = 7 . pt <- 8\") })))", "=0", 3)]],
+                          "h2h3":[{"h2h3": "(pt = 11)"}, {"h2h3": "(pt = 9)"}, [("r", "(head(tail(@Program, { rcfg(S35864Reqflow1, \"one\") , rcfg(S35864Upflow1, \"pt = 5 . pt <- 3\") })))", "=0", 3)]]
+                          },
+
+                    "Linear_Faulty":{"h7h10":[{"h7h10": "(pt = 1)"}, {"h7h10": "(pt = 9)"}, [("r", "(head(@Program))", "!0", 2)]], 
+                          "h6h10":[{"h6h10": "(pt = 11)"}, {"h6h10": "(pt = 9)"}, [("r", "(head(tail(@Program, { rcfg(S38128Reqflow1, \"one\") , rcfg(S38128Upflow1, \"pt = 3 . pt <- 2\") })))", "!0", 3)]],
+                          "h4h10":[{"h4h10": "(pt = 14)"}, {"h4h10": "(pt = 9)"}, [("r", "(head(tail(tail(@Program, { rcfg(S38086Reqflow1, \"one\") , rcfg(S38086Upflow1, \"pt = 13 . pt <- 12\") }), { rcfg(S38128Reqflow1, \"one\") , rcfg(S38128Upflow1, \"pt = 3 . pt <- 2\") })))", "=0", 5)]],
+                          "h6h8":[{"h6h8": "(pt = 11)"}, {"h6h8": "(pt = 4)"}, [("r", "(head(tail(tail(@Program, { rcfg(S38128Reqflow1, \"one\") , rcfg(S38128Upflow1, \"pt = 3 . pt <- 2\") }), { rcfg(S38122Reqflow1, \"one\") , rcfg(S38122Upflow1, \"pt = 6 . pt <- 4\") })))", "=0", 5)]]
+                          },
+
+                    "Fattree_Faulty":{"h2h8":[{"h2h8": "(pt = 1)"}, {"h2h8": "(pt = 14)"}, [("r", "(head(@Program))", "!0", 2)]], 
+                          "h5h7":[{"h5h7": "(pt = 16)"}, {"h5h7": "(pt = 20)"}, [("r", "(head(tail(tail(@Program, { rcfg(S53222Reqflow1, \"one\") , rcfg(S53222Upflow1, \"pt = 10 . pt <- 8\") }), { rcfg(S53322Reqflow1, \"one\") , rcfg(S53322Upflow1, \"pt = 12 . pt <- 13\") })))", "!0", 5)]],
+                          "h1h8":[{"h1h8": "(pt = 5)"}, {"h1h8": "(pt = 14)"}, [("r", "(head(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") })))", "!0", 3)]],
+                          "h1h7":[{"h1h7": "(pt = 5)"}, {"h1h7": "(pt = 20)"}, [("r", "(head(tail(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") }), { rcfg(S53322Reqflow1, \"one\") , rcfg(S53322Upflow1, \"pt = 12 . pt <- 13\") })))", "=0", 5)]],
+                          "h5h8":[{"h5h8": "(pt = 16)"}, {"h5h8": "(pt = 14)"}, [("r", "(head(tail(@Program, { rcfg(S53222Reqflow1, \"one\") , rcfg(S53222Upflow1, \"pt = 10 . pt <- 8\") })))", "=0", 3)]],
+                          "h2h7":[{"h2h7": "(pt = 1)"}, {"h2h7": "(pt = 20)"}, [("r", "(head(tail(@Program, { rcfg(S53322Reqflow1, \"one\") , rcfg(S53322Upflow1, \"pt = 12 . pt <- 13\") })))", "=0", 3)]]
+                          }
+                  } 
+
+
+result_df = pd.DataFrame(columns=['Expriment', 'N_packets_before_preprocessing', 'N_packets_after_preprocessing','Preprocessing_time(s)','Extraction_time(ms)','Property','DyNetKat_total_time(s)','Result'])
+
+
+cap_size = 0
+N_after_pre = 0
 
 def read_log_file(log_file_path):
     try:
         with pyshark.FileCapture(log_file_path, display_filter='openflow_v1') as cap:
             packets_cap = []
             ipsrc_ipdst_sw_type_packet_checker = []
-
             for packet in cap:
+                global cap_size
+                cap_size += 1
                 if int(packet.openflow_v1.openflow_1_0_type) == 10 and packet.openflow_v1.get_field_value("ip.src") != None:
                     src_dst_sw_type = packet.openflow_v1.get_field_value("ip.src") + "_" + packet.openflow_v1.get_field_value("ip.dst") + "_" + packet.tcp.get_field_value("tcp.srcport") + "_" + str(packet.openflow_v1.openflow_1_0_type)
                     if src_dst_sw_type not in ipsrc_ipdst_sw_type_packet_checker:
@@ -37,6 +100,7 @@ def read_log_file(log_file_path):
         print(f"An unexpected error occurred: {e}")
         return None
     
+    # print("Cap_size: ", cap_size)
     return packets_cap
 
 
@@ -177,7 +241,8 @@ def pre_processing(packets_cap):
             i += 1
         else:
             i += 2
-
+    global N_after_pre
+    N_after_pre = len(result)
     return result
 
 
@@ -412,7 +477,7 @@ def run(folder_path, expriment_name, add_first_switch_rule_as_predefined_rule_in
     save_topo_path = folder_path + "result_" + expriment_name +"/" + expriment_name + ".png"
     after_preprocessing_log_path = folder_path + "result_" + expriment_name +"/" + expriment_name + "_log_After_Preprocessing.txt"
     ports_path = folder_path  + "result_" + expriment_name + "/" + expriment_name + "_ports.txt"
-    save_DyNetKAT_path = folder_path + "result_" + expriment_name +"/" + "DyNetKAT_" + expriment_name + ".json"
+    save_DyNetKAT_path = folder_path + "result_" + expriment_name +"/" + "DyNetKAT_" + expriment_name
 
     print("Preprocessing...")
     topology_preprocessing_start_time = perf_counter()
@@ -452,52 +517,81 @@ def run(folder_path, expriment_name, add_first_switch_rule_as_predefined_rule_in
     data['out_packets'] = out_packets
     data['properties'] = properties
     
-    if expriment_name == "Fattree_with_Fault":
-        in_packets = {"h1toh7": "(pt = 5)"}
-        out_packets = {"h1toh7": "(pt = 20)"}
+
+    checks = properties_json[expriment_name]
+    for p in list(checks.keys()):
+        # print("p:", p)
+
+        save_DyNetKAT_path = save_DyNetKAT_path + "_" + p + ".json"
+        in_packets = checks[p][0]
+        out_packets = checks[p][1]
         data['in_packets'] = in_packets
         data['out_packets'] = out_packets
 
-        props =[("r", "(head(@Program))", "=0", 2),
-                ("r", "(head(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") })))", "=0", 3),
-                ("r", "(head(tail(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") }), { rcfg(S53322Reqflow1, \"one\") , rcfg(S53322Upflow1, \"pt = 12 . pt <- 13\") })))", "=0", 5)
-                ]
+        props = checks[p][2]
 
-        times = check_properties(save_DyNetKAT_path, data, props, maude_path, netkat_katbv_path)
-        draw_Fault_Scenario(folder_path, expriment_name,times)
+        times, DyNetKat_total_time, output = check_properties(save_DyNetKAT_path, data, props, maude_path, netkat_katbv_path)
+        # draw_Fault_Scenario(folder_path, expriment_name,times)
 
-        packet_name = list(data["in_packets"].keys())[0]
+        packet_name = p
         properties[packet_name] = props
         data['properties'] = properties
 
-    elif expriment_name == "Linear_with_Fault":
-        in_packets = {"h4toh10": "(pt = 14)"}
-        out_packets = {"h4toh10": "(pt = 9)"}
-        data['in_packets'] = in_packets
-        data['out_packets'] = out_packets
 
-        props =[("r", "(head(@Program))", "=0", 2),
-                ("r", "(head(tail(@Program, { rcfg(S38128Reqflow1, \"one\") , rcfg(S38128Upflow1, \"pt = 3 . pt <- 2\") })))", "=0", 3),
-                ("r", "(head(tail(tail(@Program, { rcfg(S38128Reqflow1, \"one\") , rcfg(S38128Upflow1, \"pt = 3 . pt <- 2\") }), { rcfg(S38086Reqflow1, \"one\") , rcfg(S38086Upflow1, \"pt = 13 . pt <- 12\") })))", "=0", 5)
-                ]
+        output = "Satisfied" if "satisfied" in output else "Violated"
+        result_df.loc[len(result_df)] = [expriment_name, cap_size, N_after_pre, preprocessing_time, rules_extraction_time, p, DyNetKat_total_time, output]
 
-        times = check_properties(save_DyNetKAT_path, data, props, maude_path, netkat_katbv_path)
-        draw_Fault_Scenario(folder_path, expriment_name,times)
 
-        packet_name = list(data["in_packets"].keys())[0]
-        properties[packet_name] = props
-        data['properties'] = properties
+    result_df.to_csv(folder_path+"result.csv")  
+
+    return preprocessing_time, rules_extraction_time
+
+
+
+    # if expriment_name == "Fattree_with_Fault":
+    #     in_packets = {"h1toh7": "(pt = 5)"}
+    #     out_packets = {"h1toh7": "(pt = 20)"}
+    #     data['in_packets'] = in_packets
+    #     data['out_packets'] = out_packets
+
+    #     props =[("r", "(head(@Program))", "=0", 2),
+    #             ("r", "(head(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") })))", "=0", 3),
+    #             ("r", "(head(tail(tail(@Program, { rcfg(S53252Reqflow1, \"one\") , rcfg(S53252Upflow1, \"pt = 5 . pt <- 6\") }), { rcfg(S53322Reqflow1, \"one\") , rcfg(S53322Upflow1, \"pt = 12 . pt <- 13\") })))", "=0", 5)
+    #             ]
+
+    #     times = check_properties(save_DyNetKAT_path, data, props, maude_path, netkat_katbv_path)
+    #     draw_Fault_Scenario(folder_path, expriment_name,times)
+
+    #     packet_name = list(data["in_packets"].keys())[0]
+    #     properties[packet_name] = props
+    #     data['properties'] = properties
+
+    # elif expriment_name == "Linear_with_Fault":
+    #     in_packets = {"h4toh10": "(pt = 14)"}
+    #     out_packets = {"h4toh10": "(pt = 9)"}
+    #     data['in_packets'] = in_packets
+    #     data['out_packets'] = out_packets
+
+    #     props =[("r", "(head(@Program))", "=0", 2),
+    #             ("r", "(head(tail(@Program, { rcfg(S38128Reqflow1, \"one\") , rcfg(S38128Upflow1, \"pt = 3 . pt <- 2\") })))", "=0", 3),
+    #             ("r", "(head(tail(tail(@Program, { rcfg(S38128Reqflow1, \"one\") , rcfg(S38128Upflow1, \"pt = 3 . pt <- 2\") }), { rcfg(S38086Reqflow1, \"one\") , rcfg(S38086Upflow1, \"pt = 13 . pt <- 12\") })))", "=0", 5)
+    #             ]
+
+    #     times = check_properties(save_DyNetKAT_path, data, props, maude_path, netkat_katbv_path)
+    #     draw_Fault_Scenario(folder_path, expriment_name,times)
+
+    #     packet_name = list(data["in_packets"].keys())[0]
+    #     properties[packet_name] = props
+    #     data['properties'] = properties
         
 
-    Save_Json(data, save_DyNetKAT_path) 
-    return preprocessing_time, rules_extraction_time
 
 def check_properties(json_path, data, props, maude_path, netkat_katbv_path):
     properties = {}
     times = []
     for i in range(len(props)):
-        print("Checking DyNetKAT Property ", i)
         packet_name = list(data["in_packets"].keys())[0]
+        print("\nChecking DyNetKAT Property ", packet_name)
         properties[packet_name] = [props[i]]
         data['properties'] = properties
 
@@ -518,13 +612,18 @@ def check_properties(json_path, data, props, maude_path, netkat_katbv_path):
         DyNetKat_total_time = float("{:.4f}".format(DyNetKat_total_time))
         times.append(DyNetKat_total_time)
 
-    return times
+    return times, DyNetKat_total_time, output
 
 
 
 
 if __name__ == "__main__":
+    # global cap_size 
+    # global N_after_pre 
 
+    # cap_size = 0
+    # N_after_pre = 0
+    
     #  TODO --> Clean fault scenarios and generate properties automatically.
 
     parser = optparse.OptionParser()

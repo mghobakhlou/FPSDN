@@ -1,0 +1,33 @@
+{
+    "module_name": "isolation",
+    "recursive_variables": {
+        "C": "((S56680Reqflow1 ? \"one\") ; ((S56680Upflow1 ! \"pt = 5 . pt <- 6\") ; C)) o+ ((S56692Reqflow1 ? \"one\") ; ((S56692Upflow1 ! \"pt = 9 . pt <- 10\") ; C))",
+        "D-1": "\"((pt = 1 . pt <- 2 + pt = 4 . pt <- 3 + pt = 7 . pt <- 6 + pt = 9 . pt <- 8 + pt = 12 . pt <- 11 + pt = 14 . pt <- 13) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 7) + (pt = 4 . pt <- 2) + (pt = 5) + (pt = 6 . pt <- 9) + (pt = 7 . pt <- 3) + (pt = 8) + (pt = 9 . pt <- 6) + (pt = 10 . pt <- 12) + (pt = 11 . pt <- 14) + (pt = 12 . pt <- 10) + (pt = 13) + (pt = 14 . pt <- 11)))) *\" ; D-1 o+ (S56680Reqflow1 ! \"one\") ; D-1 o+ (S56680Upflow1 ? \"pt = 5 . pt <- 6\") ; D-3 o+ (S56692Reqflow1 ! \"one\") ; D-1 o+ (S56692Upflow1 ? \"pt = 9 . pt <- 10\") ; D-2",
+        "D-2": "\"((pt = 1 . pt <- 2 + pt = 4 . pt <- 3 + pt = 7 . pt <- 6 + pt = 9 . pt <- 10 + pt = 12 . pt <- 11 + pt = 14 . pt <- 13) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 7) + (pt = 4 . pt <- 2) + (pt = 5) + (pt = 6 . pt <- 9) + (pt = 7 . pt <- 3) + (pt = 8) + (pt = 9 . pt <- 6) + (pt = 10 . pt <- 12) + (pt = 11 . pt <- 14) + (pt = 12 . pt <- 10) + (pt = 13) + (pt = 14 . pt <- 11)))) *\" ; D-2 o+ (S56680Reqflow1 ! \"one\") ; D-2 o+ (S56680Upflow1 ? \"pt = 5 . pt <- 6\") ; D-4 o+ (S56692Reqflow1 ! \"one\") ; D-2 o+ (S56692Upflow1 ? \"pt = 9 . pt <- 10\") ; D-2",
+        "D-3": "\"((pt = 1 . pt <- 2 + pt = 4 . pt <- 3 + pt = 5 . pt <- 6 + pt = 9 . pt <- 8 + pt = 12 . pt <- 11 + pt = 14 . pt <- 13) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 7) + (pt = 4 . pt <- 2) + (pt = 5) + (pt = 6 . pt <- 9) + (pt = 7 . pt <- 3) + (pt = 8) + (pt = 9 . pt <- 6) + (pt = 10 . pt <- 12) + (pt = 11 . pt <- 14) + (pt = 12 . pt <- 10) + (pt = 13) + (pt = 14 . pt <- 11)))) *\" ; D-3 o+ (S56680Reqflow1 ! \"one\") ; D-3 o+ (S56680Upflow1 ? \"pt = 5 . pt <- 6\") ; D-3 o+ (S56692Reqflow1 ! \"one\") ; D-3 o+ (S56692Upflow1 ? \"pt = 9 . pt <- 10\") ; D-4",
+        "D-4": "\"((pt = 1 . pt <- 2 + pt = 4 . pt <- 3 + pt = 5 . pt <- 6 + pt = 9 . pt <- 10 + pt = 12 . pt <- 11 + pt = 14 . pt <- 13) . (((pt = 1) + (pt = 2 . pt <- 4) + (pt = 3 . pt <- 7) + (pt = 4 . pt <- 2) + (pt = 5) + (pt = 6 . pt <- 9) + (pt = 7 . pt <- 3) + (pt = 8) + (pt = 9 . pt <- 6) + (pt = 10 . pt <- 12) + (pt = 11 . pt <- 14) + (pt = 12 . pt <- 10) + (pt = 13) + (pt = 14 . pt <- 11)))) *\" ; D-4 o+ (S56680Reqflow1 ! \"one\") ; D-4 o+ (S56680Upflow1 ? \"pt = 5 . pt <- 6\") ; D-4 o+ (S56692Reqflow1 ! \"one\") ; D-4 o+ (S56692Upflow1 ? \"pt = 9 . pt <- 10\") ; D-4"
+    },
+    "program": "D-1 || C",
+    "channels": [
+        "S56680Reqflow1",
+        "S56680Upflow1",
+        "S56692Reqflow1",
+        "S56692Upflow1"
+    ],
+    "in_packets": {
+        "h1h6": "(pt = 1)"
+    },
+    "out_packets": {
+        "h1h6": "(pt = 13)"
+    },
+    "properties": {
+        "h1h6": [
+            [
+                "r",
+                "(head(tail(@Program, { rcfg(S56692Reqflow1, \"one\") , rcfg(S56692Upflow1, \"pt = 9 . pt <- 10\") })))",
+                "=0",
+                3
+            ]
+        ]
+    }
+}
